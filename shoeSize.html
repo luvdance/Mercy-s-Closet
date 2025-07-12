@@ -1,0 +1,1326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mercy's Closet Luxe - Shoe Size Converter</title>
+    <!-- Existing CSS links from your main page -->
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="bootstrap-5.3.7-dist/css/bootstrap.min.css">
+    <!-- Font Awesome for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts - Inter (for consistency with app) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN (for the app's utility classes) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Custom Styles for the Shoe Size App and general body/dark mode -->
+    <style>
+        /* This style block contains the combined CSS from the main site's dark mode
+           and the specific styles for the shoe size app.
+           It's placed here to ensure it overrides Bootstrap defaults and integrates with dark mode. */
+        body {
+            font-family: 'Inter', sans-serif; /* Ensure Inter font is applied globally */
+            background-color: #f8f9fa; /* Default light background */
+            color: #212529; /* Default dark text */
+            transition: background-color 0.4s ease, color 0.4s ease;
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+
+        /* Header Gradient */
+        #mainHeader {
+            background: linear-gradient(to bottom, #4b004d, #2a002d);
+            transition: background-color 0.3s ease, color 0.3s ease;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.3) !important;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Fixed Header Scroll */
+        .fixed-top-scroll {
+            background-color: #ffffff !important;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1030;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
+        }
+
+        /* Hero Gradient (dark purple around, light purple center) - Retained for consistency if used elsewhere */
+        #heroCarousel {
+            background: radial-gradient(circle at center, #2a002d 0%, #2a002d 70%, #4b004d 100%);
+            color: #fff;
+        }
+
+        /* Nav Hover */
+        #navLinks .nav-link:hover,
+        #navLinksMobile .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+        }
+
+        /* Mobile Menu Transition */
+        #mobileMenu {
+            transition: all 0.3s ease;
+            /* Ensure it's above other content */
+            z-index: 1040; /* Higher than fixed-top-scroll */
+        }
+        #mobileMenu.show {
+            background-color: #4b004d !important;
+        }
+
+        /* Social Media Icons Styling - Retained for consistency */
+        .social-icons a {
+            color: white;
+            font-size: 1.2rem;
+            transition: transform 0.2s ease-in-out;
+        }
+        .social-icons a:hover {
+            transform: scale(1.2);
+        }
+
+        /* Client Indicators Styling - Retained for consistency */
+        .client-dot {
+            background-color: #9370DB;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s ease-in-out, background-color 0.2s ease, width 0.3s ease, height 0.3s ease;
+        }
+        .client-dot:hover:not([style*="background-image"]) {
+            background-color: #8A2BE2;
+        }
+        .client-indicators::after {
+            color: white;
+        }
+
+        /* Product Card Styling - Retained for consistency */
+        .product-card {
+            background-color: #fff;
+            transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .product-overlay {
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+        }
+
+        /* Shopping Cart Styling - Retained for consistency */
+        .cart-dropdown {
+            background-color: #fff;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        .cart-dropdown .list-group-item {
+            background-color: #fff;
+            color: #333;
+        }
+
+        /* Collection Sub-heading Styling - Retained for consistency */
+        .collection-title-sub {
+            color: #333;
+        }
+        .collection-dash {
+            color: #4b004d;
+        }
+        .purple-icon {
+            color: #4b004d;
+        }
+
+        /* Teal color for Add to Cart and Extend buttons - Retained for consistency */
+        .btn-teal {
+            background-color: #008080;
+            color: #fff;
+            border: 1px solid #006666;
+        }
+        .btn-teal:hover {
+            background-color: #006666;
+            border-color: #004d4d;
+        }
+
+        /* Add to Cart Button Styling - Retained for consistency */
+        .btn.add-to-cart-btn{
+            background-color: #4b004d;
+            color: white;
+        }
+        .btn.add-to-cart-btn:hover {
+            background-color: #2b002c;
+        }
+
+        /* Updated Show More Button Styling - Retained for consistency */
+        .btn.show-more-toggle-btn {
+            background-color: #4b004d;
+            color: white;
+        }
+        .btn.show-more-toggle-btn:hover {
+            background-color: #2b002c;
+        }
+
+        /* WhatsApp Floating Button - Retained for consistency */
+        .whatsapp-float {
+            background-color: #4b004d;
+            color: #FFF;
+        }
+        .whatsapp-float:hover {
+            background-color: #128C7E;
+        }
+
+        /* Scroll to Top Button Styling - Retained for consistency */
+        .scroll-to-top-btn {
+            background-color: #4b004d;
+            color: white;
+        }
+        .scroll-to-top-btn:hover {
+            background-color: #2b002c;
+        }
+
+        /* Custom styles for the Shoe Size App container */
+        .app-container {
+            background-color: #ffffff;
+            border-radius: 1.5rem; /* More rounded corners */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+        }
+
+        .btn-purple-custom {
+            background-color: #4b004d; /* Your deep purple */
+            color: white;
+            border: none;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            border-radius: 0.75rem; /* Rounded buttons */
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+        }
+
+        .btn-purple-custom:hover {
+            background-color: #6a006a; /* Slightly lighter purple on hover */
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-clear-custom {
+            background-color: #e0e0e0; /* Light grey for clear button */
+            color: #333;
+            border: 1px solid #ccc;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            border-radius: 0.75rem;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+        }
+
+        .btn-clear-custom:hover {
+            background-color: #d0d0d0;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        input[type="number"], select {
+            border-radius: 0.75rem; /* Rounded inputs */
+            border: 1px solid #d1d5db;
+            padding: 0.75rem 1rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+            background-color: #f9fafb;
+            color: #1f2937;
+        }
+
+        input[type="number"]:focus, select:focus {
+            border-color: #8A2BE2; /* Purple focus ring */
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(138, 43, 226, 0.3); /* Soft purple glow */
+            background-color: #ffffff;
+        }
+
+        .result-card {
+            background-color: #f0f0f0;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: background-color 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+        }
+
+        .result-card h4 {
+            color: #4b004d; /* Purple heading */
+            font-weight: 600;
+        }
+
+        .result-card p {
+            font-size: 1.125rem; /* Larger text for size */
+            font-weight: 700;
+            color: #2a002d; /* Darker purple for size value */
+        }
+
+        /* --- DARK MODE SPECIFIC STYLES --- */
+        /* Everything in this section is for when body.dark-mode is active */
+
+        /* General Body and Main Content */
+        body.dark-mode {
+            background-color: #1a1a1a !important; /* Overall darkest background for body */
+            color: #e0e0e0 !important; /* Default text color for dark mode */
+        }
+
+        /* Overriding Bootstrap text colors */
+        body.dark-mode .text-dark { color: #e0e0e0 !important; }
+        body.dark-mode .text-secondary { color: #bdbdbd !important; }
+        body.dark-mode .text-muted { color: #9e9e9e !important; }
+        body.dark-mode .text-white { color: #e0e0e0 !important; } /* Keep white, but make sure it's accessible */
+        body.dark-mode .text-primary { color: #9370DB !important; } /* Adjust Bootstrap primary text */
+        body.dark-mode .text-info { color: #81d4fa !important; } /* Adjust Bootstrap info text */
+
+        /* Header in Dark Mode (when not scrolled) */
+        body.dark-mode #mainHeader {
+            background: linear-gradient(to bottom, #222, #111) !important; /* Darker gradient for header */
+            border-bottom-color: rgba(255, 255, 255, 0.1) !important;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5) !important;
+        }
+
+        /* Header in Dark Mode (when scrolled) */
+        body.dark-mode .fixed-top-scroll {
+            background-color: #2b2b2b !important; /* Darker background when scrolled */
+            color: #e0e0e0 !important; /* Light text for scrolled header */
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4) !important;
+            border-bottom-color: rgba(255, 255, 255, 0.1) !important;
+        }
+
+        /* Navbar specific elements in dark mode */
+        body.dark-mode .navbar-brand img {
+            filter: brightness(1.2) contrast(1.1); /* Example: brighten it slightly */
+        }
+
+        body.dark-mode .navbar-nav .nav-link {
+            color: #e0e0e0 !important; /* Light text for nav links */
+        }
+
+        body.dark-mode .navbar-nav .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.1) !important; /* Lighter hover for dark nav */
+            color: #fff !important; /* Ensure hover text is fully white */
+        }
+
+        /* Hamburger Icon for Mobile Menu */
+        body.dark-mode .navbar-toggler-icon {
+            filter: invert(1) hue-rotate(180deg) !important; /* Makes a black icon white */
+        }
+        body.dark-mode .navbar-toggler {
+            border-color: rgba(255, 255, 255, 0.1) !important;
+        }
+
+        /* Mobile Menu Background */
+        body.dark-mode #mobileMenu.show {
+            background-color: #222 !important; /* Dark background for mobile menu */
+        }
+
+        /* Form switch for dark mode toggle itself */
+        body.dark-mode .form-check-label[for="modeToggle"] {
+            color: #e0e0e0 !important; /* Ensure the "Dark Mode" label is white */
+        }
+
+        body.dark-mode .form-switch .form-check-input {
+            background-color: #555 !important; /* Unchecked state in dark mode */
+            border-color: #777 !important;
+        }
+
+        body.dark-mode .form-switch .form-check-input:checked {
+            background-color: #9370DB !important; /* Activated color for dark mode toggle */
+            border-color: #8A2BE2 !important;
+        }
+
+        /* All Headings */
+        body.dark-mode h1,
+        body.dark-mode h2,
+        body.dark-mode h3,
+        body.dark-mode h4,
+        body.dark-mode h5,
+        body.dark-mode h6 {
+            color: #fff !important; /* All headings turn white */
+        }
+
+        /* Paragraphs and general text */
+        body.dark-mode p {
+            color: #e0e0e0 !important;
+        }
+
+        /* Links (general, not specific nav links) */
+        body.dark-mode a:not(.btn):not(.nav-link):not(.whatsapp-float) { /* Exclude specific link types */
+            color: #9370DB !important; /* Lighter purple for links */
+        }
+
+        body.dark-mode a:not(.btn):not(.nav-link):not(.whatsapp-float):hover {
+            color: #8A2BE2 !important; /* Slightly darker purple on hover */
+        }
+
+        /* Hero Carousel and its elements */
+        body.dark-mode #heroCarousel {
+            background: radial-gradient(circle at center, #111 0%, #111 70%, #222 100%) !important; /* Even darker gradient */
+            color: #fff !important;
+        }
+
+        /* Carousel nav buttons */
+        body.dark-mode .carousel-nav-buttons .btn,
+        body.dark-mode .collections-nav-buttons .btn {
+            background-color: #333 !important; /* Darker background for buttons */
+            border-color: #555 !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4) !important;
+        }
+
+        body.dark-mode .carousel-nav-buttons .btn:hover,
+        body.dark-mode .collections-nav-buttons .btn:hover {
+            background-color: #444 !important; /* Even darker on hover */
+            border-color: #666 !important;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5) !important;
+        }
+
+        body.dark-mode .carousel-nav-buttons .btn i,
+        body.dark-mode .collections-nav-buttons .btn i {
+            color: #eee !important; /* Ensure icons are light */
+        }
+
+        /* Social Icons */
+        body.dark-mode .social-icons a {
+            color: #e0e0e0 !important; /* Light color for social icons */
+        }
+        body.dark-mode .social-icons a:hover {
+            color: #fff !important;
+        }
+
+        /* Client Indicators */
+        body.dark-mode .client-dot {
+            background-color: #555 !important; /* Darker dot background */
+            border-color: #777 !important;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5) !important;
+        }
+        body.dark-mode .client-dot:hover {
+            background-color: #444 !important;
+        }
+        body.dark-mode .client-indicators::after {
+            color: #e0e0e0 !important; /* Ellipsis color */
+        }
+
+        /* Sections/Containers */
+        body.dark-mode .container,
+        body.dark-mode .container-fluid,
+        body.dark-mode .bg-light { /* If you use bg-light often */
+            background-color: #1a1a1a !important; /* Ensure these turn dark */
+            color: #e0e0e0 !important;
+        }
+
+        body.dark-mode section {
+            background-color: #1a1a1a !important; /* Default section background */
+        }
+        body.dark-mode .collection-section { /* Example for specific sections */
+            background-color: #222 !important; /* Slightly different black for contrast */
+        }
+
+        /* Cards */
+        body.dark-mode .card {
+            background-color: #2b2b2b !important; /* Darker card background */
+            color: #e0e0e0 !important;
+            border-color: #444 !important;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3) !important;
+        }
+
+        body.dark-mode .product-card {
+            background-color: #2b2b2b !important; /* Darker background for product cards */
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+        }
+
+        body.dark-mode .product-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+        }
+
+        body.dark-mode .product-overlay {
+            background-color: rgba(0, 0, 0, 0.8) !important; /* Darker overlay */
+        }
+        body.dark-mode .product-name {
+            color: #fff !important; /* Ensure product name is white */
+        }
+
+        /* Shopping Cart and Dropdowns */
+        body.dark-mode .shopping-cart,
+        body.dark-mode .cart-dropdown {
+            background-color: #2b2b2b !important; /* Dark background for cart */
+            color: #e0e0e0 !important;
+            border: 1px solid #444 !important;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4) !important;
+        }
+
+        body.dark-mode .cart-dropdown .list-group-item {
+            background-color: #2b2b2b !important; /* Dark background for list items in cart */
+            color: #e0e0e0 !important;
+            border-color: #3d3d3d !important;
+        }
+        body.dark-mode .cart-dropdown .list-group-item button { /* Remove button in cart */
+            background-color: #dc3545 !important; /* Keep red for danger */
+            color: #fff !important;
+        }
+
+        /* Modals */
+        body.dark-mode .modal-content {
+            background-color: #2b2b2b !important;
+            color: #e0e0e0 !important;
+            border: 1px solid #444 !important;
+        }
+
+        body.dark-mode .modal-header {
+            border-bottom-color: #444 !important;
+        }
+
+        body.dark-mode .modal-footer {
+            border-top-color: #444 !important;
+        }
+
+        body.dark-mode .modal-title {
+            color: #fff !important;
+        }
+
+        body.dark-mode .btn-close {
+            filter: invert(1) !important; /* Invert color for close button to be visible */
+        }
+
+        /* Forms (inputs, textareas, selects) */
+        body.dark-mode .form-control {
+            background-color: #333 !important;
+            color: #e0e0e0 !important;
+            border-color: #555 !important;
+        }
+
+        body.dark-mode .form-control::placeholder {
+            color: #ccc !important;
+        }
+        body.dark-mode .form-select {
+            background-color: #333 !important;
+            color: #e0e0e0 !important;
+            border-color: #555 !important;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23e0e0e0' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e") !important; /* Adjust arrow color */
+        }
+
+        /* Buttons (general) */
+        body.dark-mode .btn-light {
+            background-color: #333 !important;
+            color: #e0e0e0 !important;
+            border-color: #555 !important;
+        }
+        body.dark-mode .btn-light:hover {
+            background-color: #444 !important;
+            border-color: #666 !important;
+        }
+        body.dark-mode .btn-outline-dark {
+            color: #e0e0e0 !important;
+            border-color: #555 !important;
+        }
+        body.dark-mode .btn-outline-dark:hover {
+            background-color: #555 !important;
+            color: #fff !important;
+        }
+
+        /* Teal button in dark mode */
+        body.dark-mode .btn-teal {
+            background-color: #006666 !important; /* Darker teal for contrast */
+            border-color: #004d4d !important;
+        }
+        body.dark-mode .btn-teal:hover {
+            background-color: #008080 !important; /* Slightly brighter on hover */
+            border-color: #006666 !important;
+        }
+
+        /* Add to Cart button in dark mode */
+        body.dark-mode .btn.add-to-cart-btn {
+            background-color: #6a006a !important; /* Lighter purple for visibility */
+        }
+        body.dark-mode .btn.add-to-cart-btn:hover {
+            background-color: #8A2BE2 !important;
+        }
+
+        /* Show More button in dark mode */
+        body.dark-mode .btn.show-more-toggle-btn {
+            background-color: #6a006a !important; /* Lighter purple for visibility */
+        }
+        body.dark-mode .btn.show-more-toggle-btn:hover {
+            background-color: #8A2BE2 !important;
+        }
+
+        /* WhatsApp Floating Button */
+        body.dark-mode .whatsapp-float {
+            background-color: #075E54 !important; /* WhatsApp green */
+        }
+        body.dark-mode .whatsapp-float:hover {
+            background-color: #128C7E !important;
+        }
+
+        /* Scroll to Top Button */
+        body.dark-mode .scroll-to-top-btn {
+            background-color: #4b004d !important; /* Maintain original purple */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4) !important;
+        }
+        body.dark-mode .scroll-to-top-btn:hover {
+            background-color: #6a006a !important;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5) !important;
+        }
+
+        /* Footer */
+        body.dark-mode footer {
+            background-color: #111 !important; /* Very dark footer */
+            color: #e0e0e0 !important;
+            border-top: 1px solid #333 !important;
+        }
+
+        body.dark-mode footer .footer-link {
+            color: #bdbdbd !important; /* Slightly grey for contrast */
+        }
+
+        body.dark-mode footer .footer-link:hover {
+            color: #fff !important;
+        }
+
+        /* Collection Sub-heading Dash */
+        body.dark-mode .collection-title-sub {
+            color: #e0e0e0 !important; /* Ensure the text is light */
+        }
+        body.dark-mode .collection-dash {
+            color: #9370DB !important; /* Lighter purple for consistency in dark mode */
+        }
+
+        /* Purple Icons */
+        body.dark-mode .purple-icon {
+            color: #9370DB !important; /* Lighter purple for icons in dark mode */
+        }
+
+        /* Horizontal Rule (hr) */
+        body.dark-mode hr {
+            border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+        }
+
+        /* Adjust scrollbar for dark mode */
+        body.dark-mode ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        body.dark-mode ::-webkit-scrollbar-track {
+            background: #222; /* Darker track */
+        }
+
+        body.dark-mode ::-webkit-scrollbar-thumb {
+            background: #4b004d; /* Your brand purple */
+            border-radius: 5px;
+        }
+
+        body.dark-mode ::-webkit-scrollbar-thumb:hover {
+            background: #6a006a;
+        }
+
+        /* About Us Section Dark Mode */
+        body.dark-mode #about {
+            background-color: #1a1a1a !important; /* Base dark background */
+            color: #e0e0e0 !important; /* Light text color */
+        }
+
+        body.dark-mode #about h2,
+        body.dark-mode #about h3,
+        body.dark-mode #about h4,
+        body.dark-mode #about p.lead,
+        body.dark-mode #about p {
+            color: #e0e0e0 !important; /* Ensure all text is light */
+        }
+
+        body.dark-mode #about .text-purple {
+            color: #9370DB !important; /* Lighter purple for icons and accents */
+        }
+
+        body.dark-mode #about .divider.bg-purple {
+            background-color: #9370DB !important; /* Lighter purple for divider */
+        }
+
+        body.dark-mode .about-image-container .image-overlay {
+            background: linear-gradient(to top, rgba(26, 26, 26, 0.7), rgba(26, 26, 26, 0.1)) !important; /* Darker overlay for images */
+        }
+
+        body.dark-mode .icon-circle.bg-purple-light {
+            background-color: #333 !important; /* Darker background for icon circles */
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+        }
+
+        body.dark-mode .card.hover-lift {
+            background-color: #2b2b2b !important; /* Darker card background for about section */
+            color: #e0e0e0 !important;
+            border-color: #444 !important;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3) !important;
+        }
+
+        body.dark-mode .card.hover-lift:hover {
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4) !important;
+        }
+
+        body.dark-mode .card.hover-lift h4 {
+            color: #fff !important; /* Card titles to white */
+        }
+
+        body.dark-mode .card.hover-lift p {
+            color: #ccc !important; /* Card paragraph text slightly lighter grey */
+        }
+
+        body.dark-mode .btn-purple {
+            background-color: #6a006a !important; /* Lighter purple for buttons for visibility */
+            color: #fff !important;
+            border-color: #8A2BE2 !important;
+        }
+
+        body.dark-mode .btn-purple:hover {
+            background-color: #8A2BE2 !important; /* Brighter purple on hover */
+            border-color: #9370DB !important;
+            color: #fff !important;
+        }
+
+        /* Contact Us Section Dark Mode */
+        body.dark-mode #contact.contact-section {
+            background-color: #222 !important; /* Slightly different black for contact section differentiation */
+            color: #e0e0e0 !important;
+        }
+
+        body.dark-mode .contact-heading,
+        body.dark-mode .contact-subheading,
+        body.dark-mode .contact-card-title,
+        body.dark-mode .contact-card-text,
+        body.dark-mode .contact-social-heading,
+        body.dark-mode .contact-form-heading,
+        body.dark-mode .contact-form-label {
+            color: #e0e0e0 !important; /* Ensure all text is light */
+        }
+
+        body.dark-mode .contact-icon.text-purple {
+            color: #9370DB !important; /* Lighter purple for icons */
+        }
+
+        body.dark-mode .contact-divider.bg-purple {
+            background-color: #9370DB !important; /* Lighter purple for divider */
+        }
+
+        body.dark-mode .contact-card.card {
+            background-color: #2b2b2b !important; /* Darker card background for contact cards */
+            color: #e0e0e0 !important;
+            border-color: #444 !important;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3) !important;
+        }
+
+        body.dark-mode .contact-card.card:hover {
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4) !important;
+        }
+
+        body.dark-mode .contact-icon-container.icon-circle.bg-purple-light {
+            background-color: #333 !important; /* Darker background for icon circles */
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+        }
+
+        body.dark-mode .contact-link {
+            color: #9370DB !important; /* Light purple for contact links */
+        }
+
+        body.dark-mode .contact-link:hover {
+            color: #8A2BE2 !important; /* Slightly darker purple on hover */
+        }
+
+        /* Social media icons */
+        body.dark-mode .contact-social-link {
+            color: #e0e0e0 !important; /* White color for social icons */
+        }
+        body.dark-mode .contact-social-link:hover {
+            color: #fff !important; /* Pure white on hover */
+        }
+        body.dark-mode .contact-social-link.whatsapp { background-color: #25D366 !important; } /* Maintain WhatsApp's brand color */
+        body.dark-mode .contact-social-link.instagram { background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%) !important; /* Instagram gradient */ }
+        body.dark-mode .contact-social-link.facebook { background-color: #1877F2 !important; } /* Facebook blue */
+        body.dark-mode .contact-social-link.tiktok { background-color: #000 !important; } /* TikTok black */
+
+        /* Google Map Embed */
+        body.dark-mode .contact-map-container iframe {
+            filter: grayscale(80%) invert(90%) !important; /* Invert and grayscale map for dark mode */
+        }
+
+        /* Contact Form */
+        body.dark-mode .contact-form-container.card {
+            background-color: #2b2b2b !important; /* Darker background for form card */
+            color: #e0e0e0 !important;
+            border-color: #444 !important;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4) !important;
+        }
+
+        body.dark-mode .contact-form-input,
+        body.dark-mode .contact-form-textarea {
+            background-color: #333 !important; /* Darker input fields */
+            color: #e0e0e0 !important;
+            border-color: #555 !important;
+        }
+
+        body.dark-mode .contact-form-input::placeholder,
+        body.dark-mode .contact-form-textarea::placeholder {
+            color: #ccc !important;
+        }
+
+        body.dark-mode .contact-submit-btn.btn-purple {
+            background-color: #6a006a !important; /* Lighter purple for submit button */
+            color: #fff !important;
+            border-color: #8A2BE2 !important;
+        }
+
+        body.dark-mode .contact-submit-btn.btn-purple:hover {
+            background-color: #8A2BE2 !important; /* Brighter purple on hover */
+            border-color: #9370DB !important;
+        }
+
+        /* Dark Mode Specific Styles for the app */
+        body.dark-mode .app-container {
+            background-color: #2b2b2b !important; /* Darker background for the app container */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4) !important;
+        }
+
+        body.dark-mode .app-container h2,
+        body.dark-mode .app-container label {
+            color: #e0e0e0 !important; /* Light text for headings and labels */
+        }
+
+        body.dark-mode input[type="number"],
+        body.dark-mode select {
+            background-color: #333 !important;
+            color: #e0e0e0 !important;
+            border-color: #555 !important;
+        }
+
+        body.dark-mode input[type="number"]:focus,
+        body.dark-mode select:focus {
+            border-color: #9370DB !important; /* Lighter purple focus */
+            box-shadow: 0 0 0 3px rgba(147, 112, 219, 0.3) !important;
+        }
+
+        body.dark-mode .btn-purple-custom {
+            background-color: #6a006a !important; /* Lighter purple for dark mode buttons */
+        }
+
+        body.dark-mode .btn-purple-custom:hover {
+            background-color: #8A2BE2 !important;
+        }
+
+        body.dark-mode .btn-clear-custom {
+            background-color: #444 !important;
+            color: #e0e0e0 !important;
+            border-color: #666 !important;
+        }
+
+        body.dark-mode .btn-clear-custom:hover {
+            background-color: #555 !important;
+        }
+
+        body.dark-mode .result-card {
+            background-color: #333 !important; /* Darker background for result cards */
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+        }
+
+        body.dark-mode .result-card h4 {
+            color: #9370DB !important; /* Lighter purple heading */
+        }
+
+        body.dark-mode .result-card p {
+            color: #e0e0e0 !important; /* Light text for size value */
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Your existing Header HTML -->
+    <header id="mainHeader" class="border-bottom shadow-sm">
+        <div class="container-fluid py-2">
+            <div class="d-flex justify-content-between align-items-center">
+                
+                <div class="d-flex align-items-center" style="cursor: pointer;" onclick="window.location.href='index.html'">
+                    <img src="images/hero_1_-_Copy-removebg-preview(1).png" alt="Logo" width="40" height="40" class="me-2">
+                    <h1 class="h4 m-0 text-white" id="siteTitle">Mercy's Closet Luxe</h1>
+                </div>
+
+                <div class="d-flex align-items-center gap-2">
+                    
+                    <ul class="nav d-none d-md-flex align-items-center me-2" id="navLinks">
+                        <li class="nav-item"><a class="nav-link text-white" href="index.html">Home</a></li>
+                        <li class="nav-item"><a class="nav-link text-white" href="index.html#collections">Collections</a></li>
+                        <li class="nav-item"><a class="nav-link text-white" href="index.html#about">About Us</a></li>
+                        <li class="nav-item"><a class="nav-link text-white" href="index.html#contact">Contact</a></li>
+                        <li class="nav-item"><a class="nav-link text-white" href="shoeSize.html">Size Guide</a></li>
+                    </ul>
+
+                    <div class="form-check form-switch text-white">
+                        <input class="form-check-input" type="checkbox" id="modeToggle">
+                    </div>
+
+                    <button class="d-md-none bg-transparent border-0" id="menuToggleBtn" data-bs-toggle="collapse" data-bs-target="#mobileMenu" aria-controls="mobileMenu" aria-expanded="false" aria-label="Toggle navigation">
+                        <i class="fas fa-bars fa-lg text-white" id="hamburgerIcon"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="collapse d-md-none mt-2" id="mobileMenu">
+                <ul class="nav flex-column py-3 px-2 rounded" id="navLinksMobile">
+                    <li class="nav-item"><a class="nav-link text-white" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="index.html#collections">Collections</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="index.html#about">About Us</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="index.html#contact">Contact</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="shoeSize.html">Size Guide</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main content area for the Shoe Size Converter App -->
+    <main class="py-10">
+        <div class="app-container w-full max-w-2xl p-8 mx-auto">
+            <h2 class="text-3xl font-bold text-center mb-6 text-gray-800">Shoe Size Converter</h2>
+
+            <div class="mb-6">
+                <label for="footLength" class="block text-lg font-medium text-gray-700 mb-2">Enter Foot Length:</label>
+                <div class="flex space-x-3">
+                    <input type="number" id="footLength" class="flex-grow border-gray-300 rounded-lg shadow-sm focus:ring-purple-500 focus:border-purple-500 text-lg" placeholder="e.g., 25">
+                    <select id="unit" class="border-gray-300 rounded-lg shadow-sm focus:ring-purple-500 focus:border-purple-500 text-lg">
+                        <option value="cm">cm</option>
+                        <option value="inches">inches</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="flex space-x-4 mb-8 justify-center">
+                <button id="calculateBtn" class="btn-purple-custom flex-1 max-w-[150px]">Calculate</button>
+                <button id="clearBtn" class="btn-clear-custom flex-1 max-w-[150px]">Clear</button>
+            </div>
+
+            <div id="results" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Results will be displayed here -->
+                <div class="result-card hidden" id="usMenResult">
+                    <h4 class="text-lg mb-2">US Men's Size</h4>
+                    <p class="text-2xl font-bold" id="usMenValue">--</p>
+                </div>
+                <div class="result-card hidden" id="usWomenResult">
+                    <h4 class="text-lg mb-2">US Women's Size</h4>
+                    <p class="text-2xl font-bold" id="usWomenValue">--</p>
+                </div>
+                <div class="result-card hidden" id="ukResult">
+                    <h4 class="text-lg mb-2">UK Size</h4>
+                    <p class="text-2xl font-bold" id="ukValue">--</p>
+                </div>
+                <div class="result-card hidden" id="euResult">
+                    <h4 class="text-lg mb-2">EU Size</h4>
+                    <p class="text-2xl font-bold" id="euValue">--</p>
+                </div>
+                <div class="result-card hidden" id="ngResult">
+                    <h4 class="text-lg mb-2">Nigerian Size</h4>
+                    <p class="text-2xl font-bold" id="ngValue">--</p>
+                </div>
+                <div class="result-card hidden" id="cmResult">
+                    <h4 class="text-lg mb-2">CM (Foot Length)</h4>
+                    <p class="text-2xl font-bold" id="cmValue">--</p>
+                </div>
+            </div>
+
+            <div id="messageBox" class="mt-6 p-3 rounded-lg text-center text-red-700 bg-red-100 hidden">
+                <!-- Error messages will appear here -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Existing Footer HTML -->
+    <footer class="luxury-footer py-5 bg-dark text-white">
+        <div class="container">
+            <div class="row g-4">
+                <!-- Brand Column -->
+                <div class="col-lg-4 mb-4 mb-lg-0">
+                    <div class="footer-brand">
+                        <div class="d-flex align-items-center mb-3">
+                            <img src="images/hero_1_-_Copy-removebg-preview(1).png" alt="Mercy's Closet Luxe Logo" width="40" height="40" class="me-2">
+                            <h3 class="h5 mb-0">Mercy's Closet Luxe</h3>
+                        </div>
+                        <p class="footer-description mb-3">
+                            Your premier destination for luxury fashion, exquisite watches, and fine jewelry. Bringing elegance to your doorstep worldwide.
+                        </p>
+                        <div class="footer-social">
+                            <a href="#" class="text-white me-3"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="text-white me-3"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" class="text-white me-3"><i class="fab fa-tiktok"></i></a>
+                            <a href="https://wa.me/2347064265426" class="text-white"><i class="fab fa-whatsapp"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="col-md-4 col-lg-2">
+                    <h4 class="footer-heading h5 mb-3">Explore</h4>
+                    <ul class="footer-links list-unstyled">
+                        <li class="mb-2"><a href="index.html" class="text-white-50 footer-link">Home</a></li>
+                        <li class="mb-2"><a href="index.html#collections" class="text-white-50 footer-link">Collections</a></li>
+                        <li class="mb-2"><a href="index.html#about" class="text-white-50 footer-link">About Us</a></li>
+                        <li class="mb-2"><a href="index.html#contact" class="text-white-50 footer-link">Contact</a></li>
+                        <li class="mb-2"><a href="#" class="text-white-50 footer-link">Lookbook</a></li>
+                    </ul>
+                </div>
+
+                <!-- Customer Service -->
+                <div class="col-md-4 col-lg-2">
+                    <h4 class="footer-heading h5 mb-3">Support</h4>
+                    <ul class="footer-links list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-white-50 footer-link">Shipping Policy</a></li>
+                        <li class="mb-2"><a href="#" class="text-white-50 footer-link">Returns & Exchanges</a></li>
+                        <li class="mb-2"><a href="shoeSize.html" class="text-white-50 footer-link">Size Guide</a></li>
+                        <li class="mb-2"><a href="#" class="text-white-50 footer-link">FAQs</a></li>
+                        <li class="mb-2"><a href="#" class="text-white-50 footer-link">Privacy Policy</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact Info -->
+                <div class="col-md-4 col-lg-4">
+                    <h4 class="footer-heading h5 mb-3">Get In Touch</h4>
+                    <ul class="footer-contact list-unstyled">
+                        <li class="mb-3 d-flex">
+                            <i class="fas fa-map-marker-alt mt-1 me-2 text-purple"></i>
+                            <span class="text-white-50">93 Azikiwe Street, Port Harcourt, Nigeria</span>
+                        </li>
+                        <li class="mb-3 d-flex">
+                            <i class="fas fa-phone-alt mt-1 me-2 text-purple"></i>
+                            <a href="tel:+2347064265426" class="text-white-50 footer-link">+234 901 541 4195</a>
+                        </li>
+                        <li class="mb-3 d-flex">
+                            <i class="fas fa-envelope mt-1 me-2 text-purple"></i>
+                            <a href="mailto:contactus@mercysclosetluxe.com" class="text-white-50 footer-link">contactus@mercysclosetluxe.com</a>
+                        </li>
+                    </ul>
+                    
+                    <!-- Newsletter -->
+                    <div class="footer-newsletter mt-4">
+                        <h5 class="h6 mb-2">Subscribe for Updates</h5>
+                        <form class="input-group">
+                            <input type="email" class="form-control bg-transparent text-white border-secondary" placeholder="Your email">
+                            <button class="btn btn-purple" type="submit">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="my-4 border-secondary">
+
+            <!-- Copyright -->
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="small mb-3 mb-md-0 text-white-50">
+                        &copy; <span id="current-year"></span> Mercy's Closet Luxe. All rights reserved.
+                    </p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <p class="small mb-0 text-white-50">
+                        Crafted with <i class="fas fa-heart text-danger"></i> by 
+                        <a href="https://www.memorasmart.com" target="_blank" class="developer-link text-purple">Memora Smart Technologies</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap Bundle JS (includes Popper) - essential for Bootstrap components -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Your main site's JavaScript -->
+    <script src="script.js"></script> 
+
+    <!-- JavaScript for the Shoe Size Converter App -->
+    <script>
+        // DOM Elements
+        const footLengthInput = document.getElementById('footLength');
+        const unitSelect = document.getElementById('unit');
+        const calculateBtn = document.getElementById('calculateBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const resultsDiv = document.getElementById('results');
+        const messageBox = document.getElementById('messageBox');
+
+        // Result display elements
+        const usMenResult = document.getElementById('usMenResult');
+        const usWomenResult = document.getElementById('usWomenResult');
+        const ukResult = document.getElementById('ukResult');
+        const euResult = document.getElementById('euResult');
+        const ngResult = document.getElementById('ngResult'); // New Nigerian Size result element
+        const cmResult = document.getElementById('cmResult');
+
+        const usMenValue = document.getElementById('usMenValue');
+        const usWomenValue = document.getElementById('usWomenValue');
+        const ukValue = document.getElementById('ukValue');
+        const euValue = document.getElementById('euValue');
+        const ngValue = document.getElementById('ngValue'); // New Nigerian Size value element
+        const cmValue = document.getElementById('cmValue');
+
+        // --- Shoe Size Conversion Chart (Approximate values) ---
+        // Expanded to include children's sizes and Nigerian sizes (approximated to EU for now).
+        // This chart maps foot length in CM to approximate shoe sizes across different standards.
+        // Shoe sizing is complex and varies by brand, so this is a general guide.
+        const shoeSizeChart = [
+            // Children's Sizes (Infant/Toddler/Youth)
+            { cm: 9.5, us_m: null, us_w: null, uk: 0.5, eu: 16, ng: 16 },
+            { cm: 10.0, us_m: null, us_w: null, uk: 1, eu: 17, ng: 17 },
+            { cm: 10.5, us_m: null, us_w: null, uk: 1.5, eu: 17.5, ng: 17.5 },
+            { cm: 11.0, us_m: null, us_w: null, uk: 2, eu: 18, ng: 18 },
+            { cm: 11.5, us_m: null, us_w: null, uk: 2.5, eu: 19, ng: 19 },
+            { cm: 12.0, us_m: null, us_w: null, uk: 3, eu: 20, ng: 20 },
+            { cm: 12.5, us_m: null, us_w: null, uk: 3.5, eu: 20.5, ng: 20.5 },
+            { cm: 13.0, us_m: null, us_w: null, uk: 4, eu: 21, ng: 21 },
+            { cm: 13.5, us_m: null, us_w: null, uk: 4.5, eu: 22, ng: 22 },
+            { cm: 14.0, us_m: null, us_w: null, uk: 5, eu: 22.5, ng: 22.5 },
+            { cm: 14.5, us_m: null, us_w: null, uk: 5.5, eu: 23, ng: 23 },
+            { cm: 15.0, us_m: null, us_w: null, uk: 6, eu: 24, ng: 24 },
+            { cm: 15.5, us_m: null, us_w: null, uk: 6.5, eu: 25, ng: 25 },
+            { cm: 16.0, us_m: null, us_w: null, uk: 7, eu: 25.5, ng: 25.5 },
+            { cm: 16.5, us_m: null, us_w: null, uk: 7.5, eu: 26, ng: 26 },
+            { cm: 17.0, us_m: null, us_w: null, uk: 8, eu: 27, ng: 27 },
+            { cm: 17.5, us_m: null, us_w: null, uk: 8.5, eu: 27.5, ng: 27.5 },
+            { cm: 18.0, us_m: null, us_w: null, uk: 9, eu: 28, ng: 28 },
+            { cm: 18.5, us_m: null, us_w: null, uk: 9.5, eu: 29, ng: 29 },
+            { cm: 19.0, us_m: null, us_w: null, uk: 10, eu: 29.5, ng: 29.5 },
+            { cm: 19.5, us_m: null, us_w: null, uk: 10.5, eu: 30, ng: 30 },
+            { cm: 20.0, us_m: null, us_w: null, uk: 11, eu: 31, ng: 31 },
+            { cm: 20.5, us_m: null, us_w: null, uk: 11.5, eu: 31.5, ng: 31.5 },
+            { cm: 21.0, us_m: null, us_w: null, uk: 12, eu: 32, ng: 32 },
+            { cm: 21.5, us_m: null, us_w: null, uk: 12.5, eu: 33, ng: 33 },
+            { cm: 22.0, us_m: 4, us_w: 5.5, uk: 13, eu: 34, ng: 34 }, // Youth/Small Adult starts here
+            { cm: 22.4, us_m: 4.5, us_w: 6, uk: 13.5, eu: 34.5, ng: 34.5 },
+            { cm: 22.9, us_m: 5, us_w: 6.5, uk: 1, eu: 35, ng: 35 }, // UK Adult sizes start
+            { cm: 23.3, us_m: 5.5, us_w: 7, uk: 1.5, eu: 35.5, ng: 35.5 },
+            { cm: 23.7, us_m: 6, us_w: 7.5, uk: 2, eu: 36, ng: 36 },
+            { cm: 24.1, us_m: 6.5, us_w: 8, uk: 2.5, eu: 36.5, ng: 36.5 },
+            { cm: 24.5, us_m: 7, us_w: 8.5, uk: 3, eu: 37, ng: 37 },
+            { cm: 25.0, us_m: 7.5, us_w: 9, uk: 3.5, eu: 37.5, ng: 37.5 },
+            { cm: 25.4, us_m: 8, us_w: 9.5, uk: 4, eu: 38, ng: 38 },
+            { cm: 25.8, us_m: 8.5, us_w: 10, uk: 4.5, eu: 38.5, ng: 38.5 },
+            { cm: 26.2, us_m: 9, us_w: 10.5, uk: 5, eu: 39, ng: 39 },
+            { cm: 26.7, us_m: 9.5, us_w: 11, uk: 5.5, eu: 39.5, ng: 39.5 },
+            { cm: 27.1, us_m: 10, us_w: 11.5, uk: 6, eu: 40, ng: 40 },
+            { cm: 27.5, us_m: 10.5, us_w: 12, uk: 6.5, eu: 40.5, ng: 40.5 },
+            { cm: 27.9, us_m: 11, us_w: 12.5, uk: 7, eu: 41, ng: 41 },
+            { cm: 28.3, us_m: 11.5, us_w: 13, uk: 7.5, eu: 41.5, ng: 41.5 },
+            { cm: 28.8, us_m: 12, us_w: 13.5, uk: 8, eu: 42, ng: 42 },
+            { cm: 29.2, us_m: 12.5, us_w: 14, uk: 8.5, eu: 42.5, ng: 42.5 },
+            { cm: 29.6, us_m: 13, us_w: 14.5, uk: 9, eu: 43, ng: 43 },
+            { cm: 30.0, us_m: 13.5, us_w: 15, uk: 9.5, eu: 43.5, ng: 43.5 },
+            { cm: 30.5, us_m: 14, us_w: 15.5, uk: 10, eu: 44, ng: 44 },
+            { cm: 30.9, us_m: 14.5, us_w: 16, uk: 10.5, eu: 44.5, ng: 44.5 },
+            { cm: 31.3, us_m: 15, us_w: 16.5, uk: 11, eu: 45, ng: 45 },
+            { cm: 31.7, us_m: 15.5, us_w: 17, uk: 11.5, eu: 45.5, ng: 45.5 },
+            { cm: 32.2, us_m: 16, us_w: 17.5, uk: 12, eu: 46, ng: 46 },
+            { cm: 32.6, us_m: 16.5, us_w: 18, uk: 12.5, eu: 46.5, ng: 46.5 },
+            { cm: 33.0, us_m: 17, us_w: 18.5, uk: 13, eu: 47, ng: 47 }
+        ];
+
+        /**
+         * Displays a message in the message box.
+         * @param {string} message - The message to display.
+         * @param {string} type - 'error' or 'info'. Determines styling.
+         */
+        function showMessage(message, type = 'info') {
+            messageBox.textContent = message;
+            messageBox.classList.remove('hidden', 'bg-red-100', 'text-red-700', 'bg-green-100', 'text-green-700');
+            if (type === 'error') {
+                messageBox.classList.add('bg-red-100', 'text-red-700');
+            } else {
+                messageBox.classList.add('bg-green-100', 'text-green-700');
+            }
+        }
+
+        /**
+         * Hides the message box.
+         */
+        function hideMessageBox() {
+            messageBox.classList.add('hidden');
+            messageBox.textContent = '';
+        }
+
+        /**
+         * Converts a given length to centimeters.
+         * @param {number} value - The length value.
+         * @param {string} unit - The unit of the length ('cm' or 'inches').
+         * @returns {number} The length in centimeters.
+         */
+        function convertToCm(value, unit) {
+            if (unit === 'inches') {
+                return value * 2.54;
+            }
+            return value; // Already in cm
+        }
+
+        /**
+         * Finds the closest shoe size from the chart based on foot length in CM.
+         * Handles edge cases for values slightly outside the chart range by clamping.
+         * @param {number} cmLength - Foot length in centimeters.
+         * @returns {object|null} An object containing the shoe sizes, or null if outside a reasonable range.
+         */
+        function getShoeSizes(cmLength) {
+            // If the length is completely out of a practical range, return null
+            if (cmLength < 9 || cmLength > 34) { // Roughly 9cm (infant) to 34cm (large adult)
+                return null;
+            }
+
+            // Find the closest size in the chart
+            let closestSize = shoeSizeChart[0];
+            let minDiff = Math.abs(cmLength - closestSize.cm);
+
+            for (let i = 1; i < shoeSizeChart.length; i++) {
+                const diff = Math.abs(cmLength - shoeSizeChart[i].cm);
+                if (diff < minDiff) {
+                    minDiff = diff;
+                    closestSize = shoeSizeChart[i];
+                }
+            }
+            return closestSize;
+        }
+
+        /**
+         * Displays the calculated shoe sizes in the UI.
+         * @param {object} sizes - An object containing the shoe sizes (us_m, us_w, uk, eu, ng).
+         * @param {number} cmLength - The original foot length in CM.
+         */
+        function displayResults(sizes, cmLength) {
+            // Show all result cards
+            usMenResult.classList.remove('hidden');
+            usWomenResult.classList.remove('hidden');
+            ukResult.classList.remove('hidden');
+            euResult.classList.remove('hidden');
+            ngResult.classList.remove('hidden'); // Show Nigerian size result
+            cmResult.classList.remove('hidden');
+
+            // Display values, using '--' if a size system is not applicable (e.g., US Men's for infant sizes)
+            usMenValue.textContent = sizes.us_m !== null ? sizes.us_m.toFixed(1) : '--';
+            usWomenValue.textContent = sizes.us_w !== null ? sizes.us_w.toFixed(1) : '--';
+            ukValue.textContent = sizes.uk !== null ? sizes.uk.toFixed(1) : '--';
+            euValue.textContent = sizes.eu !== null ? sizes.eu.toFixed(0) : '--'; // EU sizes are typically whole numbers
+            ngValue.textContent = sizes.ng !== null ? sizes.ng.toFixed(1) : '--'; // Nigerian size
+            cmValue.textContent = cmLength.toFixed(1) + ' cm';
+        }
+
+        /**
+         * Clears all input fields and displayed results.
+         */
+        function clearResults() {
+            footLengthInput.value = '';
+            unitSelect.value = 'cm';
+            
+            usMenResult.classList.add('hidden');
+            usWomenResult.classList.add('hidden');
+            ukResult.classList.add('hidden');
+            euResult.classList.add('hidden');
+            ngResult.classList.add('hidden'); // Hide Nigerian size result
+            cmResult.classList.add('hidden');
+
+            usMenValue.textContent = '--';
+            usWomenValue.textContent = '--';
+            ukValue.textContent = '--';
+            euValue.textContent = '--';
+            ngValue.textContent = '--'; // Clear Nigerian size value
+            cmValue.textContent = '--';
+            hideMessageBox();
+        }
+
+        // --- Event Listeners ---
+        calculateBtn.addEventListener('click', () => {
+            hideMessageBox(); // Clear previous messages
+
+            const lengthValue = parseFloat(footLengthInput.value);
+            const selectedUnit = unitSelect.value;
+
+            if (isNaN(lengthValue) || lengthValue <= 0) {
+                showMessage('Please enter a valid positive number for foot length.', 'error');
+                clearResults(); // Clear results if input is invalid
+                return;
+            }
+
+            const cmLength = convertToCm(lengthValue, selectedUnit);
+            const calculatedSizes = getShoeSizes(cmLength);
+
+            if (calculatedSizes) {
+                displayResults(calculatedSizes, cmLength);
+            } else {
+                showMessage(`Foot length ${lengthValue} ${selectedUnit} is outside the common shoe size range. Please enter a value between approximately ${shoeSizeChart[0].cm.toFixed(1)} cm and ${shoeSizeChart[shoeSizeChart.length - 1].cm.toFixed(1)} cm.`, 'error');
+                clearResults(); // Clear results if outside range
+            }
+        });
+
+        clearBtn.addEventListener('click', clearResults);
+
+        // Initial clear on page load
+        document.addEventListener('DOMContentLoaded', clearResults);
+    </script>
+
+    <!-- Script for mobile menu interaction and dark mode persistence -->
+    <script>
+        // This script is for the main site's header/footer functionality
+        // It's crucial to place this AFTER the shoe size app's script if there are any conflicting IDs
+        // or if elements are manipulated by both. In this case, the IDs are distinct.
+
+        const body = document.body;
+        const header = document.getElementById('mainHeader');
+        const navLinks = document.querySelectorAll('#navLinks .nav-link, #navLinksMobile .nav-link');
+        const modeToggle = document.getElementById('modeToggle');
+        const hamburgerIcon = document.getElementById('hamburgerIcon');
+        const mobileMenu = document.getElementById('mobileMenu');
+
+        // ===== Dark Mode Toggle =====
+        if (modeToggle) {
+            // Apply saved theme on page load
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                body.classList.add('dark-mode');
+                modeToggle.checked = true;
+            } else {
+                modeToggle.checked = false;
+            }
+
+            modeToggle.addEventListener('change', () => {
+                body.classList.toggle('dark-mode');
+                if (body.classList.contains('dark-mode')) {
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    localStorage.setItem('theme', 'light');
+                }
+            });
+        } else {
+            console.warn("Dark mode toggle element with ID 'modeToggle' not found.");
+        }
+
+        // ===== Header Scroll Color Adjustment =====
+        window.addEventListener('scroll', () => {
+            const scrollY = window.scrollY;
+            if (header) {
+                header.classList.toggle('fixed-top-scroll', scrollY > 50);
+            }
+        });
+
+        // ===== Close Mobile Menu on Outside Click =====
+        window.addEventListener('click', function (e) {
+            const menuToggleBtn = document.getElementById('menuToggleBtn'); // Get the toggle button
+            if (mobileMenu && !mobileMenu.contains(e.target) && (!menuToggleBtn || !menuToggleBtn.contains(e.target))) {
+                const bsCollapse = bootstrap.Collapse.getInstance(mobileMenu);
+                if (bsCollapse && mobileMenu.classList.contains('show')) {
+                    bsCollapse.hide();
+                }
+            }
+        });
+
+        // Ensure current year is updated in footer
+        const currentYearElement = document.getElementById('current-year');
+        if (currentYearElement) {
+            currentYearElement.textContent = new Date().getFullYear();
+        }
+
+        // Add smooth scrolling for footer links (and header links if they target sections on this page)
+        document.querySelectorAll('.footer-link[href^="#"], #navLinks .nav-link[href^="#"], #navLinksMobile .nav-link[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                const href = this.getAttribute('href');
+                // Only prevent default and scroll if it's an internal link on the *current* page
+                if (href.startsWith('#')) {
+                    e.preventDefault();
+                    const targetElement = document.querySelector(href);
+                    if (targetElement) {
+                        targetElement.scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    }
+                }
+                // If it's an external link (like index.html#section), allow default behavior
+            });
+        });
+    </script>
+</body>
+</html>

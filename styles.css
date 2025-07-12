@@ -1,0 +1,1761 @@
+/* Base fix to prevent horizontal overflow */
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+/* Header Gradient */
+#mainHeader {
+    background: linear-gradient(to bottom, #4b004d, #2a002d);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.3) !important;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Fixed Header Scroll */
+.fixed-top-scroll {
+    background-color: #ffffff !important;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1030;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Hero Gradient (dark purple around, light purple center) */
+#heroCarousel {
+    background: radial-gradient(circle at center, #2a002d 0%, #2a002d 70%, #4b004d 100%);
+    color: #fff;
+}
+
+/* Ensure carousel inner fills available space and aligns content */
+#heroCarousel .carousel-inner {
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+}
+
+/* Call to Action Button Styling */
+.hero-cta-btn {
+    background: linear-gradient(to bottom, #8A2BE2, #9370DB) padding-box;
+    border: 2px solid white;
+    border-radius: 5px;
+    color: white;
+    font-weight: 800;
+    padding: 10px 25px;
+    background-origin: padding-box, border-box;
+    background-clip: padding-box, border-box;
+    background-size: 100% 100%, 300% 100%;
+    background-position: 0% 0%;
+    animation: borderTravel 4s linear infinite;
+    transition: all 0.3s ease;
+}
+
+.hero-cta-btn:hover {
+    background: linear-gradient(to bottom, #9370DB, #8A2BE2) padding-box;
+    background-origin: padding-box, border-box;
+    background-clip: padding-box, border-box;
+    background-size: 100% 100%, 300% 100%;
+    animation-play-state: paused;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes borderTravel {
+    from { background-position: 0% 0%, 0% 0%; }
+    to { background-position: 0% 0%, -200% 0%; }
+}
+
+
+
+/* Hero h1 Entrance Animation */
+.hero-title {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 1s ease-out forwards;
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Subtitle Typing Animation */
+.hero-subtitle {
+    overflow: hidden;
+    border-right: 2px solid white;
+    white-space: nowrap;
+    display: block;
+    position: relative;
+    min-height: 1.2em;
+    color: white;
+    width: 100%;
+}
+
+@keyframes typing {
+    from { width: 0; }
+    to { width: 100%; }
+}
+
+@keyframes blink {
+    50% { border-color: transparent; }
+}
+
+/* Nav Hover */
+#navLinks .nav-link:hover,
+#navLinksMobile .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+}
+
+/* Mobile Menu Transition */
+#mobileMenu {
+    transition: all 0.3s ease;
+}
+#mobileMenu.show {
+    background-color: #4b004d !important;
+}
+
+/* --- Hero Carousel Nav Buttons (Inverted Style) --- */
+.carousel-nav-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+.carousel-nav-buttons .btn {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background-color: #4b004d; /* Purple background */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+    border: 2px solid white; /* White border */
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+.carousel-nav-buttons .btn i {
+    color: white; /* White arrow */
+    font-size: 1.2rem;
+}
+.carousel-nav-buttons .btn:hover {
+    background-color: #6a006a; /* Slightly darker purple on hover */
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+
+/* Header Logo Animation */
+header .d-flex.align-items-center img {
+    animation: shakeThenBounce 6s ease-in-out infinite;
+    transform-origin: center bottom;
+}
+
+@keyframes shakeThenBounce {
+    0% { transform: translate(0, 0); }
+    5% { transform: translate(-2px, 0) rotate(-1deg); }
+    10% { transform: translate(2px, 0) rotate(1deg); }
+    15% { transform: translate(-2px, 0) rotate(-1deg); }
+    20% { transform: translate(2px, 0) rotate(1deg); }
+    25% { transform: translate(0, 0); }
+
+    30% { transform: translate(0, 0); }
+    35% { transform: translate(0, -8px); }
+    40% { transform: translate(0, 0); }
+    45% { transform: translate(0, -4px); }
+    50% { transform: translate(0, 0); }
+    
+    100% { transform: translate(0, 0); }
+}
+
+/* Social Media Icons Styling */
+.social-icons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+/* Media query to ensure it aligns left on larger screens */
+@media (min-width: 768px) {
+    .social-icons {
+        justify-content: flex-start;
+    }
+}
+
+.social-icons a {
+    color: white;
+    font-size: 1.2rem;
+    transition: transform 0.2s ease-in-out;
+}
+
+.social-icons a:hover {
+    transform: scale(1.2);
+}
+
+/* --- Client Indicators Styling (Simple Circles) --- */
+.client-indicators {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    padding-left: 0px; 
+    padding-right: 0px;
+    position: relative;
+}
+
+/* Media query to ensure it aligns left on larger screens */
+@media (min-width: 768px) {
+    .client-indicators {
+        justify-content: flex-start;
+    }
+}
+
+.client-dot {
+    width: 20px; 
+    height: 20px; 
+    border-radius: 50%;
+    background-color: #9370DB;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s ease-in-out, background-color 0.2s ease, width 0.3s ease, height 0.3s ease;
+    flex-shrink: 0;
+    cursor: pointer;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    border: none;
+    background-image: none !important;
+}
+
+
+/* Overlap effect */
+.client-dot:not(:first-child) {
+    margin-left: -6px;
+}
+
+.client-dot:hover {
+    transform: translateY(-3px) scale(1.1);
+    background-color: transparent;
+    z-index: 1;
+}
+
+/* For dots that *don't* have an image, apply a background color on hover */
+.client-dot:hover:not([style*="background-image"]) {
+    background-color: #8A2BE2;
+}
+
+
+/* Ellipsis styling */
+.client-indicators::after {
+    content: '...';
+    color: white;
+    font-size: 1.5rem;
+    margin-left: 5px;
+    align-self: center;
+    line-height: 1;
+}
+
+
+/* --- Collections Carousel Nav Buttons (Circular with Arrows) --- */
+.collections-nav-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+
+.collections-nav-buttons .btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #4b004d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+    border: 2px solid white;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    padding: 0;
+}
+
+.collections-nav-buttons .btn i {
+    color: white;
+    font-size: 1.5rem;
+}
+
+.collections-nav-buttons .btn:hover {
+    background-color: #6a006a;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+
+/* Product Card Styling */
+.product-card {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    border: none; /* Remove default card border */
+}
+
+.product-card img {
+    width: 100%;
+    height: 100%; /* Ensure image fills the card height */
+    object-fit: cover; /* Maintain aspect ratio and cover area */
+    transition: transform 0.3s ease-in-out;
+}
+
+.product-card:hover img {
+    transform: scale(1.05); /* Slight zoom on hover */
+}
+
+.product-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent black overlay */
+    color: white;
+    padding: 10px;
+    transform: translateY(100%); /* Start hidden below the card */
+    transition: transform 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    min-height: 80px; /* Adjust as needed */
+}
+
+.product-card:hover .product-overlay {
+    transform: translateY(0); /* Slide up on hover */
+}
+
+.product-name {
+    font-weight: bold;
+    margin-bottom: 5px;
+    font-size: 0.9rem; /* Adjust font size */
+}
+
+/* Shopping Cart Styling */
+.cart-icon-container {
+    z-index: 1000; /* Ensure it's above other content */
+}
+
+.shopping-cart {
+    position: absolute;
+    top: 50px; /* Adjust as needed, below the cart icon */
+    right: 0;
+    width: 300px; /* Adjust width as needed */
+    max-height: 400px; /* Limit height and add scroll if needed */
+    overflow-y: auto;
+    z-index: 1001;
+    transform: translateX(110%); /* Start off-screen to the right */
+    transition: transform 0.3s ease-in-out;
+    visibility: hidden; /* Hide completely when not shown */
+    opacity: 0; /* Fade out */
+}
+
+.shopping-cart.show-cart {
+    transform: translateX(0); /* Slide in */
+    visibility: visible;
+    opacity: 1; /* Fade in */
+}
+
+.cart-dropdown {
+    position: absolute;
+    top: 50px; /* Position below the cart icon */
+    right: 0;
+    width: 300px; /* Set a fixed width for the cart dropdown */
+    max-height: 400px;
+    overflow-y: auto;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    transform: translateX(100%); /* Start hidden to the right */
+    opacity: 0;
+    visibility: hidden;
+    transition: transform 0.3s ease-out, opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.cart-dropdown.show-cart {
+    transform: translateX(0); /* Slide into view */
+    opacity: 1;
+    visibility: visible;
+}
+
+.cart-dropdown .list-group-item {
+    font-size: 0.9rem;
+}
+
+.cart-dropdown .remove-from-cart-btn {
+    padding: 3px 8px;
+    font-size: 0.75rem;
+}
+
+/* Collection Sub-heading Styling */
+.collection-title-sub {
+    text-align: left; /* Left align */
+    font-size: 1.8rem; /* Slightly smaller font */
+    display: flex; /* Use flexbox for alignment */
+    align-items: center; /* Vertically center items */
+    gap: 0.5rem; /* Space between elements */
+    margin-bottom: 2rem; /* Add some space below */
+}
+
+/* Style for the leading and trailing dashes */
+.collection-dash {
+    font-weight: bold;
+    color: #4b004d; /* Purple color */
+}
+
+/* Purple Icons */
+.purple-icon {
+    color: #4b004d; /* Deep purple color */
+}
+
+/* Modal specific styling for product image */
+#productModal .modal-body img {
+    max-height: 400px; /* Limit height for larger images */
+    width: auto; /* Maintain aspect ratio */
+    object-fit: contain; /* Ensure image fits without cropping */
+}
+
+/* Teal color for Add to Cart and Extend buttons */
+.btn-teal {
+    background-color: #008080; /* A nice shade of teal */
+    color: #fff; /* White text for contrast */
+    border: 1px solid #006666; /* Slightly darker border */
+    padding: 8px 12px; /* Standard padding for small buttons */
+    border-radius: 5px; /* Slightly rounded corners */
+    cursor: pointer; /* Indicate it's clickable */
+    transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.2s ease; /* Smooth transitions for hover */
+    display: inline-flex; /* Use flexbox for easy content alignment */
+    align-items: center; /* Vertically center content (icon/text) */
+    justify-content: center; /* Horizontally center content */
+    font-size: 0.875rem; /* Equivalent to Bootstrap's btn-sm font size */
+    line-height: 1.5; /* Standard line height */
+}
+
+.btn-teal:hover {
+    background-color: #006666; /* Darker teal on hover */
+    border-color: #004d4d; /* Even darker border on hover */
+    transform: translateY(-1px); /* Slight lift on hover */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow on hover */
+}
+
+.btn-teal:active {
+    background-color: #004d4d; /* Darkest teal when clicked */
+    border-color: #003333;
+    transform: translateY(0); /* Return to original position */
+    box-shadow: none; /* Remove shadow when active */
+}
+
+/* --- Specific Styling for the Expand Button --- */
+.extend-btn {
+    width: 38px; /* Fixed width for a perfect circle/square (adjust as needed) */
+    height: 38px; /* Fixed height to match width */
+    padding: 0; /* Remove default padding as width/height are fixed */
+    border-radius: 50%; /* Make it perfectly round */
+}
+
+/* Adjust icon size within the expand button if necessary */
+.extend-btn .fas {
+    font-size: 1rem; /* Adjust icon size if default is too small/large for the button */
+    
+}
+
+/* ===== Add to Cart Button Styling ===== */
+.btn.add-to-cart-btn{
+    background-color: #4b004d; /* Bright purple */
+    color: white;
+    border: none;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.btn.add-to-cart-btn:hover {
+    background-color: #2b002c; /* Slightly darker purple */
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.add-to-cart-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+}
+
+.add-to-cart-btn i {
+    font-size: 0.9rem;
+}
+
+/* For the modal's add to cart button (slightly larger) */
+#modalAddToCartBtn {
+    padding: 8px 20px;
+    font-size: 0.9rem;
+}
+
+/* ===== Updated Show More Button Styling ===== */
+.btn.show-more-toggle-btn {
+    background-color: #4b004d;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    font-weight: 600;
+    margin: 20px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+.btn.show-more-toggle-btn:hover {
+    background-color: #2b002c;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.show-more-toggle-btn:active {
+    transform: translateY(0);
+}
+
+/* WhatsApp Floating Button */
+.whatsapp-float {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    width: 60px;
+    height: 60px;
+    background-color: #4b004d;
+    color: #FFF;
+    border-radius: 50%;
+    text-align: center;
+    font-size: 30px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.whatsapp-float:hover {
+    background-color: #128C7E;
+    transform: scale(1.1);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+    
+}
+
+.whatsapp-icon {
+    margin-top: 2px;
+}
+
+/* ===== Scroll to Top Button Styling ===== */
+.scroll-to-top-btn {
+    position: fixed; /* Stays in place relative to the viewport */
+    bottom: 25px; /* Distance from the bottom of the viewport */
+    right: 25px; /* Distance from the right of the viewport */
+    z-index: 1050; /* Ensure it's above most other content (higher than modals) */
+
+    /* Inherit button styling from your existing purple buttons */
+    background-color: #4b004d; /* Deep purple */
+    color: white;
+    border: none;
+    border-radius: 50%; /* Makes it circular */
+    width: 45px; /* Fixed width */
+    height: 45px; /* Fixed height for a perfect circle */
+    display: flex; /* Use flexbox to center the icon */
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Soft shadow */
+    cursor: pointer; /* Indicate it's clickable */
+
+    /* Initial hidden state and transition for smooth show/hide */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px); /* Start slightly below its final position */
+    transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+    pointer-events: none; /* Allows clicks to pass through when hidden */
+}
+
+.scroll-to-top-btn i {
+    font-size: 1.2rem; /* Size of the icon */
+}
+
+/* Hover effect */
+.scroll-to-top-btn:hover {
+    background-color: #6a006a; /* Darker purple on hover */
+    transform: translateY(-2px); /* Slight lift on hover */
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3); /* More pronounced shadow on hover */
+}
+
+/* Active (click) effect */
+.scroll-to-top-btn:active {
+    transform: translateY(0); /* Return to original position */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+
+/* Class to show the button when scrolled down */
+.scroll-to-top-btn.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0); /* Slide into final position */
+    pointer-events: auto; /* Allow clicks when visible */
+}
+
+/* About Us Section Styling - Fixed Version */
+#about {
+    background-color: #f9f9f9;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Scoped purple text class - only affects elements within #about */
+#about .text-purple {
+    color: #4b004d;
+}
+
+/* Scoped purple background class */
+#about .bg-purple {
+    background-color: #4b004d;
+}
+
+/* Scoped light purple background */
+#about .bg-purple-light {
+    background-color: rgba(75, 0, 77, 0.1);
+}
+
+/* Divider styling - scoped to about section */
+#about .divider {
+    width: 80px;
+    height: 3px;
+    margin-bottom: 30px;
+    background-color: #4b004d; /* Explicit color definition */
+}
+
+/* Rest of the About Us styling remains the same but scoped */
+#about .about-image-container {
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+#about .image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(75, 0, 77, 0.1), rgba(75, 0, 77, 0.3));
+    z-index: 1;
+}
+
+#about .icon-circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+#about .hover-lift {
+    transition: all 0.3s ease;
+    border-radius: 10px;
+}
+
+#about .hover-lift:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+#about .btn-purple {
+    background-color: #4b004d;
+    color: white;
+    border: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+#about .btn-purple:hover {
+    background-color: #6a006a;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(75, 0, 77, 0.2);
+}
+
+/* Responsive adjustments - scoped */
+@media (max-width: 767.98px) {
+    #about {
+        text-align: center;
+    }
+    
+    #about .about-image-container {
+        margin-bottom: 30px;
+    }
+    
+    #about .d-flex {
+        justify-content: center;
+        text-align: center;
+    }
+}
+
+/* ===== CONTACT SECTION STYLING ===== */
+#contact.contact-section {
+    background-color: #f8f9fa;
+    padding: 3rem 0;
+    position: relative;
+}
+
+/* Contact Cards */
+#contact .contact-card {
+    transition: all 0.3s ease;
+}
+
+#contact .contact-card:hover {
+    transform: translateY(-5px);
+}
+
+#contact .contact-card-body {
+    padding: 2rem;
+}
+
+#contact .contact-icon-container {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    background: rgba(75, 0, 77, 0.1);
+}
+
+#contact .contact-icon {
+    color: #4b004d;
+}
+
+#contact .contact-card-title {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+}
+
+#contact .contact-card-text {
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Contact Links */
+#contact .contact-link {
+    color: #4b004d;
+    transition: all 0.3s ease;
+}
+
+#contact .contact-link:hover {
+    color: #2a002d;
+    text-decoration: underline;
+}
+
+/* Social Media */
+#contact .contact-social-links {
+    margin: 1.5rem 0;
+}
+
+#contact .contact-social-link {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    color: white;
+}
+
+#contact .contact-social-link.whatsapp {
+    background-color: #25D366;
+}
+
+#contact .contact-social-link.instagram {
+    background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
+}
+
+#contact .contact-social-link.facebook {
+    background-color: #3b5998;
+}
+
+#contact .contact-social-link.tiktok {
+    background-color: #000000;
+}
+
+#contact .contact-social-link:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* Map */
+#contact .contact-map-container {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* Form */
+#contact .contact-form-container {
+    background: white;
+    border-radius: 12px;
+}
+
+#contact .contact-form-label {
+    font-weight: 500;
+    color: #4b004d;
+}
+
+#contact .contact-form-input,
+#contact .contact-form-textarea {
+    border: 1px solid #ddd;
+    transition: all 0.3s ease;
+}
+
+#contact .contact-form-input:focus,
+#contact .contact-form-textarea:focus {
+    border-color: #4b004d;
+    box-shadow: 0 0 0 0.25rem rgba(75, 0, 77, 0.1);
+}
+
+#contact .contact-submit-btn {
+    background-color: #4b004d;
+    transition: all 0.3s ease;
+    color: #fff
+}
+
+#contact .contact-submit-btn i{
+    color: #fff;
+}
+
+#contact .contact-submit-btn:hover {
+    background-color: #2a002d;
+    transform: translateY(-2px);
+}
+
+/* ===== LUXURY FOOTER STYLING ===== */
+.luxury-footer {
+    background: linear-gradient(to bottom, #1a001a, #2a002d) !important;
+    position: relative;
+    overflow: hidden;
+}
+
+.luxury-footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('images/footer-pattern.png') center/cover no-repeat;
+    opacity: 0.05;
+}
+
+.footer-brand img {
+    transition: transform 0.5s ease;
+}
+
+.footer-brand:hover img {
+    transform: rotate(15deg);
+}
+
+.footer-description {
+    color: rgba(255,255,255,0.7);
+    line-height: 1.6;
+}
+
+.footer-heading {
+    position: relative;
+    padding-bottom: 10px;
+    color: #fff;
+}
+
+.footer-heading::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 40px;
+    height: 2px;
+    background: #4b004d;
+}
+
+.footer-links li {
+    transition: all 0.3s ease;
+}
+
+.footer-link {
+    color: rgba(255,255,255,0.6) !important;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.footer-link:hover {
+    color: #fff !important;
+    padding-left: 5px;
+}
+
+.footer-link::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 0;
+    height: 1px;
+    background: #4b004d;
+    transition: width 0.3s ease;
+}
+
+.footer-link:hover::before {
+    width: 100%;
+}
+
+.footer-social a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+    transition: all 0.3s ease;
+    margin-right: 10px;
+}
+
+.footer-social a:hover {
+    background: #4b004d;
+    transform: translateY(-3px);
+}
+
+.footer-contact i {
+    min-width: 20px;
+}
+
+/* Newsletter Form */
+.footer-newsletter .form-control {
+    color: #fff;
+}
+
+.footer-newsletter .form-control::placeholder {
+    color: rgba(255,255,255,0.5);
+}
+
+.footer-newsletter .form-control:focus {
+    border-color: #4b004d;
+    box-shadow: 0 0 0 0.25rem rgba(75, 0, 77, 0.25);
+}
+
+/* Copyright */
+#current-year {
+    display: inline-block;
+}
+
+/* Developer Link Styling */
+.developer-link {
+    color: #fff;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    position: relative;
+    font-weight: 500;
+}
+
+.developer-link:hover {
+    cursor: pointer;
+}
+
+.developer-link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 0;
+    height: 1px;
+    background: white;
+    transition: width 0.3s ease;
+}
+
+.developer-link:hover::after {
+    width: 100%;
+}
+
+
+
+/* Optional: If you want the icon to stand out more */
+.footer-newsletter .fa-paper-plane {
+    color: #fff /* Ensures icon stays white */
+}
+
+/* Responsive Adjustments */
+@media (max-width: 767.98px) {
+    .luxury-footer {
+        text-align: center;
+    }
+    
+    .footer-heading::after {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    
+    .footer-links,
+    .footer-contact {
+        margin-bottom: 2rem;
+    }
+    
+    .footer-social {
+        justify-content: center !important;
+    }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 767.98px) {
+    #contact .contact-social-link {
+        width: 40px;
+        height: 40px;
+    }
+    
+    #contact .contact-icon-container {
+        width: 60px;
+        height: 60px;
+    }
+    
+    #contact .contact-card-body {
+        padding: 1.5rem;
+    }
+}
+
+/* Media query for smaller screens: Adjust position slightly */
+@media (max-width: 767.98px) {
+    .scroll-to-top-btn {
+        bottom: 15px;
+        right: 15px;
+        width: 40px;
+        height: 40px;
+    }
+    .scroll-to-top-btn i {
+        font-size: 1rem;
+    }
+}
+
+/* Center the button on mobile */
+@media (max-width: 767.98px) {
+    .show-more-toggle-btn {
+        margin: 20px auto;
+    }
+}
+
+/* Rotate icon when expanded */
+.show-more-toggle-btn[aria-expanded="true"]::after {
+    transform: rotate(180deg);
+}
+
+/* Animation for the button when toggled */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.show-more-toggle-btn:focus {
+    animation: pulse 0.5s ease;
+}
+
+/* Mobile-specific fixes */
+@media (max-width: 767.98px) {
+    /* Ensure all containers don't exceed viewport width */
+    .container, .container-fluid {
+        padding-left: 15px;
+        padding-right: 15px;
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+    
+    /* Prevent horizontal scrolling in carousels */
+    .carousel-inner {
+        width: 100%;
+        overflow: hidden;
+    }
+    
+    /* Ensure images don't cause overflow */
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+}
+
+/* --- Address Bar Styling --- */
+.address-container {
+    width: 100%;
+    position: relative; /* Important for positioning map-preview absolutely within this container */
+    z-index: 5;
+}
+
+.address-box {
+    transition: all 0.3s ease;
+    cursor: pointer;
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #4b004d;
+    border: 1px solid rgba(75, 0, 77, 0.3);
+    padding: 10px 25px !important;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(75, 0, 77, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.address-box:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(75, 0, 77, 0.3);
+    background-color: #fff;
+}
+
+.address-box i {
+    color: #4b004d;
+    font-size: 1.1rem;
+    margin-right: 8px;
+}
+
+/* --- Map Preview --- */
+.map-preview {
+    opacity: 0;
+    pointer-events: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    margin-top: 10px;
+    z-index: 10;
+    box-shadow: 0 5px 20px rgba(75, 0, 77, 0.25);
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid rgba(75, 0, 77, 0.2);
+    transform: translateY(10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* --- Show Map on Hover --- */
+.address-container:hover .map-preview {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+/* --- Fade animation (Optional keyframe backup) --- */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Mobile Specific Styles --- */
+@media (max-width: 767.98px) {
+    .address-box {
+        padding: 10px 15px;
+    }
+    .map-preview {
+        position: relative; /* Stack below box on small screens */
+        top: auto;
+        left: auto;
+        margin-top: 15px;
+        transform: none;
+        opacity: 1; /* Always show on mobile */
+        pointer-events: auto;
+    }
+
+    .address-container:hover .map-preview {
+        transform: none;
+    }
+}
+
+/* --- DARK MODE SPECIFIC STYLES --- */
+/* Everything in this section is for when body.dark-mode is active */
+
+/* General Body and Main Content */
+body.dark-mode {
+    background-color: #1a1a1a; /* Overall darkest background for body */
+    color: #e0e0e0; /* Default text color for dark mode */
+}
+
+/* Overriding Bootstrap text colors */
+body.dark-mode .text-dark { color: #e0e0e0 !important; }
+body.dark-mode .text-secondary { color: #bdbdbd !important; }
+body.dark-mode .text-muted { color: #9e9e9e !important; }
+body.dark-mode .text-white { color: #e0e0e0 !important; } /* Keep white, but make sure it's accessible */
+body.dark-mode .text-primary { color: #9370DB !important; } /* Adjust Bootstrap primary text */
+body.dark-mode .text-info { color: #81d4fa !important; } /* Adjust Bootstrap info text */
+/* Add more as needed for other Bootstrap text utilities */
+
+
+/* Header in Dark Mode (when not scrolled) */
+body.dark-mode #mainHeader {
+    background: linear-gradient(to bottom, #222, #111); /* Darker gradient for header */
+    border-bottom-color: rgba(255, 255, 255, 0.1) !important;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Header in Dark Mode (when scrolled) */
+body.dark-mode .fixed-top-scroll {
+    background-color: #2b2b2b !important; /* Darker background when scrolled */
+    color: #e0e0e0 !important; /* Light text for scrolled header */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    border-bottom-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Navbar specific elements in dark mode */
+body.dark-mode .navbar-brand img {
+    /* If your logo becomes too dark, invert or adjust hue */
+    filter: brightness(1.2) contrast(1.1); /* Example: brighten it slightly */
+}
+
+body.dark-mode .navbar-nav .nav-link {
+    color: #e0e0e0 !important; /* Light text for nav links */
+}
+
+body.dark-mode .navbar-nav .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important; /* Lighter hover for dark nav */
+    color: #fff !important; /* Ensure hover text is fully white */
+}
+
+/* Hamburger Icon for Mobile Menu */
+body.dark-mode .navbar-toggler-icon {
+    /* Often implemented with a background image; you might need to swap or invert */
+    filter: invert(1) hue-rotate(180deg); /* Makes a black icon white */
+}
+body.dark-mode .navbar-toggler {
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Mobile Menu Background */
+body.dark-mode #mobileMenu.show {
+    background-color: #222 !important; /* Dark background for mobile menu */
+}
+
+/* Form switch for dark mode toggle itself */
+body.dark-mode .form-check-label[for="modeToggle"] {
+    color: #e0e0e0 !important; /* Ensure the "Dark Mode" label is white */
+}
+
+body.dark-mode .form-switch .form-check-input {
+    background-color: #555; /* Unchecked state in dark mode */
+    border-color: #777;
+}
+
+body.dark-mode .form-switch .form-check-input:checked {
+    background-color: #9370DB; /* Activated color for dark mode toggle */
+    border-color: #8A2BE2;
+}
+
+
+/* All Headings */
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4,
+body.dark-mode h5,
+body.dark-mode h6 {
+    color: #fff !important; /* All headings turn white */
+}
+
+/* Paragraphs and general text */
+body.dark-mode p {
+    color: #e0e0e0 !important;
+}
+
+/* Links (general, not specific nav links) */
+body.dark-mode a:not(.btn):not(.nav-link):not(.whatsapp-float) { /* Exclude specific link types */
+    color: #9370DB; /* Lighter purple for links */
+}
+
+body.dark-mode a:not(.btn):not(.nav-link):not(.whatsapp-float):hover {
+    color: #8A2BE2; /* Slightly darker purple on hover */
+}
+
+/* Hero Carousel and its elements */
+body.dark-mode #heroCarousel {
+    background: radial-gradient(circle at center, #111 0%, #111 70%, #222 100%); /* Even darker gradient */
+    color: #fff;
+}
+
+/* Carousel nav buttons */
+body.dark-mode .carousel-nav-buttons .btn,
+body.dark-mode .collections-nav-buttons .btn {
+    background-color: #333; /* Darker background for buttons */
+    border-color: #555;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+body.dark-mode .carousel-nav-buttons .btn:hover,
+body.dark-mode .collections-nav-buttons .btn:hover {
+    background-color: #444; /* Even darker on hover */
+    border-color: #666;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+body.dark-mode .carousel-nav-buttons .btn i,
+body.dark-mode .collections-nav-buttons .btn i {
+    color: #eee; /* Ensure icons are light */
+}
+
+/* Social Icons */
+body.dark-mode .social-icons a {
+    color: #e0e0e0; /* Light color for social icons */
+}
+body.dark-mode .social-icons a:hover {
+    color: #fff;
+}
+
+/* Client Indicators */
+body.dark-mode .client-dot {
+    background-color: #555 !important; /* Darker dot background */
+    border-color: #777;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+}
+body.dark-mode .client-dot:hover {
+    background-color: #444 !important;
+}
+body.dark-mode .client-indicators::after {
+    color: #e0e0e0; /* Ellipsis color */
+}
+
+
+/* Sections/Containers */
+body.dark-mode .container,
+body.dark-mode .container-fluid,
+body.dark-mode .bg-light { /* If you use bg-light often */
+    background-color: #1a1a1a !important; /* Ensure these turn dark */
+    color: #e0e0e0 !important;
+}
+
+body.dark-mode section {
+    background-color: #1a1a1a; /* Default section background */
+}
+body.dark-mode .collection-section { /* Example for specific sections */
+    background-color: #222; /* Slightly different black for contrast */
+}
+/* You can add more section-specific backgrounds like: */
+/* body.dark-mode #about-section { background-color: #1a1a1a; } */
+/* body.dark-mode #contact-section { background-color: #2b2b2b; } */
+
+
+/* Cards */
+body.dark-mode .card {
+    background-color: #2b2b2b !important; /* Darker card background */
+    color: #e0e0e0 !important;
+    border-color: #444 !important;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3) !important;
+}
+
+body.dark-mode .product-card {
+    background-color: #2b2b2b !important; /* Darker background for product cards */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .product-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+body.dark-mode .product-overlay {
+    background-color: rgba(0, 0, 0, 0.8) !important; /* Darker overlay */
+}
+body.dark-mode .product-name {
+    color: #fff !important; /* Ensure product name is white */
+}
+
+
+/* Shopping Cart and Dropdowns */
+body.dark-mode .shopping-cart,
+body.dark-mode .cart-dropdown {
+    background-color: #2b2b2b !important; /* Dark background for cart */
+    color: #e0e0e0 !important;
+    border: 1px solid #444 !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4) !important;
+}
+
+body.dark-mode .cart-dropdown .list-group-item {
+    background-color: #2b2b2b !important; /* Dark background for list items in cart */
+    color: #e0e0e0 !important;
+    border-color: #3d3d3d !important;
+}
+body.dark-mode .cart-dropdown .list-group-item button { /* Remove button in cart */
+    background-color: #dc3545 !important; /* Keep red for danger */
+    color: #fff !important;
+}
+
+
+/* Modals */
+body.dark-mode .modal-content {
+    background-color: #2b2b2b !important;
+    color: #e0e0e0 !important;
+    border: 1px solid #444 !important;
+}
+
+body.dark-mode .modal-header {
+    border-bottom-color: #444 !important;
+}
+
+body.dark-mode .modal-footer {
+    border-top-color: #444 !important;
+}
+
+body.dark-mode .modal-title {
+    color: #fff !important;
+}
+
+body.dark-mode .btn-close {
+    filter: invert(1); /* Invert color for close button to be visible */
+}
+
+/* Forms (inputs, textareas, selects) */
+body.dark-mode .form-control {
+    background-color: #333 !important;
+    color: #e0e0e0 !important;
+    border-color: #555 !important;
+}
+
+body.dark-mode .form-control::placeholder {
+    color: #ccc !important;
+}
+body.dark-mode .form-select {
+    background-color: #333 !important;
+    color: #e0e0e0 !important;
+    border-color: #555 !important;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23e0e0e0' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e") !important; /* Adjust arrow color */
+}
+
+
+/* Buttons (general) */
+/* Specific buttons like .hero-cta-btn, .add-to-cart-btn, .show-more-toggle-btn
+   already have strong definitions, so they should generally be fine.
+   This targets other standard Bootstrap buttons. */
+body.dark-mode .btn-light {
+    background-color: #333 !important;
+    color: #e0e0e0 !important;
+    border-color: #555 !important;
+}
+body.dark-mode .btn-light:hover {
+    background-color: #444 !important;
+    border-color: #666 !important;
+}
+body.dark-mode .btn-outline-dark {
+    color: #e0e0e0 !important;
+    border-color: #555 !important;
+}
+body.dark-mode .btn-outline-dark:hover {
+    background-color: #555 !important;
+    color: #fff !important;
+}
+
+/* Teal button in dark mode */
+body.dark-mode .btn-teal {
+    background-color: #006666 !important; /* Darker teal for contrast */
+    border-color: #004d4d !important;
+}
+body.dark-mode .btn-teal:hover {
+    background-color: #008080 !important; /* Slightly brighter on hover */
+    border-color: #006666 !important;
+}
+
+/* Add to Cart button in dark mode */
+body.dark-mode .btn.add-to-cart-btn {
+    background-color: #6a006a !important; /* Lighter purple for visibility */
+}
+body.dark-mode .btn.add-to-cart-btn:hover {
+    background-color: #8A2BE2 !important;
+}
+
+/* Show More button in dark mode */
+body.dark-mode .btn.show-more-toggle-btn {
+    background-color: #6a006a !important; /* Lighter purple for visibility */
+}
+body.dark-mode .btn.show-more-toggle-btn:hover {
+    background-color: #8A2BE2 !important;
+}
+
+/* WhatsApp Floating Button */
+body.dark-mode .whatsapp-float {
+    background-color: #075E54 !important; /* WhatsApp green */
+}
+body.dark-mode .whatsapp-float:hover {
+    background-color: #128C7E !important;
+}
+
+/* Scroll to Top Button */
+body.dark-mode .scroll-to-top-btn {
+    background-color: #4b004d !important; /* Maintain original purple */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4) !important;
+}
+body.dark-mode .scroll-to-top-btn:hover {
+    background-color: #6a006a !important;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* About Us Section Dark Mode */
+body.dark-mode #about {
+    background-color: #1a1a1a !important; /* Base dark background */
+    color: #e0e0e0 !important; /* Light text color */
+}
+
+body.dark-mode #about h2,
+body.dark-mode #about h3,
+body.dark-mode #about h4,
+body.dark-mode #about p.lead,
+body.dark-mode #about p {
+    color: #e0e0e0 !important; /* Ensure all text is light */
+}
+
+body.dark-mode #about .text-purple {
+    color: #9370DB !important; /* Lighter purple for icons and accents */
+}
+
+body.dark-mode #about .divider.bg-purple {
+    background-color: #9370DB !important; /* Lighter purple for divider */
+}
+
+body.dark-mode .about-image-container .image-overlay {
+    background: linear-gradient(to top, rgba(26, 26, 26, 0.7), rgba(26, 26, 26, 0.1)) !important; /* Darker overlay for images */
+}
+
+body.dark-mode .icon-circle.bg-purple-light {
+    background-color: #333 !important; /* Darker background for icon circles */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+body.dark-mode .card.hover-lift {
+    background-color: #2b2b2b !important; /* Darker card background for about section */
+    color: #e0e0e0 !important;
+    border-color: #444 !important;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3) !important;
+}
+
+body.dark-mode .card.hover-lift:hover {
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4) !important;
+}
+
+body.dark-mode .card.hover-lift h4 {
+    color: #fff !important; /* Card titles to white */
+}
+
+body.dark-mode .card.hover-lift p {
+    color: #ccc !important; /* Card paragraph text slightly lighter grey */
+}
+
+body.dark-mode .btn-purple {
+    background-color: #6a006a !important; /* Lighter purple for buttons for visibility */
+    color: #fff !important;
+    border-color: #8A2BE2 !important;
+}
+
+body.dark-mode .btn-purple:hover {
+    background-color: #8A2BE2 !important; /* Brighter purple on hover */
+    border-color: #9370DB !important;
+    color: #fff !important;
+}
+
+---
+
+/* Contact Us Section Dark Mode */
+body.dark-mode #contact.contact-section {
+    background-color: #222 !important; /* Slightly different black for contact section differentiation */
+    color: #e0e0e0 !important;
+}
+
+body.dark-mode .contact-heading,
+body.dark-mode .contact-subheading,
+body.dark-mode .contact-card-title,
+body.dark-mode .contact-card-text,
+body.dark-mode .contact-social-heading,
+body.dark-mode .contact-form-heading,
+body.dark-mode .contact-form-label {
+    color: #e0e0e0 !important; /* Ensure all text is light */
+}
+
+body.dark-mode .contact-icon.text-purple {
+    color: #9370DB !important; /* Lighter purple for icons */
+}
+
+body.dark-mode .contact-divider.bg-purple {
+    background-color: #9370DB !important; /* Lighter purple for divider */
+}
+
+body.dark-mode .contact-card.card {
+    background-color: #2b2b2b !important; /* Darker card background for contact cards */
+    color: #e0e0e0 !important;
+    border-color: #444 !important;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3) !important;
+}
+
+body.dark-mode .contact-card.card:hover {
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4) !important;
+}
+
+body.dark-mode .contact-icon-container.icon-circle.bg-purple-light {
+    background-color: #333 !important; /* Darker background for icon circles */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+    color: #fff !important; /* Ensure icon color is white */
+}
+
+body.dark-mode .contact-link {
+    color: #fff !important; /* Ensure icon color is white */
+}
+
+body.dark-mode .contact-link .fas{
+    color: #fff !important; /* Ensure icon color is white */
+}
+
+body.dark-mode .contact-link:hover {
+    color: #8A2BE2 !important; /* Slightly darker purple on hover */
+}
+
+/* Social media icons */
+body.dark-mode .contact-social-link {
+    color: #e0e0e0 !important; /* White color for social icons */
+}
+body.dark-mode .contact-social-link:hover {
+    color: #fff !important; /* Pure white on hover */
+}
+body.dark-mode .contact-social-link.whatsapp { background-color: #25D366; } /* Maintain WhatsApp's brand color */
+body.dark-mode .contact-social-link.instagram { background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%); /* Instagram gradient */ }
+body.dark-mode .contact-social-link.facebook { background-color: #1877F2; } /* Facebook blue */
+body.dark-mode .contact-social-link.tiktok { background-color: #000; /* TikTok black */ }
+
+
+
+
+/* Contact Form */
+body.dark-mode .contact-form-container.card {
+    background-color: #2b2b2b !important; /* Darker background for form card */
+    color: #e0e0e0 !important;
+    border-color: #444 !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4) !important;
+}
+
+body.dark-mode .contact-form-input,
+body.dark-mode .contact-form-textarea {
+    background-color: #333 !important; /* Darker input fields */
+    color: #e0e0e0 !important;
+    border-color: #555 !important;
+}
+
+body.dark-mode .contact-form-input::placeholder,
+body.dark-mode .contact-form-textarea::placeholder {
+    color: #ccc !important;
+}
+
+body.dark-mode .contact-submit-btn.btn-purple {
+    background-color: #6a006a !important; /* Lighter purple for submit button */
+    color: #fff !important;
+    border-color: #8A2BE2 !important;
+}
+
+body.dark-mode .contact-submit-btn.btn-purple:hover {
+    background-color: #8A2BE2 !important; /* Brighter purple on hover */
+    border-color: #9370DB !important;
+}
+
+/* Footer */
+body.dark-mode footer {
+    background-color: #111 !important; /* Very dark footer */
+    color: #e0e0e0 !important;
+    border-top: 1px solid #333 !important;
+}
+
+body.dark-mode footer .footer-link {
+    color: #bdbdbd !important; /* Slightly grey for contrast */
+}
+
+body.dark-mode footer .footer-link:hover {
+    color: #fff !important;
+}
+
+/* Collection Sub-heading Dash */
+body.dark-mode .collection-title-sub {
+    color: #e0e0e0 !important; /* Ensure the text is light */
+}
+body.dark-mode .collection-dash {
+    color: #9370DB !important; /* Lighter purple for consistency in dark mode */
+}
+
+/* Purple Icons */
+body.dark-mode .purple-icon {
+    color: #9370DB !important; /* Lighter purple for icons in dark mode */
+}
+
+/* Horizontal Rule (hr) */
+body.dark-mode hr {
+    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Adjust scrollbar for dark mode */
+body.dark-mode ::-webkit-scrollbar {
+    width: 10px;
+}
+
+body.dark-mode ::-webkit-scrollbar-track {
+    background: #222; /* Darker track */
+}
+
+body.dark-mode ::-webkit-scrollbar-thumb {
+    background: #4b004d; /* Your brand purple */
+    border-radius: 5px;
+}
+
+body.dark-mode ::-webkit-scrollbar-thumb:hover {
+    background: #6a006a;
+}
+
+/* Add hover effects for the logo and site title */
+    #mainHeader .d-flex.align-items-center:hover img {
+        transform: scale(1.05);
+        cursor: pointer;
+    }
+    
+    #mainHeader .d-flex.align-items-center:hover h1 {
+        color: #e0e0e0 !important;
+        cursor: pointer;
+    }
+
+    .video-container {
+        position: relative;
+        width: 100%;
+        max-height: 500px; /* Adjust as needed */
+        overflow: hidden;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    .video-container video {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+    }
+    
