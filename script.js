@@ -397,8 +397,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (modalNextBtn) { // Added null check
-            // Fix: This line was assigning a value to modalNextIndex but not using it.
-            // The next button's logic should be inside its event listener.
             modalNextBtn.addEventListener('click', () => {
                 currentProductIndex = (currentProductIndex + 1) % currentProducts.length;
                 updateModalContent();
@@ -454,6 +452,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize cart display on load
     updateCartDisplay();
 
+    ---
+
     // Scroll to Top Button functionality (consolidated)
     const scrollToTopBtn = document.getElementById('scrollToTopBtn');
     const scrollThreshold = 300;
@@ -463,7 +463,8 @@ document.addEventListener('DOMContentLoaded', function() {
             if (window.scrollY > scrollThreshold) {
                 scrollToTopBtn.classList.add('show');
             } else {
-                scrollToToTopBtn.classList.remove('show');
+                // FIX: Corrected typo from 'scrollToToTopBtn' to 'scrollToTopBtn'
+                scrollToTopBtn.classList.remove('show');
             }
         }
     }
@@ -475,6 +476,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         toggleScrollToTopButton(); // Initial check
     }
+
+    ---
 
     // Update current year in footer
     const currentYearElement = document.getElementById('current-year');
