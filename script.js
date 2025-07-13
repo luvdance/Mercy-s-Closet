@@ -322,7 +322,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             message += "\nPlease let me know about their prices and availability. Thank you!";
 
-            const phoneNumber = "2347064265426"; // Nigerian number with country code
+            const phoneNumber = "2349015414195"; // Nigerian number with country code
             const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
 
             window.open(whatsappUrl, '_blank');
@@ -510,3 +510,4 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 }); // End of single DOMContentLoaded listener
+
