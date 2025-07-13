@@ -209,6 +209,35 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 10000);
 
         heroCarousel.addEventListener('slid.bs.carousel', animateSubtitles);
+
+        // --- Swipe Functionality for Hero Carousel ---
+        let touchstartX = 0;
+        let touchendX = 0;
+        const minSwipeDistance = 50; // Minimum pixels for a recognized swipe
+
+        heroCarousel.addEventListener('touchstart', e => {
+            touchstartX = e.changedTouches[0].screenX;
+        });
+
+        heroCarousel.addEventListener('touchend', e => {
+            touchendX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            if (!heroBsCarousel) return; // Ensure carousel instance exists
+
+            if (touchendX < touchstartX - minSwipeDistance) {
+                // Swiped left (move to next slide)
+                heroBsCarousel.next();
+            }
+
+            if (touchendX > touchstartX + minSwipeDistance) {
+                // Swiped right (move to previous slide)
+                heroBsCarousel.prev();
+            }
+        }
+
     }
 
     // Hero Carousel Buttons
@@ -368,7 +397,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (modalNextBtn) { // Added null check
-            modalNextIndex = (currentProductIndex + 1) % currentProducts.length;
+            // Fix: This line was assigning a value to modalNextIndex but not using it.
+            // The next button's logic should be inside its event listener.
             modalNextBtn.addEventListener('click', () => {
                 currentProductIndex = (currentProductIndex + 1) % currentProducts.length;
                 updateModalContent();
@@ -433,7 +463,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (window.scrollY > scrollThreshold) {
                 scrollToTopBtn.classList.add('show');
             } else {
-                scrollToTopBtn.classList.remove('show');
+                scrollToToTopBtn.classList.remove('show');
             }
         }
     }
@@ -510,4 +540,3 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 }); // End of single DOMContentLoaded listener
-
