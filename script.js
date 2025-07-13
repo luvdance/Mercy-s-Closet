@@ -203,6 +203,31 @@ document.addEventListener('DOMContentLoaded', function() {
             wrap: true
         });
 
+        // Add touch event listeners for swipe functionality
+        let touchStartX = 0;
+        let touchEndX = 0;
+        
+        heroCarousel.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, {passive: true});
+
+        heroCarousel.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }, {passive: true});
+
+        function handleSwipe() {
+            const swipeThreshold = 50; // Minimum distance to consider it a swipe
+            
+            if (touchEndX < touchStartX - swipeThreshold) {
+                // Swipe left - go to next slide
+                heroBsCarousel.next();
+            } else if (touchEndX > touchStartX + swipeThreshold) {
+                // Swipe right - go to previous slide
+                heroBsCarousel.prev();
+            }
+        }
+
         setTimeout(() => {
             animateSubtitles();
             heroBsCarousel.cycle();
@@ -510,4 +535,3 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 }); // End of single DOMContentLoaded listener
-
