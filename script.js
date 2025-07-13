@@ -209,35 +209,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 10000);
 
         heroCarousel.addEventListener('slid.bs.carousel', animateSubtitles);
-
-        // --- Swipe Functionality for Hero Carousel ---
-        let touchstartX = 0;
-        let touchendX = 0;
-        const minSwipeDistance = 50; // Minimum pixels for a recognized swipe
-
-        heroCarousel.addEventListener('touchstart', e => {
-            touchstartX = e.changedTouches[0].screenX;
-        });
-
-        heroCarousel.addEventListener('touchend', e => {
-            touchendX = e.changedTouches[0].screenX;
-            handleSwipe();
-        });
-
-        function handleSwipe() {
-            if (!heroBsCarousel) return; // Ensure carousel instance exists
-
-            if (touchendX < touchstartX - minSwipeDistance) {
-                // Swiped left (move to next slide)
-                heroBsCarousel.next();
-            }
-
-            if (touchendX > touchstartX + minSwipeDistance) {
-                // Swiped right (move to previous slide)
-                heroBsCarousel.prev();
-            }
-        }
-
     }
 
     // Hero Carousel Buttons
@@ -397,6 +368,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (modalNextBtn) { // Added null check
+            modalNextIndex = (currentProductIndex + 1) % currentProducts.length;
             modalNextBtn.addEventListener('click', () => {
                 currentProductIndex = (currentProductIndex + 1) % currentProducts.length;
                 updateModalContent();
@@ -452,8 +424,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize cart display on load
     updateCartDisplay();
 
-    ---
-
     // Scroll to Top Button functionality (consolidated)
     const scrollToTopBtn = document.getElementById('scrollToTopBtn');
     const scrollThreshold = 300;
@@ -463,7 +433,6 @@ document.addEventListener('DOMContentLoaded', function() {
             if (window.scrollY > scrollThreshold) {
                 scrollToTopBtn.classList.add('show');
             } else {
-                // FIX: Corrected typo from 'scrollToToTopBtn' to 'scrollToTopBtn'
                 scrollToTopBtn.classList.remove('show');
             }
         }
@@ -476,8 +445,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         toggleScrollToTopButton(); // Initial check
     }
-
-    ---
 
     // Update current year in footer
     const currentYearElement = document.getElementById('current-year');
@@ -543,3 +510,4 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 }); // End of single DOMContentLoaded listener
+
