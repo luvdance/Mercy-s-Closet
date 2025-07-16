@@ -186,7 +186,7 @@
             </div>
 
             <!-- Cart Icon and Count -->
-            <div class="cart-icon-container position-absolute top-0 end-0 me-3 mt-3">
+            <div class="cart-icon-container position-absolute top-0 end-0 me-3 mt-3" id="originalCartBtn">
                 <button class="btn btn-dark position-relative" id="cartToggleBtn">
                     <i class="fas fa-shopping-cart"></i>
                     <span class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle" id="cartCount">0</span>
@@ -1434,6 +1434,32 @@
         </div>
     </div>
 </footer>
+
+    <!--Floating cart container-->
+<div class="floating-cart" id="floatingCartWrapper">
+        <div class="cart-icon-container">
+            <button class="btn btn-dark position-relative" id="floatingCartToggleBtn">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle" id="floatingCartCount">0</span>
+            </button>
+        </div>
+
+        <div class="cart-dropdown bg-white shadow-lg rounded p-3" id="floatingShoppingCart">
+            <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-2">
+                <h5 class="m-0">Your Cart</h5>
+                <button type="button" class="btn-close" id="closeFloatingCartBtn"></button>
+            </div>
+            <ul class="list-group list-group-flush mb-3" id="floatingCartItemsList">
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    No items in cart.
+                </li>
+            </ul>
+            <div class="d-flex justify-content-between align-items-center">
+                <h6 class="m-0">Total Items: <span id="floatingCartTotal">0</span></h6>
+                <button type="button" class="btn btn-success">Checkout</button>
+            </div>
+        </div>
+    </div>
     
     <!-- WhatsApp Floating Button -->
     <a href="https://wa.me/2349015414195" class="whatsapp-float" target="_blank">
