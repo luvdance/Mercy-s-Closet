@@ -1758,4 +1758,36 @@ body.dark-mode ::-webkit-scrollbar-thumb:hover {
         height: auto;
         object-fit: cover;
     }
-    
+
+/* Floating Cart Wrapper */
+.floating-cart {
+    position: fixed; /* Makes it stay in place during scroll */
+    /* Remove 'bottom' and use 'top' */
+    top: 80px;       /* Adjust this value based on your header's height + desired spacing */
+    right: 20px;     /* Keep it 20px from the right of the viewport */
+    z-index: 1050;   /* Ensure it's above other content (Bootstrap modals are 1050+) */
+    display: none;   /* Initially hidden, JS will make it 'block' or 'flex' */
+    flex-direction: column; /* To stack the button and dropdown */
+    align-items: flex-end; /* Align items to the right */
+}
+
+/* Floating Cart Dropdown */
+.floating-cart .cart-dropdown {
+    /* Adjust positioning relative to the floating button */
+    position: absolute;
+    /* Change 'bottom' to 'top' and adjust its value to place it below the button */
+    top: calc(100% + 10px); /* 10px below the button */
+    right: 0;               /* Align with the right edge of the floating button */
+    min-width: 280px;       /* Adjust as needed */
+    max-height: 400px;      /* Limit height if many items */
+    overflow-y: auto;       /* Add scroll if content overflows */
+    transform-origin: top right; /* Change origin for dropdown animation if needed */
+    transition: all 0.3s ease-in-out; /* Smooth transition for appearance */
+    display: none;          /* Initially hidden, JS will toggle this */
+}
+
+/* Optional: Styles for the original cart button if needed for tracking */
+#originalCartBtn {
+    /* Add any specific styles for your original cart button */
+    /* You might not need margin-top here if it's already positioned well in your header */
+}
