@@ -1,28 +1,30 @@
+// --- Global Variables (Declared at the top for broad accessibility) ---
 const body = document.body;
-const header = document.getElementById('mainHeader');
+const header = document.getElementById('mainHeader'); // Ensure this ID matches your main header
 const navLinks = document.querySelectorAll('#navLinks .nav-link, #navLinksMobile .nav-link');
 const label = document.querySelector('.form-check-label');
 const title = document.getElementById('siteTitle');
 const modeToggle = document.getElementById('modeToggle');
 const hamburgerIcon = document.getElementById('hamburgerIcon');
 const mobileMenu = document.getElementById('mobileMenu');
-const heroCarousel = document.querySelector('#heroCarousel');
+const heroCarousel = document.querySelector('#heroCarousel'); // Ensure this ID matches your hero section carousel
 
-// --- Global Variables for Cart (Moved to top for clarity and single definition) ---
-const cartToggleBtn = document.getElementById('cartToggleBtn');
-const shoppingCart = document.getElementById('shoppingCart');
-const closeCartBtn = document.getElementById('closeCartBtn');
-const cartCount = document.getElementById('cartCount');
-const cartItemsList = document.getElementById('cartItemsList');
-const cartTotal = document.getElementById('cartTotal');
-const modalAddToCartBtn = document.getElementById('modalAddToCartBtn'); // For modal
+// --- Global Variables for Main Shopping Cart ---
+const cartToggleBtn = document.getElementById('cartToggleBtn'); // Button in the header
+const shoppingCart = document.getElementById('shoppingCart'); // The main cart dropdown
+const closeCartBtn = document.getElementById('closeCartBtn'); // Close button for the main cart
+const cartCount = document.getElementById('cartCount'); // Badge for main cart count
+const cartItemsList = document.getElementById('cartItemsList'); // UL for cart items
+const cartTotal = document.getElementById('cartTotal'); // Span for total items in cart
 
-let cart = []; // Initialize cart array globally
+// --- Global Variables for Floating Cart (Wrapper and Button Only) ---
+const floatingCartWrapper = document.getElementById('floatingCartWrapper'); // The wrapper for the floating button
+const floatingCartToggleBtn = document.getElementById('floatingCartToggleBtn'); // The floating button itself
+const floatingCartCount = document.getElementById('floatingCartCount'); // Badge for floating cart count
 
-// --- Global Variables for Product Modal (Moved to top for clarity and single definition) ---
+// --- Global Variables for Product Modal ---
 const productModalElement = document.getElementById('productModal');
-// Check if productModalElement exists before initializing Bootstrap Modal
-let productModal;
+let productModal; // Will hold the Bootstrap Modal instance
 if (productModalElement) {
     productModal = new bootstrap.Modal(productModalElement);
 }
@@ -31,22 +33,51 @@ const modalProductName = document.getElementById('modalProductName');
 const modalPrevBtn = document.getElementById('modalPrevBtn');
 const modalNextBtn = document.getElementById('modalNextBtn');
 
-let currentProducts = []; // Stores products for the current collection
-let currentProductIndex = 0; // Current index in currentProducts array
+// --- Cart and Product Data Storage ---
+let cart = []; // Stores items currently in the cart
+let currentProducts = []; // Stores products for the currently viewed collection in the modal
+let currentProductIndex = 0; // Current index in currentProducts array for modal navigation
 
+// ---------------------------------------------------------------------
 
-// --- Functions for Cart Functionality (Defined once) ---
+// --- Helper Functions ---
+
+/**
+ * Checks if a specific element (like header or hero) has scrolled completely out of the viewport.
+ * The floating cart will show when this element is out of view.
+ * @param {HTMLElement} elementToMonitor The element whose visibility determines the floating cart.
+ * @returns {boolean} True if the element's bottom edge is above the viewport's top edge, false otherwise.
+ */
+function isElementOutOfView(elementToMonitor) {
+    if (!elementToMonitor) {
+        // If the element doesn't exist (e.g., heroCarousel is null), assume it's "out of view"
+        // so the floating cart can still appear after scrolling a bit.
+        return true;
+    }
+    const rect = elementToMonitor.getBoundingClientRect();
+    // Returns true if the element's bottom edge has crossed the top of the viewport
+    return rect.bottom < 0;
+}
+
+/**
+ * Updates the display of items, total count, and quantity badges in both the main and floating carts.
+ */
 function updateCartDisplay() {
-    if (!cartItemsList) { // Added null check
-        console.warn("cartItemsList element not found.");
+    if (!cartItemsList) {
+        console.warn("Element with ID 'cartItemsList' not found. Cart items cannot be displayed.");
         return;
     }
+
     cartItemsList.innerHTML = ''; // Clear current items
 
     if (cart.length === 0) {
-        cartItemsList.innerHTML = '<li class="list-group-item d-flex justify-content-between align-items-center">No items in cart.</li>';
+        cartItemsList.innerHTML = `
+            <li class="list-group-item d-flex justify-content-between align-items-center text-muted">
+                No items in cart.
+            </li>
+        `;
     } else {
-        // Group items by name and count quantities
+        // Group items to show quantity if multiple of the same product are added
         const groupedCart = cart.reduce((acc, item) => {
             acc[item.name] = (acc[item.name] || 0) + 1;
             return acc;
@@ -58,20 +89,47 @@ function updateCartDisplay() {
             listItem.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');
             listItem.innerHTML = `
                 ${quantity} x ${name}
-                <button class="btn btn-danger btn-sm remove-from-cart-btn" data-product-name="${name}">Remove</button>
+                <button class="btn btn-danger btn-sm remove-from-cart-btn" data-product-name="${name}" aria-label="Remove ${name} from cart">Remove</button>
             `;
             cartItemsList.appendChild(listItem);
         }
     }
-    if (cartCount) cartCount.textContent = cart.length; // Added null check
-    if (cartTotal) cartTotal.textContent = cart.length; // Update total items count (Added null check)
+
+    // Update main cart count badge
+    if (cartCount) {
+        cartCount.textContent = cart.length;
+    } else {
+        console.warn("Element with ID 'cartCount' not found.");
+    }
+
+    // Update total items text in the main cart dropdown
+    if (cartTotal) {
+        cartTotal.textContent = cart.length;
+    } else {
+        console.warn("Element with ID 'cartTotal' not found.");
+    }
+
+    // Update floating cart count badge
+    if (floatingCartCount) {
+        floatingCartCount.textContent = cart.length;
+    } else {
+        console.warn("Element with ID 'floatingCartCount' not found.");
+    }
 }
 
+/**
+ * Adds a product to the global cart array and updates the display.
+ * @param {string} productName The name of the product to add.
+ */
 function addToCart(productName) {
     cart.push({ name: productName });
     updateCartDisplay();
 }
 
+/**
+ * Removes a specific instance of a product from the cart array and updates the display.
+ * @param {string} productNameToRemove The name of the product to remove.
+ */
 function removeFromCart(productNameToRemove) {
     const indexToRemove = cart.findIndex(item => item.name === productNameToRemove);
     if (indexToRemove > -1) {
@@ -80,27 +138,34 @@ function removeFromCart(productNameToRemove) {
     updateCartDisplay();
 }
 
-// --- Function for Product Modal Content ---
+/**
+ * Updates the content (image, name, add-to-cart button data) of the product modal
+ * based on the current product index.
+ */
 function updateModalContent() {
-    if (currentProducts.length > 0 && modalProductImage && modalProductName && modalAddToCartBtn) { // Added null checks
+    if (currentProducts.length > 0 && modalProductImage && modalProductName && modalAddToCartBtn) {
         const product = currentProducts[currentProductIndex];
         modalProductImage.src = product.img;
         modalProductName.textContent = product.name;
-        // Set data attributes on the add to cart button in the modal
         modalAddToCartBtn.dataset.productName = product.name;
+    } else {
+        console.warn("Modal elements or currentProducts array not ready for updateModalContent.");
     }
 }
 
-// --- "Show More" Functionality for All Collections (Mobile Only) ---
+/**
+ * Applies or removes mobile display limits for product collections based on screen width.
+ * Also manages the "Show More/Less" buttons.
+ */
 function applyMobileLimits() {
     const isMobile = window.innerWidth <= 767.98; // Bootstrap's 'md' breakpoint
 
     document.querySelectorAll('.collection-images').forEach(collectionContainer => {
         const products = Array.from(collectionContainer.querySelectorAll('.product-card'));
         const mobileLimit = parseInt(collectionContainer.dataset.mobileLimit || 8);
-        const toggleButton = collectionContainer.nextElementSibling; // Assuming button is the next sibling
+        // The toggle button is expected to be the next sibling element
+        const toggleButton = collectionContainer.nextElementSibling;
 
-        // Basic validation for the toggle button
         if (!toggleButton || !toggleButton.classList.contains('show-more-toggle-btn')) {
             console.warn('Show More Toggle Button not found for collection:', collectionContainer.dataset.collectionName || 'Unnamed Collection');
             return;
@@ -110,44 +175,45 @@ function applyMobileLimits() {
             if (isMobile) {
                 products.forEach((productCard, index) => {
                     if (index >= mobileLimit) {
-                        productCard.classList.add('d-none'); // Hide
+                        productCard.classList.add('d-none'); // Hide products beyond the limit
                     } else {
-                        productCard.classList.remove('d-none'); // Ensure visible
+                        productCard.classList.remove('d-none'); // Ensure products within limit are visible
                     }
                 });
-                toggleButton.style.display = 'block'; // Make button visible
+                toggleButton.style.display = 'block'; // Show the toggle button
                 toggleButton.innerHTML = 'Show More <i class="fas fa-chevron-down"></i>';
-                toggleButton.classList.remove('active');
+                toggleButton.classList.remove('active'); // Reset active state
             } else {
-                // Not mobile, show all products and hide the button
                 products.forEach(productCard => {
-                    productCard.classList.remove('d-none');
+                    productCard.classList.remove('d-none'); // Show all products on larger screens
                 });
-                toggleButton.style.display = 'none';
+                toggleButton.style.display = 'none'; // Hide the toggle button
             }
         } else {
-            // Fewer products than limit, show all and hide the button
             products.forEach(productCard => {
-                productCard.classList.remove('d-none');
+                productCard.classList.remove('d-none'); // Show all products if count is less than limit
             });
-            toggleButton.style.display = 'none';
+            toggleButton.style.display = 'none'; // Hide button if no "more" to show
         }
     });
 }
 
-// =====================================================================================================
-// EVERYTHING BELOW THIS LINE IS NOW INSIDE A SINGLE `DOMContentLoaded` LISTENER OR ATTACHED GLOBALLY
-// =====================================================================================================
+// ---------------------------------------------------------------------
 
+// =====================================================================
+// ALL JAVASCRIPT CODE IS EXECUTED INSIDE THIS SINGLE `DOMContentLoaded` LISTENER
+// This ensures the DOM is fully loaded before trying to access elements.
+// =====================================================================
 document.addEventListener('DOMContentLoaded', function() {
-    // ===== Dark Mode Toggle =====
+
+    // --- Dark Mode Toggle ---
     if (modeToggle) {
         const savedTheme = localStorage.getItem('theme');
         if (savedTheme === 'dark') {
             body.classList.add('dark-mode');
             modeToggle.checked = true;
         } else {
-            modeToggle.checked = false;
+            modeToggle.checked = false; // Default to light mode if no preference or 'light'
         }
 
         modeToggle.addEventListener('change', () => {
@@ -162,54 +228,59 @@ document.addEventListener('DOMContentLoaded', function() {
         console.warn("Dark mode toggle element with ID 'modeToggle' not found.");
     }
 
-    // ===== Header Scroll Color Adjustment =====
-    // This can stay here or be outside, it doesn't conflict.
+    // --- Header Scroll Color Adjustment ---
     window.addEventListener('scroll', () => {
-        const scrollY = window.scrollY;
-        if (header) { // Added null check for header
-            header.classList.toggle('fixed-top-scroll', scrollY > 50);
+        if (header) {
+            // Add 'fixed-top-scroll' class when scrolled down more than 50px
+            header.classList.toggle('fixed-top-scroll', window.scrollY > 50);
+        } else {
+            console.warn("Main header element with ID 'mainHeader' not found.");
         }
     });
 
-    // ===== Close Mobile Menu on Outside Click =====
+    // --- Close Mobile Menu on Outside Click ---
+    // This allows clicking anywhere outside the menu and its toggle button to close it.
     window.addEventListener('click', function (e) {
         if (mobileMenu && !mobileMenu.contains(e.target) && !e.target.closest('#menuToggleBtn')) {
             const bsCollapse = bootstrap.Collapse.getInstance(mobileMenu);
             if (bsCollapse && mobileMenu.classList.contains('show')) {
-                bsCollapse.hide();
+                bsCollapse.hide(); // Hide the Bootstrap collapse menu
             }
         }
     });
 
     // --- Hero Carousel Setup and Subtitle Animation Reset ---
-    let heroBsCarousel;
-    function animateSubtitles() { // Moved inside DOMContentLoaded or defined globally
+    let heroBsCarousel; // Declare carousel instance
+    /**
+     * Resets and restarts the typing animation for hero subtitles.
+     */
+    function animateSubtitles() {
         document.querySelectorAll('#heroCarousel .hero-subtitle').forEach(p => {
             const textContentLength = p.textContent.length;
-
+            // Reset animation by removing properties and triggering reflow
             p.style.animation = 'none';
             p.style.width = '0';
-            void p.offsetWidth; // Trigger reflow
-
+            void p.offsetWidth; // Force reflow
+            // Apply animation again
             p.style.animation = `typing 3s steps(${textContentLength}, end) infinite, blink 0.7s step-end infinite`;
         });
     }
 
     if (heroCarousel) {
         heroBsCarousel = new bootstrap.Carousel(heroCarousel, {
-            interval: 20000,
+            interval: 20000, // Longer interval for reading
             ride: 'carousel',
-            pause: false,
+            pause: false, // Don't pause on hover
             wrap: true
         });
 
-        // Add touch event listeners for swipe functionality
+        // Touch swipe functionality for hero carousel
         let touchStartX = 0;
         let touchEndX = 0;
-        
+
         heroCarousel.addEventListener('touchstart', (e) => {
             touchStartX = e.changedTouches[0].screenX;
-        }, {passive: true});
+        }, {passive: true}); // Use passive listener for better scroll performance
 
         heroCarousel.addEventListener('touchend', (e) => {
             touchEndX = e.changedTouches[0].screenX;
@@ -217,35 +288,41 @@ document.addEventListener('DOMContentLoaded', function() {
         }, {passive: true});
 
         function handleSwipe() {
-            const swipeThreshold = 50; // Minimum distance to consider it a swipe
-            
+            const swipeThreshold = 50; // Minimum pixel distance for a swipe
             if (touchEndX < touchStartX - swipeThreshold) {
-                // Swipe left - go to next slide
                 heroBsCarousel.next();
             } else if (touchEndX > touchStartX + swipeThreshold) {
-                // Swipe right - go to previous slide
                 heroBsCarousel.prev();
             }
         }
 
+        // Initial animation and cycling after a delay
         setTimeout(() => {
             animateSubtitles();
             heroBsCarousel.cycle();
-        }, 10000);
+        }, 10000); // Start animation after 10 seconds
 
+        // Re-animate subtitles on carousel slide transition
         heroCarousel.addEventListener('slid.bs.carousel', animateSubtitles);
+    } else {
+        console.warn("Hero Carousel element with ID 'heroCarousel' not found.");
     }
 
-    // Hero Carousel Buttons
+    // Hero Carousel Navigation Buttons
     const heroNavButtons = document.querySelectorAll('.carousel-nav-buttons .btn');
-    heroNavButtons.forEach(button => {
-        const action = button.dataset.bsSlide;
-        button.addEventListener('click', () => {
-            if (!heroBsCarousel) return;
-            if (action === 'next') heroBsCarousel.next();
-            if (action === 'prev') heroBsCarousel.prev();
+    if (heroNavButtons.length > 0) {
+        heroNavButtons.forEach(button => {
+            const action = button.dataset.bsSlide;
+            button.addEventListener('click', () => {
+                if (!heroBsCarousel) return; // Ensure carousel is initialized
+                if (action === 'next') heroBsCarousel.next();
+                if (action === 'prev') heroBsCarousel.prev();
+            });
         });
-    });
+    } else {
+        console.warn("Hero Carousel navigation buttons not found.");
+    }
+
 
     // --- Collections Carousel Setup ---
     const collectionsCarouselElement = document.getElementById('collectionsCarousel');
@@ -253,55 +330,72 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (collectionsCarouselElement) {
         collectionsBsCarousel = new bootstrap.Carousel(collectionsCarouselElement, {
-            interval: false,
+            interval: false, // Manual control, not auto-cycling
             wrap: true
         });
+    } else {
+        console.warn("Collections Carousel element with ID 'collectionsCarousel' not found.");
     }
 
     // Collections Carousel Navigation Buttons
     const collectionsNavButtons = document.querySelectorAll('.collections-nav-buttons .btn');
-    collectionsNavButtons.forEach(button => {
-        const action = button.dataset.bsSlide;
-        button.addEventListener('click', () => {
-            if (!collectionsBsCarousel) return;
-            if (action === 'next') collectionsBsCarousel.next();
-            if (action === 'prev') collectionsBsCarousel.prev();
+    if (collectionsNavButtons.length > 0) {
+        collectionsNavButtons.forEach(button => {
+            const action = button.dataset.bsSlide;
+            button.addEventListener('click', () => {
+                if (!collectionsBsCarousel) return; // Ensure carousel is initialized
+                if (action === 'next') collectionsBsCarousel.next();
+                if (action === 'prev') collectionsBsCarousel.prev();
+            });
         });
-    });
+    } else {
+        console.warn("Collections Carousel navigation buttons not found.");
+    }
 
 
-    // --- Shopping Cart Functionality Event Listeners (FIXED) ---
-    if (cartToggleBtn && shoppingCart && closeCartBtn) { // Ensure elements exist
+    // --- Main Shopping Cart Functionality Event Listeners ---
+    if (cartToggleBtn && shoppingCart && closeCartBtn) {
+        // Toggle main cart visibility when its button is clicked
         cartToggleBtn.addEventListener('click', (event) => {
-            event.stopPropagation(); // Prevent document click from immediately closing
-            shoppingCart.classList.toggle('show-cart');
+            event.stopPropagation(); // Prevent the document click listener from immediately closing it
+            shoppingCart.classList.toggle('show-cart'); // Toggles visibility for the main cart
+
+            // Reset cart position to default (relative to header) when opened from main button
+            shoppingCart.style.removeProperty('top');
+            shoppingCart.style.removeProperty('left');
+            shoppingCart.style.removeProperty('right'); // Ensure right is also reset for proper positioning
+            shoppingCart.style.removeProperty('transform'); // In case you had transforms for positioning
         });
 
+        // Close main cart when its close button is clicked
         closeCartBtn.addEventListener('click', () => {
             shoppingCart.classList.remove('show-cart');
         });
 
-        // Close cart when clicking outside of it
+        // Close main cart when clicking outside of it or its toggle buttons
         document.addEventListener('click', (event) => {
-            if (!shoppingCart.contains(event.target) && !cartToggleBtn.contains(event.target)) {
+            const isClickInsideMainCart = shoppingCart.contains(event.target);
+            const isClickOnMainCartToggle = cartToggleBtn.contains(event.target);
+            const isClickOnFloatingCartToggle = floatingCartToggleBtn ? floatingCartToggleBtn.contains(event.target) : false; // Check if floating button exists
+
+            // If the click is not inside the cart AND not on either toggle button, then close the cart
+            if (!isClickInsideMainCart && !isClickOnMainCartToggle && !isClickOnFloatingCartToggle) {
                 shoppingCart.classList.remove('show-cart');
             }
         });
     } else {
-        console.warn("Cart elements (cartToggleBtn, shoppingCart, closeCartBtn) not found. Cart functionality might be impaired.");
+        console.warn("Main cart elements (cartToggleBtn, shoppingCart, closeCartBtn) not found. Main cart functionality might be impaired.");
     }
 
-
-    // Universal click listener for add/remove buttons (FIXED: Placed inside DOMContentLoaded)
-    // This now correctly captures clicks on buttons dynamically added to the DOM (like within modals)
+    // --- Universal Add/Remove to Cart Buttons ---
+    // Uses event delegation for efficiency and to handle dynamically added elements
     document.addEventListener('click', (e) => {
-        // --- ADD TO CART from Product Card or Modal ---
+        // Handle "Add to Cart" clicks
         if (e.target.classList.contains('add-to-cart-btn') || e.target.closest('.add-to-cart-btn')) {
             const targetButton = e.target.closest('.add-to-cart-btn');
-            // If from modal, it will have product-name directly
-            let productName = targetButton.dataset.productName;
+            let productName = targetButton.dataset.productName; // Get product name from data-product-name attribute
 
-            // If it's from a product card (not modal), then find the parent product-card
+            // Fallback for product card if data-product-name is directly on card
             if (!productName) {
                 const productCard = targetButton.closest('.product-card');
                 if (productCard) {
@@ -312,30 +406,31 @@ document.addEventListener('DOMContentLoaded', function() {
             if (productName) {
                 addToCart(productName);
             } else {
-                console.warn("Could not determine product name for add to cart.");
+                console.warn("Could not determine product name for 'add to cart' action.");
             }
         }
 
-        // --- REMOVE FROM CART ---
+        // Handle "Remove from Cart" clicks
         if (e.target.classList.contains('remove-from-cart-btn')) {
             const productNameToRemove = e.target.dataset.productName;
             if (productNameToRemove) {
                 removeFromCart(productNameToRemove);
             } else {
-                console.warn("Could not determine product name for remove from cart.");
+                console.warn("Could not determine product name for 'remove from cart' action.");
             }
         }
     });
 
-    // Checkout Button - WhatsApp Integration
+    // --- Checkout Button - WhatsApp Integration ---
     const checkoutBtn = document.getElementById('checkoutBtn');
-    if (checkoutBtn) { // Added null check
+    if (checkoutBtn) {
         checkoutBtn.addEventListener('click', () => {
             if (cart.length === 0) {
-                alert('Your cart is empty!');
+                alert('Your cart is empty!'); // Simple alert for empty cart
                 return;
             }
 
+            // Group cart items by name and count
             const groupedCart = cart.reduce((acc, item) => {
                 acc[item.name] = (acc[item.name] || 0) + 1;
                 return acc;
@@ -347,114 +442,123 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             message += "\nPlease let me know about their prices and availability. Thank you!";
 
-            const phoneNumber = "2349015414195"; // Nigerian number with country code
+            const phoneNumber = "2349015414195"; // Your WhatsApp number
             const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
 
-            window.open(whatsappUrl, '_blank');
+            window.open(whatsappUrl, '_blank'); // Open WhatsApp in a new tab
 
-            // Optionally clear cart after sending message
-            cart = [];
-            updateCartDisplay();
-            if (shoppingCart) shoppingCart.classList.remove('show-cart');
+            cart = []; // Clear the cart after checkout
+            updateCartDisplay(); // Update cart display to reflect empty cart
+            if (shoppingCart) {
+                shoppingCart.classList.remove('show-cart'); // Close the cart dropdown
+            }
         });
+    } else {
+        console.warn("Checkout button with ID 'checkoutBtn' not found.");
     }
 
 
-    // --- Product Modal Functionality Event Listeners (FIXED: Ensure modal exists first) ---
-    if (productModalElement && productModal) { // Check if modal and its Bootstrap instance exist
+    // --- Product Modal Functionality Event Listeners ---
+    if (productModalElement && productModal) {
+        // Open modal when an "Extend" button is clicked
         document.querySelectorAll('.extend-btn').forEach(button => {
             button.addEventListener('click', (e) => {
-                const productCard = e.target.closest('.product-card');
-                const collectionRow = e.target.closest('.collection-images');
+                const productCard = e.target.closest('.product-card'); // Get the parent product card
+                const collectionRow = e.target.closest('.collection-images'); // Get the parent collection container
 
-                if (productCard && collectionRow) { // Ensure elements are found
+                if (productCard && collectionRow) {
+                    // Populate currentProducts array with all products in the same collection
                     currentProducts = Array.from(collectionRow.querySelectorAll('.product-card')).map(card => ({
                         id: card.dataset.productId,
                         name: card.dataset.productName,
                         img: card.dataset.productImg
                     }));
 
+                    // Find the index of the clicked product
                     currentProductIndex = currentProducts.findIndex(p => p.id === productCard.dataset.productId);
 
-                    updateModalContent();
-                    productModal.show();
+                    updateModalContent(); // Load content for the current product
+                    productModal.show(); // Show the modal
                 } else {
-                    console.warn("Could not find productCard or collectionRow for extend-btn click.");
+                    console.warn("Could not find productCard or collectionRow for extend-btn click. Check HTML structure.");
                 }
             });
         });
 
-        // Modal navigation buttons
-        if (modalPrevBtn) { // Added null check
+        // Modal navigation buttons (Previous/Next Product)
+        if (modalPrevBtn) {
             modalPrevBtn.addEventListener('click', () => {
+                // Cycle backward through products, wrapping around
                 currentProductIndex = (currentProductIndex - 1 + currentProducts.length) % currentProducts.length;
                 updateModalContent();
             });
         }
-
-        if (modalNextBtn) { // Added null check
-            modalNextIndex = (currentProductIndex + 1) % currentProducts.length;
+        if (modalNextBtn) {
             modalNextBtn.addEventListener('click', () => {
+                // Cycle forward through products, wrapping around
                 currentProductIndex = (currentProductIndex + 1) % currentProducts.length;
                 updateModalContent();
             });
         }
+    } else {
+        console.warn("Product modal elements (productModalElement, modalProductImage, etc.) not found. Product modal functionality might be impaired.");
     }
 
 
-    // --- "Show More" Functionality for All Collections (Mobile Only) ---
-    // Event listener for all "Show More/Less" buttons (FIXED: Consolidated logic)
+    // --- "Show More/Less" Functionality for Product Collections (Mobile Only) ---
+    // Event listener for all "Show More/Less" toggle buttons
     document.querySelectorAll('.show-more-toggle-btn').forEach(button => {
         button.addEventListener('click', function() {
-            // Find the corresponding collection container (previous sibling)
+            // The collection container is assumed to be the immediate previous sibling
             const collectionContainer = this.previousElementSibling;
 
-            // Ensure collectionContainer exists and has the correct class
             if (!collectionContainer || !collectionContainer.classList.contains('collection-images')) {
-                console.warn("Corresponding .collection-images container not found for Show More/Less button.");
+                console.warn("Corresponding '.collection-images' container not found for Show More/Less button. Check HTML structure.");
                 return;
             }
 
             const products = Array.from(collectionContainer.querySelectorAll('.product-card'));
-            const mobileLimit = parseInt(collectionContainer.dataset.mobileLimit || 8); // Use default if not set
+            const mobileLimit = parseInt(collectionContainer.dataset.mobileLimit || 8); // Get limit from data attribute
 
-            // Determine if currently showing all hidden items or if some are still hidden
-            // Check the visibility of an item *beyond* the initial limit
-            // This logic assumes `d-none` is used for hiding
+            // Check if products beyond the limit are currently hidden (meaning it's in "Show More" state)
             const isShowingAll = products.length > mobileLimit && !products[mobileLimit].classList.contains('d-none');
 
-
             if (isShowingAll) {
-                // If currently showing all, hide items beyond the limit
+                // If currently showing all, hide products beyond the limit
                 for (let i = mobileLimit; i < products.length; i++) {
                     products[i].classList.add('d-none');
                 }
-                button.innerHTML = 'Show More <i class="fas fa-chevron-down"></i>';
-                button.classList.remove('active');
+                this.innerHTML = 'Show More <i class="fas fa-chevron-down"></i>';
+                this.classList.remove('active');
             } else {
-                // If some are hidden, show them all
+                // If currently showing limited, show all products
                 for (let i = mobileLimit; i < products.length; i++) {
                     products[i].classList.remove('d-none');
                 }
-                button.innerHTML = 'Show Less <i class="fas fa-chevron-up"></i>';
-                button.classList.add('active');
+                this.innerHTML = 'Show Less <i class="fas fa-chevron-up"></i>';
+                this.classList.add('active');
             }
         });
     });
 
-    // Initial application of mobile limits and re-apply on resize
-    applyMobileLimits(); // Call on DOMContentLoaded
+    // Apply mobile limits initially on page load
+    applyMobileLimits();
+    // Re-apply mobile limits on window resize (e.g., orientation change, device switch)
     window.addEventListener('resize', applyMobileLimits);
 
-    // Initialize cart display on load
+    // Initialize cart display on page load to set initial counts
     updateCartDisplay();
 
-    // Scroll to Top Button functionality (consolidated)
-    const scrollToTopBtn = document.getElementById('scrollToTopBtn');
-    const scrollThreshold = 300;
 
+    // --- Scroll to Top Button Functionality ---
+    const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+    const scrollThreshold = 300; // Pixels to scroll down before button appears
+
+    /**
+     * Toggles the visibility of the "Scroll to Top" button based on scroll position.
+     */
     function toggleScrollToTopButton() {
-        if (scrollToTopBtn) { // Added null check
+        if (scrollToTopBtn) {
             if (window.scrollY > scrollThreshold) {
                 scrollToTopBtn.classList.add('show');
             } else {
@@ -463,75 +567,152 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    if (scrollToTopBtn) { // Added null check
-        window.addEventListener('scroll', toggleScrollToTopButton);
+    if (scrollToTopBtn) {
+        window.addEventListener('scroll', toggleScrollToTopButton); // Listen for scroll events
         scrollToTopBtn.addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            window.scrollTo({ top: 0, behavior: 'smooth' }); // Smooth scroll to top
         });
-        toggleScrollToTopButton(); // Initial check
+        toggleScrollToTopButton(); // Initial check on load
+    } else {
+        console.warn("Scroll to Top button with ID 'scrollToTopBtn' not found.");
     }
 
+
+    // --- Footer Functionality ---
     // Update current year in footer
     const currentYearElement = document.getElementById('current-year');
-    if (currentYearElement) { // Added null check
+    if (currentYearElement) {
         currentYearElement.textContent = new Date().getFullYear();
     }
 
-    // Add smooth scrolling for footer links (consolidated)
+    // Add smooth scrolling for footer links that point to sections on the same page
     document.querySelectorAll('.footer-link[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
-            e.preventDefault();
+            e.preventDefault(); // Prevent default jump behavior
             const targetElement = document.querySelector(this.getAttribute('href'));
-            if (targetElement) { // Added null check
-                targetElement.scrollIntoView({ behavior: 'smooth' });
+            if (targetElement) {
+                targetElement.scrollIntoView({ behavior: 'smooth' }); // Smooth scroll to target
             }
         });
     });
 
-    // Add Map Toggle button functionality (assuming you want this)
+    // Add Map Toggle button functionality (for inline maps/previews)
     document.querySelectorAll('.toggleMapBtn').forEach(btn => {
         btn.addEventListener('click', function() {
-            const mapPreview = this.nextElementSibling; // Map preview should be the next sibling
+            const mapPreview = this.nextElementSibling; // Assumes map preview is the next sibling
             if (mapPreview && mapPreview.classList.contains('map-preview')) {
-                mapPreview.classList.toggle('d-none');
-                // You might want to remove the iframe src when hidden and add it back when shown
-                // to prevent unnecessary loading, but that's more advanced.
+                mapPreview.classList.toggle('d-none'); // Toggle Bootstrap's 'display: none' utility class
             }
         });
     });
 
-    // Initialize the main collections carousel once (as already done)
-    // The collection filter logic is already correctly inside this DOMContentLoaded
+
+    // --- Collection Filter and Carousel Synchronization ---
     const collectionFilter = document.getElementById('collectionFilter');
-    const carouselElement = document.getElementById('collectionsCarousel');
-    const carouselItems = document.querySelectorAll('#collectionsCarousel .carousel-item');
+    // Re-select carousel elements as the global one was already defined
+    const mainCollectionsCarouselElement = document.getElementById('collectionsCarousel');
+    const mainCarouselItems = document.querySelectorAll('#collectionsCarousel .carousel-item');
 
-    // Make sure collectionsCarousel is defined here if needed by collectionFilter
-    const collectionsCarousel = new bootstrap.Carousel(carouselElement, {
-        interval: false
-    });
+    // Re-initialize Bootstrap carousel for the filter functionality if not already done
+    let mainCollectionsBsCarousel;
+    if (mainCollectionsCarouselElement) {
+        mainCollectionsBsCarousel = new bootstrap.Carousel(mainCollectionsCarouselElement, {
+            interval: false // Control manually
+        });
+    }
 
-    if (collectionFilter) {
+    if (collectionFilter && mainCollectionsBsCarousel) {
         collectionFilter.addEventListener('change', function() {
             const selectedCollection = this.value;
             if (selectedCollection === 'all') {
-                collectionsCarousel.to(0);
+                mainCollectionsBsCarousel.to(0); // Go to the first slide (usually "All" or default)
             } else {
                 let foundIndex = -1;
-                carouselItems.forEach((item, index) => {
+                // Find the index of the carousel item corresponding to the selected collection
+                mainCarouselItems.forEach((item, index) => {
                     if (item.getAttribute('data-collection-name') === selectedCollection) {
                         foundIndex = index;
                     }
                 });
                 if (foundIndex !== -1) {
-                    collectionsCarousel.to(foundIndex);
+                    mainCollectionsBsCarousel.to(foundIndex); // Go to the specific collection slide
                 } else {
-                    collectionsCarousel.to(0);
-                    console.warn(`Collection "${selectedCollection}" not found. Defaulting to first slide.`);
+                    mainCollectionsBsCarousel.to(0); // Fallback to first slide if not found
+                    console.warn(`Collection "${selectedCollection}" not found in carousel. Defaulting to first slide.`);
                 }
             }
-            // After changing collection, re-apply mobile limits to ensure correct "Show More" state
-            applyMobileLimits();
+            applyMobileLimits(); // Re-apply limits as collection view changes
         });
+    } else {
+        console.warn("Collection filter or carousel elements not found. Collection filtering might be impaired.");
     }
-}); // End of single DOMContentLoaded listener
+
+
+    // --- Floating Cart Wrapper Scroll and Button Logic ---
+    // Determine which element to monitor for scroll: hero section first, then header.
+    // The floating cart wrapper will appear when the bottom of this element scrolls out of view.
+    const elementToMonitor = heroCarousel || header; // Prioritize hero if it exists
+
+    // Ensure floating cart wrapper and toggle button exist before attaching listeners
+    if (floatingCartWrapper && floatingCartToggleBtn && shoppingCart) { // Ensure shoppingCart exists to apply styles
+
+        // 🎯 Scroll Event Listener: Controls when the floating cart wrapper appears/disappears
+        window.addEventListener('scroll', function() {
+            if (isElementOutOfView(elementToMonitor)) {
+                // Monitored element (header/hero) is out of view, show floating cart wrapper
+                floatingCartWrapper.style.display = 'flex'; // Use 'flex' (or 'block'/'grid') based on your CSS for the wrapper
+            } else {
+                // Monitored element is in view, hide floating cart wrapper
+                floatingCartWrapper.style.display = 'none';
+                // Crucially, ensure the main cart dropdown is hidden when the floating cart disappears
+                shoppingCart.classList.remove('show-cart');
+            }
+        });
+
+        // 🎯 Click Event Listener for Floating Cart Button: Toggles the visibility of the *main* shopping cart dropdown
+        floatingCartToggleBtn.addEventListener('click', function(event) {
+            event.stopPropagation(); // Prevents clicks inside the button from closing the cart immediately
+
+            // Toggle the visibility first
+            shoppingCart.classList.toggle('show-cart');
+
+            // If the cart is now shown, position it relative to the floating button
+            if (shoppingCart.classList.contains('show-cart')) {
+                const floatingBtnRect = floatingCartToggleBtn.getBoundingClientRect();
+
+                // Position the cart relative to the viewport
+                // Adjust these values based on your desired offset from the button
+                // For example, if you want it to appear slightly to the left and below the button:
+                shoppingCart.style.position = 'fixed'; // Must be fixed or absolute
+                shoppingCart.style.top = `${floatingBtnRect.bottom + 10}px`; // 10px below the button
+                // This positions the right edge of the cart with the right edge of the button
+                shoppingCart.style.left = 'auto'; // Clear any left property
+                shoppingCart.style.right = `${window.innerWidth - floatingBtnRect.right}px`;
+                // Alternatively, to align its left edge with the button's left edge:
+                // shoppingCart.style.left = `${floatingBtnRect.left}px`;
+                // shoppingCart.style.right = 'auto';
+            } else {
+                // When closing the cart, clear the inline styles to allow CSS to control it
+                shoppingCart.style.removeProperty('top');
+                shoppingCart.style.removeProperty('left');
+                shoppingCart.style.removeProperty('right');
+                shoppingCart.style.removeProperty('position'); // Remove fixed/absolute position
+            }
+        });
+
+
+        // 🎯 Initial check on page load to set floating cart wrapper visibility correctly
+        // This ensures it's hidden if the page loads scrolled to the top.
+        if (elementToMonitor) {
+            if (isElementOutOfView(elementToMonitor)) {
+                 floatingCartWrapper.style.display = 'flex';
+            } else {
+                 floatingCartWrapper.style.display = 'none';
+            }
+        }
+
+    } else {
+        console.warn("Floating cart elements or main shopping cart not found. Floating cart functionality might be impaired. Check IDs: 'floatingCartWrapper', 'floatingCartToggleBtn', 'shoppingCart', 'mainHeader', 'heroCarousel'.");
+    }
+
+}); // End of the ONE and ONLY DOMContentLoaded listener
