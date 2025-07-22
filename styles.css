@@ -1791,3 +1791,103 @@ body.dark-mode ::-webkit-scrollbar-thumb:hover {
     /* Add any specific styles for your original cart button */
     /* You might not need margin-top here if it's already positioned well in your header */
 }
+
+/* --- Product Modal Styling --- */
+
+/* Modal Header */
+.modal-header {
+    background-color: #4b004d !important; /* Dominant purple for header background */
+    color: #ffffff !important; /* White text for contrast */
+    border-bottom: 1px solid #6a006a !important; /* Slightly lighter purple border */
+}
+
+/* Modal Title */
+.modal-header .modal-title {
+    color: #ffffff !important; /* Ensure title text is white */
+    font-weight: bold !important;
+}
+
+/* Close Button (X icon) in the header */
+.modal-header .btn-close {
+    background-color: transparent !important; /* Make sure background is clear */
+    color: #ffffff !important; /* White color for the X icon itself */
+    opacity: 1 !important; /* Ensure it's fully visible */
+    /* Adjust filter for dark mode if needed, Bootstrap's default uses filter: invert(1) for dark */
+    filter: invert(1) grayscale(100%) brightness(200%) !important; /* Makes the SVG white */
+}
+
+/* Modal Body */
+.modal-body {
+    background-color: #f8f9fa !important; /* Light background for content area, adjust if your project has a different neutral */
+    color: #343a40 !important; /* Darker text for readability */
+}
+
+/* Product Name in Modal Body */
+#modalProductName {
+    color: #4b004d !important; /* Apply dominant purple to product name */
+    font-weight: bold !important;
+    font-size: 1.75rem !important; /* Slightly larger, adjust as needed */
+}
+
+/* Modal Footer */
+.modal-footer {
+    background-color: #ececec !important; /* Light gray background for footer */
+    border-top: 1px solid #dee2e6 !important; /* Standard border */
+}
+
+/* Previous/Next Buttons */
+.modal-footer .btn-secondary {
+    background-color: #6c757d !important; /* Bootstrap's default secondary color */
+    border-color: #6c757d !important;
+    color: #ffffff !important;
+    transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+}
+
+.modal-footer .btn-secondary:hover {
+    background-color: #5a6268 !important;
+    border-color: #545b62 !important;
+}
+
+/* Add to Cart Button */
+#modalAddToCartBtn {
+    background-color: #4b004d !important; /* Your dominant purple for the main action button */
+    border-color: #4b004d !important;
+    color: #ffffff !important; /* White text for contrast */
+    font-weight: bold !important;
+    transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+}
+
+#modalAddToCartBtn:hover {
+    background-color: #6a006a !important; /* Slightly lighter purple on hover */
+    border-color: #6a006a !important;
+}
+
+#modalAddToCartBtn {
+    background-color: #4b004d !important; /* Your dominant purple for the main action button */
+    border-color: #4b004d !important;
+    color: #ffffff !important; /* White text for contrast */
+    font-weight: bold !important;
+    transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out; /* Smooth transition for hover */
+}
+
+/* Hover state for Add to Cart Button */
+#modalAddToCartBtn:hover {
+    background-color: #6a006a !important; /* Slightly lighter purple on hover */
+    border-color: #6a006a !important;
+    cursor: pointer; /* Change cursor to pointer on hover */
+}
+
+/* --- Product Modal Styling (add this section or integrate into existing) --- */
+
+/* Basic modal body styling, assuming you have it */
+.modal-body {
+    transition: background-color 0.2s ease-in-out; /* Smooth transition for the flash effect */
+}
+
+/* Class for the green flash */
+.modal-body.flash-success {
+    background-color: #d4edda !important; /* Light green background, often used for success messages */
+    /* You can also add a border for more emphasis if you like: */
+    /* border: 1px solid #28a745 !important; */
+}
+
