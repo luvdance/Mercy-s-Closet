@@ -58,18 +58,10 @@ const collectionsCarouselElement = document.getElementById('collectionsCarousel'
 // --- Firebase Functions ---
 async function fetchProducts() {
     try {
-        // --- START OF MODIFIED CODE ---
-        // Get the app ID provided by the Canvas environment.
-        // Fallback to your projectId for local testing if __app_id isn't available.
-        // Using projectId as a fallback because it's part of your Firestore path.
-        const appId = typeof __app_id !== 'undefined' ? __app_id : firebaseConfig.projectId; 
-
-        // Construct the full collection path based on your Firestore rules and upload location.
+        const appId = typeof __app_id !== 'undefined' ? __app_id : firebaseConfig.projectId;
         const productsCollectionPath = `artifacts/${appId}/public/data/products`;
-        // --- END OF MODIFIED CODE ---
 
-        // Query products ordered by 'createdAt' (newest first)
-        const q = query(collection(db, productsCollectionPath), orderBy("createdAt", "desc")); // <--- UPDATED THIS LINE
+        const q = query(collection(db, productsCollectionPath), orderBy("createdAt", "desc"));
         const querySnapshot = await getDocs(q);
         const products = [];
 
@@ -77,19 +69,17 @@ async function fetchProducts() {
             const productData = doc.data();
             let imageUrl = productData.imageUrl;
 
-            // This commented-out section is ONLY needed if your Firestore 'imageUrl' is a storage path, not a direct URL.
-            // Based on Firebase console's "Download URL", you likely don't need this.
-            /*
+            // --- UNCOMMENT THIS SECTION ---
             if (imageUrl && !imageUrl.startsWith('http')) { // Basic check if it's not already a URL
                 try {
                     const imageRef = ref(storage, imageUrl);
                     imageUrl = await getDownloadURL(imageRef);
                 } catch (imgError) {
                     console.warn(`Could not get download URL for ${productData.name}:`, imgError);
-                    imageUrl = 'placeholder.jpg'; // Fallback image
+                    imageUrl = 'https://via.placeholder.com/300x200?text=Image+Load+Error'; // Fallback image for failed download URL
                 }
             }
-            */
+            // --- END UNCOMMENTED SECTION ---
 
             products.push({
                 id: doc.id,
