@@ -61,7 +61,7 @@
                 <div class="row align-items-center justify-content-center py-5">
                     <div class="col-md-6 text-center text-md-start">
                         <h1 class="display-4 fw-bold hero-title">Your One Stop Shopping Center</h1>
-                        <p class="hero-subtitle">We Deliver Direct & Fast to your doorstep.</p>
+                        <p class="hero-subtitle">We bring elegance and value to your doorstep.</p>
                         <a href="#collections" class="btn btn-primary mt-4 hero-cta-btn">Explore Collections</a>
                         <div class="social-icons mt-3 mb-3"> 
                             <a href="#" class="text-white me-3"><i class="fab fa-facebook-f fa-lg"></i></a> 
@@ -165,898 +165,78 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div>    
 </section>
 
-    <!-- Collections Section -->
-    <section id="collections" class="py-5 bg-light text-center position-relative">
-        <div class="container">
-            <h2 class="display-5 fw-bold mb-4"><i class="fas fa-box-open me-2 purple-icon"></i>Our Collections</h2>
-            <p class="lead mb-5">Explore our exclusive collections featuring the latest trends and timeless pieces.</p>
+<!-- Collections Section -->
+<section id="collections" class="py-5 bg-light text-center position-relative">
+    <div class="container">
+        <h2 class="display-5 fw-bold mb-4"><i class="fas fa-box-open me-2 purple-icon"></i>Our Collections</h2>
+        <p class="lead mb-5">Explore our exclusive collections featuring the latest trends and timeless pieces.</p>
 
-            <!-- Category Filter Dropdown -->
-            <div class="col-12 col-md-6 col-lg-4 mx-auto mb-4">
-                <select class="form-select" id="collectionFilter">
-                    <option value="all" selected>All Collections</option>
-                    <option value="Shoes">Shoes</option>
-                    <option value="Bags">Bags</option>
-                    <option value="Luxury Pants">Luxury Pants</option>
-                    <option value="Wristwatches">Wristwatches</option>
-                </select>
+        <!-- Category Filter Dropdown -->
+        <div class="col-12 col-md-6 col-lg-4 mx-auto mb-4">
+            <select class="form-select" id="collectionFilter">
+                <option value="all" selected>All Collections</option>
+                <option value="Shoes">Shoes</option>
+                <option value="Bags">Bags</option>
+                <option value="Luxury Pants">Luxury Pants</option>
+                <option value="Wristwatches">Wristwatches</option>
+            </select>
+        </div>
+
+        <!-- Cart Icon and Count -->
+        <div class="cart-icon-container position-absolute top-0 end-0 me-3 mt-3" id="originalCartBtn">
+            <button class="btn btn-dark position-relative" id="cartToggleBtn">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle" id="cartCount">0</span>
+            </button>
+        </div>
+
+        <!-- Shopping Cart Dropdown -->
+        <div class="cart-dropdown bg-white shadow-lg rounded p-3" id="shoppingCart">
+            <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-2">
+                <h5 class="m-0">Your Cart</h5>
+                <button type="button" class="btn-close" id="closeCartBtn"></button>
             </div>
-
-            <!-- Cart Icon and Count -->
-            <div class="cart-icon-container position-absolute top-0 end-0 me-3 mt-3" id="originalCartBtn">
-                <button class="btn btn-dark position-relative" id="cartToggleBtn">
-                    <i class="fas fa-shopping-cart"></i>
-                    <span class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle" id="cartCount">0</span>
-                </button>
-            </div>
-
-            <!-- Shopping Cart Dropdown -->
-            <div class="cart-dropdown bg-white shadow-lg rounded p-3" id="shoppingCart">
-                <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-2">
-                    <h5 class="m-0">Your Cart</h5>
-                    <button type="button" class="btn-close" id="closeCartBtn"></button>
-                </div>
-                <ul class="list-group list-group-flush mb-3" id="cartItemsList">
-                    <!-- Cart items will be dynamically added here -->
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        No items in cart.
-                    </li>
-                </ul>
-                <div class="d-flex justify-content-between align-items-center">
-                    <h6 class="m-0">Total Items: <span id="cartTotal">0</span></h6>
-                    <button type="button" class="btn btn-success" id="checkoutBtn">Checkout</button>
-                </div>
-            </div>
-
-            <div id="collectionsCarousel" class="carousel slide" data-bs-interval="false">
-                <div class="carousel-inner">
-
-                    <div class="carousel-item active" data-collection-name="Shoes">
-                        <div class="row justify-content-center align-items-center py-4">
-                            <div class="col-12 mb-4 text-start">
-                                <h3 class="collection-title-sub fw-bold text-dark"><span class="collection-dash">-</span> <i class="fas fa-shoe-prints me-2 purple-icon"></i>Shoes <span class="collection-dash">-</span></h3>
-                            </div>
-                            <div class="col-12">
-                                <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4 collection-images" data-collection-name="Shoes" data-mobile-limit="8">
-                                    <!-- Shoe 1-4 -->
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="shoe1" data-product-name="Elegant Heels" data-product-img="images/mercy 1.jpg">
-                                            <img src="images/mercy 1.jpg" class="card-img-top img-fluid rounded shadow-sm" alt="Elegant Heels">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Elegant Heels</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="shoe2" data-product-name="Luxury Sneakers" data-product-img="images/mercy 2.PNG">
-                                            <img src="images/mercy 2.PNG" class="card-img-top img-fluid rounded shadow-sm" alt="Luxury Sneakers">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Luxury Sneakers</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="shoe3" data-product-name="Stylish Flats" data-product-img="images/mercy 3.PNG">
-                                            <img src="images/mercy 3.PNG" class="card-img-top img-fluid rounded shadow-sm" alt="Stylish Flats">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Stylish Flats</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="shoe4" data-product-name="Comfort Boots" data-product-img="images/mercy 4.PNG">
-                                            <img src="images/mercy 4.PNG" class="card-img-top img-fluid rounded shadow-sm" alt="Comfort Boots">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Comfort Boots</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                     <!-- Shoe 5-16 (12 more) -->
-                                     <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="shoe5" data-product-name="Sporty Trainers" data-product-img="https://placehold.co/300x300/aaddff/4b004d?text=Shoe+5">
-                                            <img src="https://placehold.co/300x300/aaddff/4b004d?text=Shoe+5" class="card-img-top img-fluid rounded shadow-sm" alt="Sporty Trainers">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Sporty Trainers</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="shoe6" data-product-name="Casual Loafers" data-product-img="https://placehold.co/300x300/aaddff/4b004d?text=Shoe+6">
-                                            <img src="https://placehold.co/300x300/aaddff/4b004d?text=Shoe+6" class="card-img-top img-fluid rounded shadow-sm" alt="Casual Loafers">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Casual Loafers</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="shoe7" data-product-name="Summer Sandals" data-product-img="https://placehold.co/300x300/aaddff/4b004d?text=Shoe+7">
-                                            <img src="https://placehold.co/300x300/aaddff/4b004d?text=Shoe+7" class="card-img-top img-fluid rounded shadow-sm" alt="Summer Sandals">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Summer Sandals</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="shoe8" data-product-name="Leather Derbies" data-product-img="https://placehold.co/300x300/aaddff/4b004d?text=Shoe+8">
-                                            <img src="https://placehold.co/300x300/aaddff/4b004d?text=Shoe+8" class="card-img-top img-fluid rounded shadow-sm" alt="Leather Derbies">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Leather Derbies</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="shoe9" data-product-name="Ankle Boots" data-product-img="https://placehold.co/300x300/aaddff/4b004d?text=Shoe+9">
-                                            <img src="https://placehold.co/300x300/aaddff/4b004d?text=Shoe+9" class="card-img-top img-fluid rounded shadow-sm" alt="Ankle Boots">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Ankle Boots</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="shoe10" data-product-name="Platform Heels" data-product-img="https://placehold.co/300x300/aaddff/4b004d?text=Shoe+10">
-                                            <img src="https://placehold.co/300x300/aaddff/4b004d?text=Shoe+10" class="card-img-top img-fluid rounded shadow-sm" alt="Platform Heels">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Platform Heels</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="shoe11" data-product-name="Running Shoes" data-product-img="https://placehold.co/300x300/aaddff/4b004d?text=Shoe+11">
-                                            <img src="https://placehold.co/300x300/aaddff/4b004d?text=Shoe+11" class="card-img-top img-fluid rounded shadow-sm" alt="Running Shoes">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Running Shoes</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="shoe12" data-product-name="Fashion Slippers" data-product-img="https://placehold.co/300x300/aaddff/4b004d?text=Shoe+12">
-                                            <img src="https://placehold.co/300x300/aaddff/4b004d?text=Shoe+12" class="card-img-top img-fluid rounded shadow-sm" alt="Fashion Slippers">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Fashion Slippers</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="shoe13" data-product-name="Wedge Shoes" data-product-img="https://placehold.co/300x300/aaddff/4b004d?text=Shoe+13">
-                                            <img src="https://placehold.co/300x300/aaddff/4b004d?text=Shoe+13" class="card-img-top img-fluid rounded shadow-sm" alt="Wedge Shoes">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Wedge Shoes</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="shoe14" data-product-name="Kids Sneakers" data-product-img="https://placehold.co/300x300/aaddff/4b004d?text=Shoe+14">
-                                            <img src="https://placehold.co/300x300/aaddff/4b004d?text=Shoe+14" class="card-img-top img-fluid rounded shadow-sm" alt="Kids Sneakers">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Kids Sneakers</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="shoe15" data-product-name="Hiking Boots" data-product-img="https://placehold.co/300x300/aaddff/4b004d?text=Shoe+15">
-                                            <img src="https://placehold.co/300x300/aaddff/4b004d?text=Shoe+15" class="card-img-top img-fluid rounded shadow-sm" alt="Hiking Boots">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Hiking Boots</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="shoe16" data-product-name="Dress Shoes" data-product-img="https://placehold.co/300x300/aaddff/4b004d?text=Shoe+16">
-                                            <img src="https://placehold.co/300x300/aaddff/4b004d?text=Shoe+16" class="card-img-top img-fluid rounded shadow-sm" alt="Dress Shoes">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Dress Shoes</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <button class="btn btn-secondary mt-3 show-more-toggle-btn" data-collection-target="Shoes" style="display: none;">Show More</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="carousel-item" data-collection-name="Bags">
-                        <div class="row justify-content-center align-items-center py-4">
-                            <div class="col-12 mb-4 text-start">
-                                <h3 class="collection-title-sub fw-bold text-dark"><span class="collection-dash">-</span> <i class="fas fa-shopping-bag me-2 purple-icon"></i>Bags <span class="collection-dash">-</span></h3>
-                            </div>
-                            <div class="col-12">
-                                <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4 collection-images" data-collection-name="Bags" data-mobile-limit="8">
-                                    <!-- Bag 1-4 -->
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="bag1" data-product-name="Designer Clutch" data-product-img="images/mercy 5.PNG">
-                                            <img src="images/mercy 5.PNG" class="card-img-top img-fluid rounded shadow-sm" alt="Designer Clutch">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Designer Clutch</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="bag2" data-product-name="Leather Tote" data-product-img="images/mercy 6.PNG">
-                                            <img src="images/mercy 6.PNG" class="card-img-top img-fluid rounded shadow-sm" alt="Leather Tote">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Leather Tote</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="bag3" data-product-name="Crossbody Bag" data-product-img="https://placehold.co/300x300/d8bfd8/4b004d?text=Bag+3">
-                                            <img src="https://placehold.co/300x300/d8bfd8/4b004d?text=Bag+3" class="card-img-top img-fluid rounded shadow-sm" alt="Crossbody Bag">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Crossbody Bag</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="bag4" data-product-name="Travel Duffle" data-product-img="https://placehold.co/300x300/d8bfd8/4b004d?text=Bag+4">
-                                            <img src="https://placehold.co/300x300/d8bfd8/4b004d?text=Bag+4" class="card-img-top img-fluid rounded shadow-sm" alt="Travel Duffle">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Travel Duffle</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- Bag 5-16 (12 more) -->
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="bag5" data-product-name="Elegant Satchel" data-product-img="https://placehold.co/300x300/d8bfd8/4b004d?text=Bag+5">
-                                            <img src="https://placehold.co/300x300/d8bfd8/4b004d?text=Bag+5" class="card-img-top img-fluid rounded shadow-sm" alt="Elegant Satchel">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Elegant Satchel</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="bag6" data-product-name="Canvas Backpack" data-product-img="https://placehold.co/300x300/d8bfd8/4b004d?text=Bag+6">
-                                            <img src="https://placehold.co/300x300/d8bfd8/4b004d?text=Bag+6" class="card-img-top img-fluid rounded shadow-sm" alt="Canvas Backpack">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Canvas Backpack</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="bag7" data-product-name="Evening Bag" data-product-img="https://placehold.co/300x300/d8bfd8/4b004d?text=Bag+7">
-                                            <img src="https://placehold.co/300x300/d8bfd8/4b004d?text=Bag+7" class="card-img-top img-fluid rounded shadow-sm" alt="Evening Bag">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Evening Bag</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="bag8" data-product-name="Sporty Fanny Pack" data-product-img="https://placehold.co/300x300/d8bfd8/4b004d?text=Bag+8">
-                                            <img src="https://placehold.co/300x300/d8bfd8/4b004d?text=Bag+8" class="card-img-top img-fluid rounded shadow-sm" alt="Sporty Fanny Pack">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Sporty Fanny Pack</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="bag9" data-product-name="Quilted Shoulder Bag" data-product-img="https://placehold.co/300x300/d8bfd8/4b004d?text=Bag+9">
-                                            <img src="https://placehold.co/300x300/d8bfd8/4b004d?text=Bag+9" class="card-img-top img-fluid rounded shadow-sm" alt="Quilted Shoulder Bag">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Quilted Shoulder Bag</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="bag10" data-product-name="Laptop Messenger Bag" data-product-img="https://placehold.co/300x300/d8bfd8/4b004d?text=Bag+10">
-                                            <img src="https://placehold.co/300x300/d8bfd8/4b004d?text=Bag+10" class="card-img-top img-fluid rounded shadow-sm" alt="Laptop Messenger Bag">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Laptop Messenger Bag</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="bag11" data-product-name="Beach Tote" data-product-img="https://placehold.co/300x300/d8bfd8/4b004d?text=Bag+11">
-                                            <img src="https://placehold.co/300x300/d8bfd8/4b004d?text=Bag+11" class="card-img-top img-fluid rounded shadow-sm" alt="Beach Tote">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Beach Tote</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="bag12" data-product-name="Mini Backpack" data-product-img="https://placehold.co/300x300/d8bfd8/4b004d?text=Bag+12">
-                                            <img src="https://placehold.co/300x300/d8bfd8/4b004d?text=Bag+12" class="card-img-top img-fluid rounded shadow-sm" alt="Mini Backpack">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Mini Backpack</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="bag13" data-product-name="Boho Fringe Bag" data-product-img="https://placehold.co/300x300/d8bfd8/4b004d?text=Bag+13">
-                                            <img src="https://placehold.co/300x300/d8bfd8/4b004d?text=Bag+13" class="card-img-top img-fluid rounded shadow-sm" alt="Boho Fringe Bag">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Boho Fringe Bag</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="bag14" data-product-name="Utility Pouch" data-product-img="https://placehold.co/300x300/d8bfd8/4b004d?text=Bag+14">
-                                            <img src="https://placehold.co/300x300/d8bfd8/4b004d?text=Bag+14" class="card-img-top img-fluid rounded shadow-sm" alt="Utility Pouch">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Utility Pouch</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="bag15" data-product-name="Vegan Leather Bag" data-product-img="https://placehold.co/300x300/d8bfd8/4b004d?text=Bag+15">
-                                            <img src="https://placehold.co/300x300/d8bfd8/4b004d?text=Bag+15" class="card-img-top img-fluid rounded shadow-sm" alt="Vegan Leather Bag">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Vegan Leather Bag</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="bag16" data-product-name="Drawstring Pouch" data-product-img="https://placehold.co/300x300/d8bfd8/4b004d?text=Bag+16">
-                                            <img src="https://placehold.co/300x300/d8bfd8/4b004d?text=Bag+16" class="card-img-top img-fluid rounded shadow-sm" alt="Drawstring Pouch">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Drawstring Pouch</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <button class="btn btn-secondary mt-3 show-more-toggle-btn" data-collection-target="Bags" style="display: none;">Show More</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="carousel-item" data-collection-name="Luxury Pants">
-                        <div class="row justify-content-center align-items-center py-4">
-                            <div class="col-12 mb-4 text-start">
-                                <h3 class="collection-title-sub fw-bold text-dark"><span class="collection-dash">-</span> <i class="fas fa-male me-2 purple-icon"></i>Luxury Pants <span class="collection-dash">-</span></h3>
-                            </div>
-                            <div class="col-12">
-                                <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4 collection-images" data-collection-name="Luxury Pants" data-mobile-limit="8">
-                                    <!-- Pants 1-4 -->
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="pant1" data-product-name="Slim Fit Chinos" data-product-img="https://placehold.co/300x300/c7aaff/4b004d?text=Pants+1">
-                                            <img src="https://placehold.co/300x300/c7aaff/4b004d?text=Pants+1" class="card-img-top img-fluid rounded shadow-sm" alt="Slim Fit Chinos">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Slim Fit Chinos</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="pant2" data-product-name="Dress Trousers" data-product-img="https://placehold.co/300x300/c7aaff/4b004d?text=Pants+2">
-                                            <img src="https://placehold.co/300x300/c7aaff/4b004d?text=Pants+2" class="card-img-top img-fluid rounded shadow-sm" alt="Dress Trousers">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Dress Trousers</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="pant3" data-product-name="Casual Jeans" data-product-img="https://placehold.co/300x300/c7aaff/4b004d?text=Pants+3">
-                                            <img src="https://placehold.co/300x300/c7aaff/4b004d?text=Pants+3" class="card-img-top img-fluid rounded shadow-sm" alt="Casual Jeans">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Casual Jeans</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="pant4" data-product-name="Sporty Leggings" data-product-img="https://placehold.co/300x300/c7aaff/4b004d?text=Pants+4">
-                                            <img src="https://placehold.co/300x300/c7aaff/4b004d?text=Pants+4" class="card-img-top img-fluid rounded shadow-sm" alt="Sporty Leggings">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Sporty Leggings</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- Pants 5-16 (12 more) -->
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="pant5" data-product-name="Cargo Pants" data-product-img="https://placehold.co/300x300/c7aaff/4b004d?text=Pants+5">
-                                            <img src="https://placehold.co/300x300/c7aaff/4b004d?text=Pants+5" class="card-img-top img-fluid rounded shadow-sm" alt="Cargo Pants">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Cargo Pants</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="pant6" data-product-name="Wide-leg Trousers" data-product-img="https://placehold.co/300x300/c7aaff/4b004d?text=Pants+6">
-                                            <img src="https://placehold.co/300x300/c7aaff/4b004d?text=Pants+6" class="card-img-top img-fluid rounded shadow-sm" alt="Wide-leg Trousers">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Wide-leg Trousers</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="pant7" data-product-name="Velvet Pants" data-product-img="https://placehold.co/300x300/c7aaff/4b004d?text=Pants+7">
-                                            <img src="https://placehold.co/300x300/c7aaff/4b004d?text=Pants+7" class="card-img-top img-fluid rounded shadow-sm" alt="Velvet Pants">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Velvet Pants</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="pant8" data-product-name="Denim Culottes" data-product-img="https://placehold.co/300x300/c7aaff/4b004d?text=Pants+8">
-                                            <img src="https://placehold.co/300x300/c7aaff/4b004d?text=Pants+8" class="card-img-top img-fluid rounded shadow-sm" alt="Denim Culottes">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Denim Culottes</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="pant9" data-product-name="Linen Trousers" data-product-img="https://placehold.co/300x300/c7aaff/4b004d?text=Pants+9">
-                                            <img src="https://placehold.co/300x300/c7aaff/4b004d?text=Pants+9" class="card-img-top img-fluid rounded shadow-sm" alt="Linen Trousers">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Linen Trousers</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="pant10" data-product-name="Leather Leggings" data-product-img="https://placehold.co/300x300/c7aaff/4b004d?text=Pants+10">
-                                            <img src="https://placehold.co/300x300/c7aaff/4b004d?text=Pants+10" class="card-img-top img-fluid rounded shadow-sm" alt="Leather Leggings">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Leather Leggings</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="pant11" data-product-name="Track Pants" data-product-img="https://placehold.co/300x300/c7aaff/4b004d?text=Pants+11">
-                                            <img src="https://placehold.co/300x300/c7aaff/4b004d?text=Pants+11" class="card-img-top img-fluid rounded shadow-sm" alt="Track Pants">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Track Pants</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="pant12" data-product-name="Jumpsuit" data-product-img="https://placehold.co/300x300/c7aaff/4b004d?text=Pants+12">
-                                            <img src="https://placehold.co/300x300/c7aaff/4b004d?text=Pants+12" class="card-img-top img-fluid rounded shadow-sm" alt="Jumpsuit">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Jumpsuit</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="pant13" data-product-name="Palazzo Pants" data-product-img="https://placehold.co/300x300/c7aaff/4b004d?text=Pants+13">
-                                            <img src="https://placehold.co/300x300/c7aaff/4b004d?text=Pants+13" class="card-img-top img-fluid rounded shadow-sm" alt="Palazzo Pants">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Palazzo Pants</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="pant14" data-product-name="Capri Pants" data-product-img="https://placehold.co/300x300/c7aaff/4b004d?text=Pants+14">
-                                            <img src="https://placehold.co/300x300/c7aaff/4b004d?text=Pants+14" class="card-img-top img-fluid rounded shadow-sm" alt="Capri Pants">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Capri Pants</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="pant15" data-product-name="Bootcut Jeans" data-product-img="https://placehold.co/300x300/c7aaff/4b004d?text=Pants+15">
-                                            <img src="https://placehold.co/300x300/c7aaff/4b004d?text=Pants+15" class="card-img-top img-fluid rounded shadow-sm" alt="Bootcut Jeans">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Bootcut Jeans</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="pant16" data-product-name="High-Waisted Shorts" data-product-img="https://placehold.co/300x300/c7aaff/4b004d?text=Pants+16">
-                                            <img src="https://placehold.co/300x300/c7aaff/4b004d?text=Pants+16" class="card-img-top img-fluid rounded shadow-sm" alt="High-Waisted Shorts">
-                                            <div class="product-overlay">
-                                                <p class="product-name">High-Waisted Shorts</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <button class="btn btn-secondary mt-3 show-more-toggle-btn" data-collection-target="Luxury Pants" style="display: none;">Show More</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="carousel-item" data-collection-name="Wristwatches">
-                        <div class="row justify-content-center align-items-center py-4">
-                            <div class="col-12 mb-4 text-start">
-                                <h3 class="collection-title-sub fw-bold text-dark"><span class="collection-dash">-</span> <i class="fas fa-watch me-2 purple-icon"></i>Wristwatches <span class="collection-dash">-</span></h3>
-                            </div>
-                            <div class="col-12">
-                                <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4 collection-images" data-collection-name="Wristwatches" data-mobile-limit="8">
-                                    <!-- Watch 1-4 -->
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="watch1" data-product-name="Classic Watch" data-product-img="https://placehold.co/300x300/b19cd9/4b004d?text=Watch+1">
-                                            <img src="https://placehold.co/300x300/b19cd9/4b004d?text=Watch+1" class="card-img-top img-fluid rounded shadow-sm" alt="Classic Watch">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Classic Watch</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="watch2" data-product-name="Sport Watch" data-product-img="https://placehold.co/300x300/b19cd9/4b004d?text=Watch+2">
-                                            <img src="https://placehold.co/300x300/b19cd9/4b004d?text=Watch+2" class="card-img-top img-fluid rounded shadow-sm" alt="Sport Watch">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Sport Watch</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="watch3" data-product-name="Luxury Chronograph" data-product-img="https://placehold.co/300x300/b19cd9/4b004d?text=Watch+3">
-                                            <img src="https://placehold.co/300x300/b19cd9/4b004d?text=Watch+3" class="card-img-top img-fluid rounded shadow-sm" alt="Luxury Chronograph">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Luxury Chronograph</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="watch4" data-product-name="Minimalist Watch" data-product-img="https://placehold.co/300x300/b19cd9/4b004d?text=Watch+4">
-                                            <img src="https://placehold.co/300x300/b19cd9/4b004d?text=Watch+4" class="card-img-top img-fluid rounded shadow-sm" alt="Minimalist Watch">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Minimalist Watch</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- Watch 5-16 (12 more) -->
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="watch5" data-product-name="Smartwatch" data-product-img="https://placehold.co/300x300/b19cd9/4b004d?text=Watch+5">
-                                            <img src="https://placehold.co/300x300/b19cd9/4b004d?text=Watch+5" class="card-img-top img-fluid rounded shadow-sm" alt="Smartwatch">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Smartwatch</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="watch6" data-product-name="Pilot Watch" data-product-img="https://placehold.co/300x300/b19cd9/4b004d?text=Watch+6">
-                                            <img src="https://placehold.co/300x300/b19cd9/4b004d?text=Watch+6" class="card-img-top img-fluid rounded shadow-sm" alt="Pilot Watch">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Pilot Watch</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="watch7" data-product-name="Dive Watch" data-product-img="https://placehold.co/300x300/b19cd9/4b004d?text=Watch+7">
-                                            <img src="https://placehold.co/300x300/b19cd9/4b004d?text=Watch+7" class="card-img-top img-fluid rounded shadow-sm" alt="Dive Watch">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Dive Watch</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="watch8" data-product-name="Digital Watch" data-product-img="https://placehold.co/300x300/b19cd9/4b004d?text=Watch+8">
-                                            <img src="https://placehold.co/300x300/b19cd9/4b004d?text=Watch+8" class="card-img-top img-fluid rounded shadow-sm" alt="Digital Watch">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Digital Watch</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="watch9" data-product-name="Pocket Watch" data-product-img="https://placehold.co/300x300/b19cd9/4b004d?text=Watch+9">
-                                            <img src="https://placehold.co/300x300/b19cd9/4b004d?text=Watch+9" class="card-img-top img-fluid rounded shadow-sm" alt="Pocket Watch">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Pocket Watch</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="watch10" data-product-name="Automatic Watch" data-product-img="https://placehold.co/300x300/b19cd9/4b004d?text=Watch+10">
-                                            <img src="https://placehold.co/300x300/b19cd9/4b004d?text=Watch+10" class="card-img-top img-fluid rounded shadow-sm" alt="Automatic Watch">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Automatic Watch</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="watch11" data-product-name="Tourbillon Watch" data-product-img="https://placehold.co/300x300/b19cd9/4b004d?text=Watch+11">
-                                            <img src="https://placehold.co/300x300/b19cd9/4b004d?text=Watch+11" class="card-img-top img-fluid rounded shadow-sm" alt="Tourbillon Watch">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Tourbillon Watch</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="watch12" data-product-name="Dress Watch" data-product-img="https://placehold.co/300x300/b19cd9/4b004d?text=Watch+12">
-                                            <img src="https://placehold.co/300x300/b19cd9/4b004d?text=Watch+12" class="card-img-top img-fluid rounded shadow-sm" alt="Dress Watch">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Dress Watch</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="watch13" data-product-name="Skeleton Watch" data-product-img="https://placehold.co/300x300/b19cd9/4b004d?text=Watch+13">
-                                            <img src="https://placehold.co/300x300/b19cd9/4b004d?text=Watch+13" class="card-img-top img-fluid rounded shadow-sm" alt="Skeleton Watch">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Skeleton Watch</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="watch14" data-product-name="Digital Sport Watch" data-product-img="https://placehold.co/300x300/b19cd9/4b004d?text=Watch+14">
-                                            <img src="https://placehold.co/300x300/b19cd9/4b004d?text=Watch+14" class="card-img-top img-fluid rounded shadow-sm" alt="Digital Sport Watch">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Digital Sport Watch</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="watch15" data-product-name="Two-Tone Watch" data-product-img="https://placehold.co/300x300/b19cd9/4b004d?text=Watch+15">
-                                            <img src="https://placehold.co/300x300/b19cd9/4b004d?text=Watch+15" class="card-img-top img-fluid rounded shadow-sm" alt="Two-Tone Watch">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Two-Tone Watch</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="card h-100 product-card" data-product-id="watch16" data-product-name="Ceramic Watch" data-product-img="https://placehold.co/300x300/b19cd9/4b004d?text=Watch+16">
-                                            <img src="https://placehold.co/300x300/b19cd9/4b004d?text=Watch+16" class="card-img-top img-fluid rounded shadow-sm" alt="Ceramic Watch">
-                                            <div class="product-overlay">
-                                                <p class="product-name">Ceramic Watch</p>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-teal extend-btn" data-bs-toggle="modal" data-bs-target="#productModal"><i class="fas fa-expand-alt"></i></button>
-                                                    <button class="btn btn-sm btn-teal add-to-cart-btn">Add to Cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <button class="btn btn-secondary mt-3 show-more-toggle-btn" data-collection-target="Wristwatches" style="display: none;">Show More</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    
-
-                </div>
-                
-                <div class="collections-nav-buttons mt-5">
-                    <button class="btn btn-collections-prev" data-bs-target="#collectionsCarousel" data-bs-slide="prev">
-                        <i class="fas fa-arrow-left"></i>
-                    </button>
-                    <button class="btn btn-collections-next" data-bs-target="#collectionsCarousel" data-bs-slide="next">
-                        <i class="fas fa-arrow-right"></i>
-                    </button>
-                </div>
+            <ul class="list-group list-group-flush mb-3" id="cartItemsList">
+                <li class="list-group-item d-flex justify-content-between align-items-center text-muted">
+                    No items in cart.
+                </li>
+            </ul>
+            <div class="d-flex justify-content-between align-items-center">
+                <h6 class="m-0">Total Items: <span id="cartTotal">0</span></h6>
+                <button type="button" class="btn btn-success" id="checkoutBtn">Checkout</button>
             </div>
         </div>
-    </section>
+
+        <!-- Dynamic Collections Carousel (will be populated by JavaScript) -->
+        <div id="collectionsCarousel" class="carousel slide" data-bs-interval="false">
+            <div class="carousel-inner">
+                <!-- Placeholder for loading state -->
+                <div class="carousel-item active">
+                    <div class="row justify-content-center align-items-center py-4">
+                        <div class="col-12 text-center">
+                            <div class="spinner-border text-purple" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-3">Loading collections...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="collections-nav-buttons mt-5">
+                <button class="btn btn-collections-prev" data-bs-target="#collectionsCarousel" data-bs-slide="prev">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <button class="btn btn-collections-next" data-bs-target="#collectionsCarousel" data-bs-slide="next">
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
 
     <!-- Product Modal -->
     <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
@@ -1434,7 +614,7 @@
     </div>
 </footer>
 
-    <!--Floating cart container-->
+<!--Floating cart container-->
 <div class="floating-cart" id="floatingCartWrapper">
         <div class="cart-icon-container">
             <button class="btn btn-dark position-relative" id="floatingCartToggleBtn">
@@ -1459,7 +639,7 @@
             </div>
         </div>
     </div>
-    
+
     <!-- WhatsApp Floating Button -->
     <a href="https://wa.me/2349015414195" class="whatsapp-float" target="_blank">
         <i class="fab fa-whatsapp whatsapp-icon"></i>
@@ -1469,8 +649,9 @@
     <button id="scrollToTopBtn" class="scroll-to-top-btn">
         <i class="fa-solid fa-arrow-up-long"></i> </button>
 
-    <script src="bootstrap-5.3.7-dist/js/bootstrap.min.js"></script>
+    <script src="bootstrap-5.3.7-dist/js/bootstrap.bundle.min.js"></script>
+
+    <script type="module" src="script.js"></script>
     
-    <script src="script.js"></script>
 </body>
 </html>
