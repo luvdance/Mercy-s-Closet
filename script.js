@@ -1,72 +1,218 @@
-// --- Global Variables (Declared at the top for broad accessibility) ---
+// --- Firebase Integration ---
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getStorage, ref, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js"; // Import Firebase Storage
+
+const firebaseConfig = {
+    apiKey: "AIzaSyA3tUEHVe_y8BQ_3_16YsKlokc10qDox-8",
+    authDomain: "mercy-s-closet-ceo-app.firebaseapp.com",
+    projectId: "mercy-s-closet-ceo-app",
+    storageBucket: "mercy-s-closet-ceo-app.appspot.com",
+    messagingSenderId: "102114420195",
+    appId: "1:102114420195:web:af33297eab51e9c0032cd6"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const storage = getStorage(app); // Initialize Firebase Storage
+
+// --- Global Variables ---
 const body = document.body;
-const header = document.getElementById('mainHeader'); // Ensure this ID matches your main header
+const header = document.getElementById('mainHeader');
 const navLinks = document.querySelectorAll('#navLinks .nav-link, #navLinksMobile .nav-link');
 const label = document.querySelector('.form-check-label');
 const title = document.getElementById('siteTitle');
 const modeToggle = document.getElementById('modeToggle');
 const hamburgerIcon = document.getElementById('hamburgerIcon');
 const mobileMenu = document.getElementById('mobileMenu');
-const heroCarousel = document.querySelector('#heroCarousel'); // Ensure this ID matches your hero section carousel
-
-// --- Global Variables for Main Shopping Cart ---
-const cartToggleBtn = document.getElementById('cartToggleBtn'); // Button in the header
-const shoppingCart = document.getElementById('shoppingCart'); // The main cart dropdown
-const closeCartBtn = document.getElementById('closeCartBtn'); // Close button for the main cart
-const cartCount = document.getElementById('cartCount'); // Badge for main cart count
-const cartItemsList = document.getElementById('cartItemsList'); // UL for cart items
-const cartTotal = document.getElementById('cartTotal'); // Span for total items in cart
-
-// --- Global Variables for Floating Cart (Wrapper and Button Only) ---
-const floatingCartWrapper = document.getElementById('floatingCartWrapper'); // The wrapper for the floating button
-const floatingCartToggleBtn = document.getElementById('floatingCartToggleBtn'); // The floating button itself
-const floatingCartCount = document.getElementById('floatingCartCount'); // Badge for floating cart count
-
-// --- Global Variables for Product Modal ---
+const heroCarousel = document.querySelector('#heroCarousel');
+const cartToggleBtn = document.getElementById('cartToggleBtn');
+const shoppingCart = document.getElementById('shoppingCart');
+const closeCartBtn = document.getElementById('closeCartBtn');
+const cartCount = document.getElementById('cartCount');
+const cartItemsList = document.getElementById('cartItemsList');
+const cartTotal = document.getElementById('cartTotal');
+const floatingCartWrapper = document.getElementById('floatingCartWrapper');
+const floatingCartToggleBtn = document.getElementById('floatingCartToggleBtn');
+const floatingCartCount = document.getElementById('floatingCartCount');
 const productModalElement = document.getElementById('productModal');
-let productModal; // Will hold the Bootstrap Modal instance
-if (productModalElement) {
-    productModal = new bootstrap.Modal(productModalElement);
-}
 const modalProductImage = document.getElementById('modalProductImage');
 const modalProductName = document.getElementById('modalProductName');
 const modalPrevBtn = document.getElementById('modalPrevBtn');
 const modalNextBtn = document.getElementById('modalNextBtn');
-const modalAddToCartBtn = document.getElementById('modalAddToCartBtn'); // THIS IS THE KEY ELEMENT
-const modalBody = document.querySelector('#productModal .modal-body'); // ⭐ NEW: Select the modal body for flashing
+const modalAddToCartBtn = document.getElementById('modalAddToCartBtn');
+const modalBody = document.querySelector('#productModal .modal-body');
 
+let productModal;
+if (productModalElement) {
+    productModal = new bootstrap.Modal(productModalElement);
+}
 
-// --- Cart and Product Data Storage ---
-let cart = []; // Stores items currently in the cart
-let currentProducts = []; // Stores products for the currently viewed collection in the modal
-let currentProductIndex = 0; // Current index in currentProducts array for modal navigation
+let cart = [];
+let currentProducts = []; // Stores products for the currently viewed collection (for modal navigation)
+let currentProductIndex = 0; // Index for modal navigation
+let collectionsBsCarousel; // Bootstrap Carousel instance
+const collectionsCarouselElement = document.getElementById('collectionsCarousel');
 
+// --- Firebase Functions ---
+async function fetchProducts() {
+    try {
+        // Query products ordered by 'createdAt' (newest first)
+        const q = query(collection(db, "products"), orderBy("createdAt", "desc"));
+        const querySnapshot = await getDocs(q);
+        const products = [];
 
-// ---------------------------------------------------------------------
+        for (const doc of querySnapshot.docs) {
+            const productData = doc.data();
+            let imageUrl = productData.imageUrl;
+
+            // If imageUrl is a path in storage, get the download URL
+            // This assumes your imageUrl field in Firestore is the actual full download URL.
+            // If it's a path (e.g., 'images/shoes/product1.jpg'), you'd uncomment and adjust below:
+            /*
+            if (imageUrl && !imageUrl.startsWith('http')) { // Basic check if it's not already a URL
+                try {
+                    const imageRef = ref(storage, imageUrl);
+                    imageUrl = await getDownloadURL(imageRef);
+                } catch (imgError) {
+                    console.warn(`Could not get download URL for ${productData.name}:`, imgError);
+                    imageUrl = 'placeholder.jpg'; // Fallback image
+                }
+            }
+            */
+
+            products.push({
+                id: doc.id,
+                ...productData,
+                imageUrl: imageUrl || 'https://via.placeholder.com/300x200?text=Image+Not+Found', // Fallback for missing image URL
+            });
+        }
+
+        return groupByCollection(products);
+    } catch (error) {
+        console.error("Error fetching products:", error);
+        return {};
+    }
+}
+
+function groupByCollection(products) {
+    const collections = {};
+
+    products.forEach(product => {
+        if (!collections[product.collection]) {
+            collections[product.collection] = [];
+        }
+        collections[product.collection].push(product);
+    });
+
+    return collections;
+}
+
+async function renderProducts() {
+    const productsByCollection = await fetchProducts();
+    const carouselInner = document.querySelector('#collectionsCarousel .carousel-inner');
+
+    carouselInner.innerHTML = ''; // Clear existing content
+
+    let isFirst = true;
+    for (const [collectionName, products] of Object.entries(productsByCollection)) {
+        const carouselItem = document.createElement('div');
+        carouselItem.className = `carousel-item ${isFirst ? 'active' : ''}`;
+        carouselItem.dataset.collectionName = collectionName;
+
+        carouselItem.innerHTML = `
+            <div class="row justify-content-center align-items-center py-4">
+                <div class="col-12 mb-4 text-start">
+                    <h3 class="collection-title-sub fw-bold text-dark">
+                        <span class="collection-dash">-</span> 
+                        <i class="fas ${getCollectionIcon(collectionName)} me-2 purple-icon"></i>
+                        ${collectionName} 
+                        <span class="collection-dash">-</span>
+                    </h3>
+                </div>
+                <div class="col-12">
+                    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4 collection-images" 
+                         data-collection-name="${collectionName}" data-mobile-limit="8">
+                        ${products.map(product => createProductCard(product)).join('')}
+                    </div>
+                    ${products.length > 8 ?
+                        `<button class="btn btn-secondary mt-3 show-more-toggle-btn" 
+                             data-collection-target="${collectionName}" style="display: none;">
+                             Show More <i class="fas fa-chevron-down"></i>
+                        </button>` : ''}
+                </div>
+            </div>
+        `;
+
+        carouselInner.appendChild(carouselItem);
+        isFirst = false;
+    }
+
+    // Re-initialize Bootstrap Carousel after content is loaded
+    if (collectionsBsCarousel) {
+        collectionsBsCarousel.dispose(); // Destroy existing instance
+    }
+    if (collectionsCarouselElement) {
+        collectionsBsCarousel = new bootstrap.Carousel(collectionsCarouselElement, {
+            interval: false // Keep interval false for manual navigation
+        });
+    }
+
+    applyMobileLimits(); // Apply limits after rendering
+    attachProductCardListeners(); // Re-attach listeners for new cards
+}
+
+function getCollectionIcon(collectionName) {
+    const icons = {
+        "Shoes": "fa-shoe-prints",
+        "Bags": "fa-shopping-bag",
+        "Luxury Pants": "fa-male",
+        "Wristwatches": "fa-watch"
+    };
+    return icons[collectionName] || "fa-box";
+}
+
+function createProductCard(product) {
+    return `
+        <div class="col">
+            <div class="card h-100 product-card" 
+                data-product-id="${product.id}" 
+                data-product-name="${product.name}" 
+                data-product-img="${product.imageUrl}">
+                <img src="${product.imageUrl}" 
+                     class="card-img-top img-fluid rounded shadow-sm" 
+                     alt="${product.name}"
+                     loading="lazy"
+                     onerror="this.onerror=null;this.src='https://via.placeholder.com/300x200?text=Image+Load+Error';">
+                <div class="product-overlay">
+                    <p class="product-name">${product.name}</p>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-sm btn-teal extend-btn" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#productModal">
+                            <i class="fas fa-expand-alt"></i>
+                        </button>
+                        <button class="btn btn-sm btn-teal add-to-cart-btn">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+}
 
 // --- Helper Functions ---
-
-/**
- * Checks if a specific element (like header or hero) has scrolled completely out of the viewport.
- * The floating cart will show when this element is out of view.
- * @param {HTMLElement} elementToMonitor The element whose visibility determines the floating cart.
- * @returns {boolean} True if the element's bottom edge is above the viewport's top edge, false otherwise.
- */
 function isElementOutOfView(elementToMonitor) {
-    if (!elementToMonitor) {
-        return true;
-    }
+    if (!elementToMonitor) return true;
     const rect = elementToMonitor.getBoundingClientRect();
     return rect.bottom < 0;
 }
 
-
-/**
- * Updates the display of items, total count, and quantity badges in both the main and floating carts.
- */
 function updateCartDisplay() {
     if (!cartItemsList) {
-        console.warn("Element with ID 'cartItemsList' not found. Cart items cannot be displayed.");
+        console.warn("Element with ID 'cartItemsList' not found.");
         return;
     }
 
@@ -90,97 +236,51 @@ function updateCartDisplay() {
             listItem.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');
             listItem.innerHTML = `
                 ${quantity} x ${name}
-                <button class="btn btn-danger btn-sm remove-from-cart-btn" data-product-name="${name}" aria-label="Remove ${name} from cart">Remove</button>
+                <button class="btn btn-danger btn-sm remove-from-cart-btn" data-product-name="${name}">Remove</button>
             `;
             cartItemsList.appendChild(listItem);
         }
     }
 
-    if (cartCount) {
-        cartCount.textContent = cart.length;
-    } else {
-        console.warn("Element with ID 'cartCount' not found.");
-    }
-
-    if (cartTotal) {
-        cartTotal.textContent = cart.length;
-    } else {
-        console.warn("Element with ID 'cartTotal' not found.");
-    }
-
-    if (floatingCartCount) {
-        floatingCartCount.textContent = cart.length;
-    } else {
-        console.warn("Element with ID 'floatingCartCount' not found.");
-    }
+    if (cartCount) cartCount.textContent = cart.length;
+    if (cartTotal) cartTotal.textContent = cart.length;
+    if (floatingCartCount) floatingCartCount.textContent = cart.length;
 }
 
-/**
- * Adds a product to the global cart array and updates the display.
- * @param {string} productName The name of the product to add.
- */
 function addToCart(productName) {
     cart.push({ name: productName });
     updateCartDisplay();
-    console.log(`Added "${productName}" to cart. Current cart:`, cart);
+    flashModalBody();
 }
 
-/**
- * Removes a specific instance of a product from the cart array and updates the display.
- * @param {string} productNameToRemove The name of the product to remove.
- */
 function removeFromCart(productNameToRemove) {
     const indexToRemove = cart.findIndex(item => item.name === productNameToRemove);
     if (indexToRemove > -1) {
         cart.splice(indexToRemove, 1);
     }
     updateCartDisplay();
-    console.log(`Removed "${productNameToRemove}" from cart. Current cart:`, cart);
 }
 
-/**
- * Updates the content (image, name, add-to-cart button data) of the product modal
- * based on the current product index.
- */
 function updateModalContent() {
     if (currentProducts.length > 0 && modalProductImage && modalProductName && modalAddToCartBtn) {
         const product = currentProducts[currentProductIndex];
-        modalProductImage.src = product.img;
+        modalProductImage.src = product.imageUrl;
         modalProductName.textContent = product.name;
         modalAddToCartBtn.dataset.productName = product.name;
-        console.log(`Modal updated for: ${product.name}. Add to Cart button data-product-name set to: ${modalAddToCartBtn.dataset.productName}`);
-    } else {
-        console.warn("Modal elements or currentProducts array not ready for updateModalContent. Check IDs and product data.");
-        if (!modalProductImage) console.warn("modalProductImage not found.");
-        if (!modalProductName) console.warn("modalProductName not found.");
-        if (!modalAddToCartBtn) console.warn("modalAddToCartBtn not found.");
-        if (currentProducts.length === 0) console.warn("currentProducts is empty.");
     }
 }
 
-/**
- * ⭐ NEW FUNCTION: Triggers a green flash on the modal body.
- * This provides visual feedback when an item is added to the cart from the modal.
- */
 function flashModalBody() {
     if (modalBody) {
         modalBody.classList.add('flash-success');
-        // Remove the class after a short delay to create the "flash" effect
         setTimeout(() => {
             modalBody.classList.remove('flash-success');
-        }, 500); // Flash for 0.5 seconds
-    } else {
-        console.warn("Modal body element not found for flash effect.");
+        }, 500);
     }
 }
 
-
-/**
- * Applies or removes mobile display limits for product collections based on screen width.
- * Also manages the "Show More/Less" buttons.
- */
 function applyMobileLimits() {
-    const isMobile = window.innerWidth <= 767.98; // Bootstrap's 'md' breakpoint
+    const isMobile = window.innerWidth <= 767.98;
 
     document.querySelectorAll('.collection-images').forEach(collectionContainer => {
         const products = Array.from(collectionContainer.querySelectorAll('.product-card'));
@@ -194,11 +294,7 @@ function applyMobileLimits() {
         if (products.length > mobileLimit) {
             if (isMobile) {
                 products.forEach((productCard, index) => {
-                    if (index >= mobileLimit) {
-                        productCard.classList.add('d-none');
-                    } else {
-                        productCard.classList.remove('d-none');
-                    }
+                    productCard.classList.toggle('d-none', index >= mobileLimit);
                 });
                 toggleButton.style.display = 'block';
                 toggleButton.innerHTML = 'Show More <i class="fas fa-chevron-down"></i>';
@@ -218,47 +314,112 @@ function applyMobileLimits() {
     });
 }
 
-// ---------------------------------------------------------------------
+// Function to attach event listeners to dynamically created product cards
+function attachProductCardListeners() {
+    if (productModalElement && productModal) {
+        document.querySelectorAll('.extend-btn').forEach(button => {
+            button.removeEventListener('click', handleExtendButtonClick); // Prevent duplicate listeners
+            button.addEventListener('click', handleExtendButtonClick);
+        });
+    }
 
-// =====================================================================
-// ALL JAVASCRIPT CODE IS EXECUTED INSIDE THIS SINGLE `DOMContentLoaded` LISTENER
-// This ensures the DOM is fully loaded before trying to access elements.
-// =====================================================================
-document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+        button.removeEventListener('click', handleAddToCartButtonClick); // Prevent duplicate listeners
+        button.addEventListener('click', handleAddToCartButtonClick);
+    });
 
-    // --- Dark Mode Toggle ---
+    document.querySelectorAll('.show-more-toggle-btn').forEach(button => {
+        button.removeEventListener('click', handleShowMoreToggleClick); // Prevent duplicate listeners
+        button.addEventListener('click', handleShowMoreToggleClick);
+    });
+}
+
+// Handlers for event delegation on dynamically created elements
+function handleExtendButtonClick(e) {
+    const productCard = e.target.closest('.product-card');
+    const collectionRow = e.target.closest('.collection-images');
+
+    if (productCard && collectionRow) {
+        currentProducts = Array.from(collectionRow.querySelectorAll('.product-card')).map(card => ({
+            id: card.dataset.productId,
+            name: card.dataset.productName,
+            imageUrl: card.dataset.productImg
+        }));
+
+        currentProductIndex = currentProducts.findIndex(p => p.id === productCard.dataset.productId);
+        updateModalContent();
+        productModal.show();
+    }
+}
+
+function handleAddToCartButtonClick(e) {
+    const targetButton = e.target.closest('.add-to-cart-btn');
+    let productName = targetButton.dataset.productName;
+
+    if (!productName) {
+        const productCard = targetButton.closest('.product-card');
+        if (productCard) {
+            productName = productCard.dataset.productName;
+        }
+    }
+
+    if (productName) {
+        addToCart(productName);
+    }
+}
+
+function handleShowMoreToggleClick() {
+    const collectionContainer = this.previousElementSibling;
+    if (!collectionContainer || !collectionContainer.classList.contains('collection-images')) return;
+
+    const products = Array.from(collectionContainer.querySelectorAll('.product-card'));
+    const mobileLimit = parseInt(collectionContainer.dataset.mobileLimit || 8);
+    const isShowingAll = products.length > mobileLimit && !products[mobileLimit].classList.contains('d-none');
+
+    if (isShowingAll) {
+        for (let i = mobileLimit; i < products.length; i++) {
+            products[i].classList.add('d-none');
+        }
+        this.innerHTML = 'Show More <i class="fas fa-chevron-down"></i>';
+        this.classList.remove('active');
+    } else {
+        for (let i = mobileLimit; i < products.length; i++) {
+            products[i].classList.remove('d-none');
+        }
+        this.innerHTML = 'Show Less <i class="fas fa-chevron-up"></i>';
+        this.classList.add('active');
+    }
+}
+
+
+// --- Event Listeners ---
+document.addEventListener('DOMContentLoaded', async function() {
+    // Initialize products
+    await renderProducts();
+
+    // Dark Mode Toggle
     if (modeToggle) {
         const savedTheme = localStorage.getItem('theme');
         if (savedTheme === 'dark') {
             body.classList.add('dark-mode');
             modeToggle.checked = true;
-        } else {
-            modeToggle.checked = false;
         }
 
         modeToggle.addEventListener('change', () => {
             body.classList.toggle('dark-mode');
-            if (body.classList.contains('dark-mode')) {
-                localStorage.setItem('theme', 'dark');
-            } else {
-                localStorage.setItem('theme', 'light');
-            }
+            localStorage.setItem('theme', body.classList.contains('dark-mode') ? 'dark' : 'light');
         });
-    } else {
-        console.warn("Dark mode toggle element with ID 'modeToggle' not found.");
     }
 
-    // --- Header Scroll Color Adjustment ---
+    // Header Scroll Effect
     window.addEventListener('scroll', () => {
         if (header) {
             header.classList.toggle('fixed-top-scroll', window.scrollY > 50);
-        } else {
-            console.warn("Main header element with ID 'mainHeader' not found.");
         }
     });
 
-    // --- Close Mobile Menu on Outside Click ---
-    window.addEventListener('click', function (e) {
+    // Mobile Menu Close on Outside Click
+    window.addEventListener('click', function(e) {
         if (mobileMenu && !mobileMenu.contains(e.target) && !e.target.closest('#menuToggleBtn')) {
             const bsCollapse = bootstrap.Collapse.getInstance(mobileMenu);
             if (bsCollapse && mobileMenu.classList.contains('show')) {
@@ -267,18 +428,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // --- Hero Carousel Setup and Subtitle Animation Reset ---
+    // Hero Carousel
     let heroBsCarousel;
-    function animateSubtitles() {
-        document.querySelectorAll('#heroCarousel .hero-subtitle').forEach(p => {
-            const textContentLength = p.textContent.length;
-            p.style.animation = 'none';
-            p.style.width = '0';
-            void p.offsetWidth;
-            p.style.animation = `typing 3s steps(${textContentLength}, end) infinite, blink 0.7s step-end infinite`;
-        });
-    }
-
     if (heroCarousel) {
         heroBsCarousel = new bootstrap.Carousel(heroCarousel, {
             interval: 20000,
@@ -287,17 +438,18 @@ document.addEventListener('DOMContentLoaded', function() {
             wrap: true
         });
 
+        // Hero carousel touch/swipe support
         let touchStartX = 0;
         let touchEndX = 0;
 
         heroCarousel.addEventListener('touchstart', (e) => {
             touchStartX = e.changedTouches[0].screenX;
-        }, {passive: true});
+        }, { passive: true });
 
         heroCarousel.addEventListener('touchend', (e) => {
             touchEndX = e.changedTouches[0].screenX;
             handleSwipe();
-        }, {passive: true});
+        }, { passive: true });
 
         function handleSwipe() {
             const swipeThreshold = 50;
@@ -307,70 +459,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 heroBsCarousel.prev();
             }
         }
-
-        setTimeout(() => {
-            animateSubtitles();
-            heroBsCarousel.cycle();
-        }, 10000);
-
-        heroCarousel.addEventListener('slid.bs.carousel', animateSubtitles);
-    } else {
-        console.warn("Hero Carousel element with ID 'heroCarousel' not found.");
     }
 
-    // Hero Carousel Navigation Buttons
-    const heroNavButtons = document.querySelectorAll('.carousel-nav-buttons .btn');
-    if (heroNavButtons.length > 0) {
-        heroNavButtons.forEach(button => {
-            const action = button.dataset.bsSlide;
-            button.addEventListener('click', () => {
-                if (!heroBsCarousel) return;
-                if (action === 'next') heroBsCarousel.next();
-                if (action === 'prev') heroBsCarousel.prev();
-            });
-        });
-    } else {
-        console.warn("Hero Carousel navigation buttons not found.");
-    }
-
-    // --- Collections Carousel Setup ---
-    const collectionsCarouselElement = document.getElementById('collectionsCarousel');
-    let collectionsBsCarousel;
-
-    if (collectionsCarouselElement) {
-        collectionsBsCarousel = new bootstrap.Carousel(collectionsCarouselElement, {
-            interval: false,
-            wrap: true
-        });
-    } else {
-        console.warn("Collections Carousel element with ID 'collectionsCarousel' not found.");
-    }
-
-    // Collections Carousel Navigation Buttons
-    const collectionsNavButtons = document.querySelectorAll('.collections-nav-buttons .btn');
-    if (collectionsNavButtons.length > 0) {
-        collectionsNavButtons.forEach(button => {
-            const action = button.dataset.bsSlide;
-            button.addEventListener('click', () => {
-                if (!collectionsBsCarousel) return;
-                if (action === 'next') collectionsBsCarousel.next();
-                if (action === 'prev') collectionsBsCarousel.prev();
-            });
-        });
-    } else {
-        console.warn("Collections Carousel navigation buttons not found.");
-    }
-
-    // --- Main Shopping Cart Functionality Event Listeners ---
+    // Shopping Cart Functionality
     if (cartToggleBtn && shoppingCart && closeCartBtn) {
         cartToggleBtn.addEventListener('click', (event) => {
             event.stopPropagation();
             shoppingCart.classList.toggle('show-cart');
-
-            shoppingCart.style.removeProperty('top');
-            shoppingCart.style.removeProperty('left');
-            shoppingCart.style.removeProperty('right');
-            shoppingCart.style.removeProperty('position');
         });
 
         closeCartBtn.addEventListener('click', () => {
@@ -386,47 +481,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 shoppingCart.classList.remove('show-cart');
             }
         });
-    } else {
-        console.warn("Main cart elements (cartToggleBtn, shoppingCart, closeCartBtn) not found. Main cart functionality might be impaired.");
     }
 
-    // --- Universal Add/Remove to Cart Buttons (Event Delegation) ---
+    // Remove from Cart - this is better handled by event delegation on a static parent
     document.addEventListener('click', (e) => {
-        // Handle "Add to Cart" clicks
-        if (e.target.classList.contains('add-to-cart-btn') || e.target.closest('.add-to-cart-btn')) {
-            const targetButton = e.target.closest('.add-to-cart-btn');
-            let productName = targetButton.dataset.productName;
-
-            if (!productName) {
-                const productCard = targetButton.closest('.product-card');
-                if (productCard) {
-                    productName = productCard.dataset.productName;
-                }
-            }
-
-            if (productName) {
-                addToCart(productName);
-                // ⭐ ADDITION HERE: Call flashModalBody only if the modal is currently open
-                if (productModalElement && productModalElement.classList.contains('show')) {
-                    flashModalBody(); // Trigger the green flash
-                }
-            } else {
-                console.warn("Could not determine product name for 'add to cart' action. Data attribute missing.");
-            }
-        }
-
-        // Handle "Remove from Cart" clicks
         if (e.target.classList.contains('remove-from-cart-btn')) {
             const productNameToRemove = e.target.dataset.productName;
             if (productNameToRemove) {
                 removeFromCart(productNameToRemove);
-            } else {
-                console.warn("Could not determine product name for 'remove from cart' action.");
             }
         }
     });
 
-    // --- Checkout Button - WhatsApp Integration ---
+    // Checkout Button
     const checkoutBtn = document.getElementById('checkoutBtn');
     if (checkoutBtn) {
         checkoutBtn.addEventListener('click', () => {
@@ -457,175 +524,56 @@ document.addEventListener('DOMContentLoaded', function() {
                 shoppingCart.classList.remove('show-cart');
             }
         });
-    } else {
-        console.warn("Checkout button with ID 'checkoutBtn' not found.");
     }
 
-    // --- Product Modal Functionality Event Listeners ---
-    if (productModalElement && productModal) {
-        document.querySelectorAll('.extend-btn').forEach(button => {
-            button.addEventListener('click', (e) => {
-                const productCard = e.target.closest('.product-card');
-                const collectionRow = e.target.closest('.collection-images');
-
-                if (productCard && collectionRow) {
-                    currentProducts = Array.from(collectionRow.querySelectorAll('.product-card')).map(card => ({
-                        id: card.dataset.productId,
-                        name: card.dataset.productName,
-                        img: card.dataset.productImg
-                    }));
-
-                    currentProductIndex = currentProducts.findIndex(p => p.id === productCard.dataset.productId);
-
-                    updateModalContent();
-                    productModal.show();
-                } else {
-                    console.warn("Could not find productCard or collectionRow for extend-btn click. Check HTML structure.");
-                }
-            });
+    // Modal navigation
+    if (modalPrevBtn) {
+        modalPrevBtn.addEventListener('click', () => {
+            currentProductIndex = (currentProductIndex - 1 + currentProducts.length) % currentProducts.length;
+            updateModalContent();
         });
-
-        if (modalPrevBtn) {
-            modalPrevBtn.addEventListener('click', () => {
-                currentProductIndex = (currentProductIndex - 1 + currentProducts.length) % currentProducts.length;
-                updateModalContent();
-            });
-        }
-        if (modalNextBtn) {
-            modalNextBtn.addEventListener('click', () => {
-                currentProductIndex = (currentProductIndex + 1) % currentProducts.length;
-                updateModalContent();
-            });
-        }
-    } else {
-        console.warn("Product modal elements (productModalElement, modalProductImage, etc.) not found. Product modal functionality might be impaired.");
     }
 
-    // --- "Show More/Less" Functionality for Product Collections (Mobile Only) ---
-    document.querySelectorAll('.show-more-toggle-btn').forEach(button => {
-        button.addEventListener('click', function() {
-            const collectionContainer = this.previousElementSibling;
-
-            if (!collectionContainer || !collectionContainer.classList.contains('collection-images')) {
-                console.warn("Corresponding '.collection-images' container not found for Show More/Less button. Check HTML structure.");
-                return;
-            }
-
-            const products = Array.from(collectionContainer.querySelectorAll('.product-card'));
-            const mobileLimit = parseInt(collectionContainer.dataset.mobileLimit || 8);
-
-            const isShowingAll = products.length > mobileLimit && !products[mobileLimit].classList.contains('d-none');
-
-            if (isShowingAll) {
-                for (let i = mobileLimit; i < products.length; i++) {
-                    products[i].classList.add('d-none');
-                }
-                this.innerHTML = 'Show More <i class="fas fa-chevron-down"></i>';
-                this.classList.remove('active');
-            } else {
-                for (let i = mobileLimit; i < products.length; i++) {
-                    products[i].classList.remove('d-none');
-                }
-                this.innerHTML = 'Show Less <i class="fas fa-chevron-up"></i>';
-                this.classList.add('active');
-            }
+    if (modalNextBtn) {
+        modalNextBtn.addEventListener('click', () => {
+            currentProductIndex = (currentProductIndex + 1) % currentProducts.length;
+            updateModalContent();
         });
-    });
-
-    applyMobileLimits();
-    window.addEventListener('resize', applyMobileLimits);
-
-    updateCartDisplay();
-
-    // --- Scroll to Top Button Functionality ---
-    const scrollToTopBtn = document.getElementById('scrollToTopBtn');
-    const scrollThreshold = 300;
-
-    function toggleScrollToTopButton() {
-        if (scrollToTopBtn) {
-            if (window.scrollY > scrollThreshold) {
-                scrollToTopBtn.classList.add('show');
-            } else {
-                scrollToTopBtn.classList.remove('show');
-            }
-        }
     }
 
-    if (scrollToTopBtn) {
-        window.addEventListener('scroll', toggleScrollToTopButton);
-        scrollToTopBtn.addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-        toggleScrollToTopButton();
-    } else {
-        console.warn("Scroll to Top button with ID 'scrollToTopBtn' not found.");
-    }
 
-    // --- Footer Functionality ---
-    const currentYearElement = document.getElementById('current-year');
-    if (currentYearElement) {
-        currentYearElement.textContent = new Date().getFullYear();
-    }
-
-    document.querySelectorAll('.footer-link[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            e.preventDefault();
-            const targetElement = document.querySelector(this.getAttribute('href'));
-            if (targetElement) {
-                targetElement.scrollIntoView({ behavior: 'smooth' });
-            }
-        });
-    });
-
-    document.querySelectorAll('.toggleMapBtn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const mapPreview = this.nextElementSibling;
-            if (mapPreview && mapPreview.classList.contains('map-preview')) {
-                mapPreview.classList.toggle('d-none');
-            }
-        });
-    });
-
-    // --- Collection Filter and Carousel Synchronization ---
+    // Collection Filter
     const collectionFilter = document.getElementById('collectionFilter');
-    const mainCollectionsCarouselElement = document.getElementById('collectionsCarousel');
-    const mainCarouselItems = document.querySelectorAll('#collectionsCarousel .carousel-item');
-
-    let mainCollectionsBsCarousel;
-    if (mainCollectionsCarouselElement) {
-        mainCollectionsBsCarousel = new bootstrap.Carousel(mainCollectionsCarouselElement, {
-            interval: false
-        });
-    }
-
-    if (collectionFilter && mainCollectionsBsCarousel) {
+    if (collectionFilter) { // Check if filter exists
         collectionFilter.addEventListener('change', function() {
             const selectedCollection = this.value;
-            if (selectedCollection === 'all') {
-                mainCollectionsBsCarousel.to(0);
-            } else {
-                let foundIndex = -1;
-                mainCarouselItems.forEach((item, index) => {
-                    if (item.getAttribute('data-collection-name') === selectedCollection) {
-                        foundIndex = index;
-                    }
-                });
-                if (foundIndex !== -1) {
-                    mainCollectionsBsCarousel.to(foundIndex);
+            if (collectionsBsCarousel) { // Ensure carousel is initialized
+                if (selectedCollection === 'all') {
+                    collectionsBsCarousel.to(0);
                 } else {
-                    mainCollectionsBsCarousel.to(0);
-                    console.warn(`Collection "${selectedCollection}" not found in carousel. Defaulting to first slide.`);
+                    const carouselItems = document.querySelectorAll('#collectionsCarousel .carousel-item');
+                    let foundIndex = -1;
+
+                    carouselItems.forEach((item, index) => {
+                        if (item.getAttribute('data-collection-name') === selectedCollection) {
+                            foundIndex = index;
+                        }
+                    });
+
+                    if (foundIndex !== -1) {
+                        collectionsBsCarousel.to(foundIndex);
+                    } else {
+                        // Fallback to first item if collection not found
+                        collectionsBsCarousel.to(0);
+                    }
                 }
             }
-            applyMobileLimits();
         });
-    } else {
-        console.warn("Collection filter or carousel elements not found. Collection filtering might be impaired.");
     }
 
-    // --- Floating Cart Wrapper Scroll and Button Logic ---
-    const elementToMonitor = heroCarousel || header;
 
+    // Floating Cart
+    const elementToMonitor = heroCarousel || header;
     if (floatingCartWrapper && floatingCartToggleBtn && shoppingCart) {
         window.addEventListener('scroll', function() {
             if (isElementOutOfView(elementToMonitor)) {
@@ -655,16 +603,47 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         if (elementToMonitor) {
-            if (isElementOutOfView(elementToMonitor)) {
-                 floatingCartWrapper.style.display = 'flex';
-            } else {
-                 floatingCartWrapper.style.display = 'none';
-            }
+            floatingCartWrapper.style.display = isElementOutOfView(elementToMonitor) ? 'flex' : 'none';
         }
-
-    } else {
-        console.warn("Floating cart elements or main shopping cart not found. Floating cart functionality might be impaired. Check IDs: 'floatingCartWrapper', 'floatingCartToggleBtn', 'shoppingCart', 'mainHeader', 'heroCarousel'.");
     }
 
-}); // End of the ONE and ONLY DOMContentLoaded listener
+    // Scroll to Top Button
+    const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+    const scrollThreshold = 300;
 
+    function toggleScrollToTopButton() {
+        if (scrollToTopBtn) {
+            scrollToTopBtn.classList.toggle('show', window.scrollY > scrollThreshold);
+        }
+    }
+
+    if (scrollToTopBtn) {
+        window.addEventListener('scroll', toggleScrollToTopButton);
+        scrollToTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        toggleScrollToTopButton();
+    }
+
+    // Footer Year
+    const currentYearElement = document.getElementById('current-year');
+    if (currentYearElement) {
+        currentYearElement.textContent = new Date().getFullYear();
+    }
+
+    // Map Toggle
+    document.querySelectorAll('.toggleMapBtn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const mapPreview = this.nextElementSibling;
+            if (mapPreview && mapPreview.classList.contains('map-preview')) {
+                mapPreview.classList.toggle('d-none');
+            }
+        });
+    });
+
+    // Initialize cart display
+    updateCartDisplay();
+});
+
+// Window Resize Handler
+window.addEventListener('resize', applyMobileLimits);
