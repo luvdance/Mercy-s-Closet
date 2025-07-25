@@ -58,8 +58,18 @@ const collectionsCarouselElement = document.getElementById('collectionsCarousel'
 // --- Firebase Functions ---
 async function fetchProducts() {
     try {
+        // --- START OF MODIFIED CODE ---
+        // Get the app ID provided by the Canvas environment.
+        // Fallback to your projectId for local testing if __app_id isn't available.
+        // Using projectId as a fallback because it's part of your Firestore path.
+        const appId = typeof __app_id !== 'undefined' ? __app_id : firebaseConfig.projectId; 
+
+        // Construct the full collection path based on your Firestore rules and upload location.
+        const productsCollectionPath = `artifacts/${appId}/public/data/products`;
+        // --- END OF MODIFIED CODE ---
+
         // Query products ordered by 'createdAt' (newest first)
-        const q = query(collection(db, "products"), orderBy("createdAt", "desc"));
+        const q = query(collection(db, productsCollectionPath), orderBy("createdAt", "desc")); // <--- UPDATED THIS LINE
         const querySnapshot = await getDocs(q);
         const products = [];
 
@@ -67,9 +77,8 @@ async function fetchProducts() {
             const productData = doc.data();
             let imageUrl = productData.imageUrl;
 
-            // If imageUrl is a path in storage, get the download URL
-            // This assumes your imageUrl field in Firestore is the actual full download URL.
-            // If it's a path (e.g., 'images/shoes/product1.jpg'), you'd uncomment and adjust below:
+            // This commented-out section is ONLY needed if your Firestore 'imageUrl' is a storage path, not a direct URL.
+            // Based on Firebase console's "Download URL", you likely don't need this.
             /*
             if (imageUrl && !imageUrl.startsWith('http')) { // Basic check if it's not already a URL
                 try {
@@ -88,10 +97,33 @@ async function fetchProducts() {
                 imageUrl: imageUrl || 'https://via.placeholder.com/300x200?text=Image+Not+Found', // Fallback for missing image URL
             });
         }
+        
+        // Sort by createdAt again in JS just to be absolutely sure, although Firestore query should handle it
+        products.sort((a, b) => {
+            if (a.createdAt && b.createdAt) {
+                // Assuming createdAt is a Firebase Timestamp, convert to Date for comparison
+                return b.createdAt.toDate().getTime() - a.createdAt.toDate().getTime();
+            }
+            return 0; // Don't reorder if timestamps are missing
+        });
 
         return groupByCollection(products);
     } catch (error) {
         console.error("Error fetching products:", error);
+        // Show an error message to the user or a retry button
+        const carouselInner = document.querySelector('#collectionsCarousel .carousel-inner');
+        if (carouselInner) {
+            carouselInner.innerHTML = `
+                <div class="carousel-item active">
+                    <div class="row justify-content-center align-items-center py-4">
+                        <div class="col-12 text-center">
+                            <p class="mt-3 text-danger">Failed to load collections. Please try again later.</p>
+                            <p class="text-muted small">Check your console for more details.</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
         return {};
     }
 }
@@ -133,13 +165,13 @@ async function renderProducts() {
                 </div>
                 <div class="col-12">
                     <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4 collection-images" 
-                         data-collection-name="${collectionName}" data-mobile-limit="8">
+                        data-collection-name="${collectionName}" data-mobile-limit="8">
                         ${products.map(product => createProductCard(product)).join('')}
                     </div>
                     ${products.length > 8 ?
                         `<button class="btn btn-secondary mt-3 show-more-toggle-btn" 
-                             data-collection-target="${collectionName}" style="display: none;">
-                             Show More <i class="fas fa-chevron-down"></i>
+                                data-collection-target="${collectionName}" style="display: none;">
+                            Show More <i class="fas fa-chevron-down"></i>
                         </button>` : ''}
                 </div>
             </div>
