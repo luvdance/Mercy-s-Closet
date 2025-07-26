@@ -39,6 +39,9 @@ const floatingCartCount = document.getElementById('floatingCartCount');
 const productModalElement = document.getElementById('productModal');
 const modalProductImage = document.getElementById('modalProductImage');
 const modalProductName = document.getElementById('modalProductName');
+// NEW: Elements for price in modal
+const modalProductPrice = document.getElementById('modalProductPrice'); // You'll need to add this ID to an HTML element in your modal
+const modalProductCategory = document.getElementById('modalProductCategory'); // Assuming you want category too
 const modalPrevBtn = document.getElementById('modalPrevBtn');
 const modalNextBtn = document.getElementById('modalNextBtn');
 const modalAddToCartBtn = document.getElementById('modalAddToCartBtn');
@@ -50,28 +53,45 @@ if (productModalElement) {
     productModal = new bootstrap.Modal(productModalElement);
 }
 
+// MODIFIED: Cart now stores full product objects including price
 let cart = [];
 let currentProducts = []; // Stores products for the currently viewed collection (for modal navigation)
 let currentProductIndex = 0; // Index for modal navigation
 let collectionsBsCarousel; // Bootstrap Carousel instance
 const collectionsCarouselElement = document.getElementById('collectionsCarousel');
 
+// Helper function for currency formatting (Nigerian Naira)
+function formatCurrency(amount, currencyCode = 'NGN') {
+    // Check if amount is a valid number, if not, return 'N/A' or similar
+    if (typeof amount !== 'number' || isNaN(amount)) {
+        return 'Price Not Available';
+    }
+    return new Intl.NumberFormat('en-NG', { // 'en-NG' for English (Nigeria) locale
+        style: 'currency',
+        currency: currencyCode,
+        minimumFractionDigits: 0, // No decimal places for whole Naira
+        maximumFractionDigits: 0 // No decimal places for whole Naira
+    }).format(amount);
+}
+
+
 // --- Firebase Functions --
 async function fetchProducts() {
     try {
         const appId = firebaseConfig.appId; // CORRECTED: Now always uses the correct appId from firebaseConfig
 
-        console.log("Client-side appId being used (CORRECTED):", appId); 
+        console.log("Client-side appId being used (CORRECTED):", appId);
 
+        // MODIFIED: Corrected collection path as per your Firebase structure if artifacts/appId/public/data is correct
         const productsCollectionPath = `artifacts/${appId}/public/data/products`;
 
-        console.log("Client-side Firestore collection path (CORRECTED):", productsCollectionPath); 
+        console.log("Client-side Firestore collection path (CORRECTED):", productsCollectionPath);
 
-        const q = query(collection(db, productsCollectionPath), orderBy("timestamp", "desc")); 
+        const q = query(collection(db, productsCollectionPath), orderBy("timestamp", "desc"));
 
         const querySnapshot = await getDocs(q);
-        
-        console.log("Number of documents fetched from Firestore:", querySnapshot.docs.length); 
+
+        console.log("Number of documents fetched from Firestore:", querySnapshot.docs.length);
         if (querySnapshot.empty) {
             console.warn("No documents found in the specified Firestore collection path.");
         }
@@ -80,16 +100,19 @@ async function fetchProducts() {
 
         for (const doc of querySnapshot.docs) {
             const productData = doc.data();
-            let imageUrl = productData.imageUrl; 
+            let imageUrl = productData.imageUrl;
 
             products.push({
                 id: doc.id,
                 ...productData,
                 imageUrl: imageUrl || 'https://via.placeholder.com/300x200?text=Image+Not+Found',
-                collection: productData.category // ASSUMPTION: 'category' field in Firestore holds the collection name
+                collection: productData.category, // ASSUMPTION: 'category' field in Firestore holds the collection name
+                // NEW: Capture price and currency
+                price: productData.price || 0, // Default to 0 if not present
+                currency: productData.currency || 'NGN' // Default to NGN if not present
             });
         }
-        
+
         products.sort((a, b) => {
             if (a.timestamp && b.timestamp) {
                 return b.timestamp.toDate().getTime() - a.timestamp.toDate().getTime();
@@ -136,12 +159,12 @@ function groupByCollection(products) {
 function populateCollectionFilter(collections) {
     if (!collectionFilter) return;
 
-    collectionFilter.innerHTML = '<option value="all">All Collections</option>'; 
+    collectionFilter.innerHTML = '<option value="all">All Collections</option>';
 
-    const collectionNames = Object.keys(collections).sort(); 
+    const collectionNames = Object.keys(collections).sort();
 
     collectionNames.forEach(name => {
-        if (name !== 'Uncategorized') { 
+        if (name !== 'Uncategorized') {
             const option = document.createElement('option');
             option.value = name;
             option.textContent = name;
@@ -196,18 +219,18 @@ async function renderProducts() {
             <div class="row justify-content-center align-items-center py-4">
                 <div class="col-12 mb-4 text-start">
                     <h3 class="collection-title-sub fw-bold text-dark">
-                        <span class="collection-dash">-</span> 
-                        <i class="fas fa-boxes me-2 purple-icon"></i> All Collections 
+                        <span class="collection-dash">-</span>
+                        <i class="fas fa-boxes me-2 purple-icon"></i> All Collections
                         <span class="collection-dash">-</span>
                     </h3>
                 </div>
                 <div class="col-12">
-                    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4 collection-images" 
+                    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4 collection-images"
                         data-collection-name="all" data-mobile-limit="8">
-                        ${allProducts.map(product => createProductCard(product)).join('')} 
+                        ${allProducts.map(product => createProductCard(product)).join('')}
                     </div>
                     ${allProducts.length > 8 ?
-                        `<button class="btn btn-secondary mt-3 show-more-toggle-btn" 
+                        `<button class="btn btn-secondary mt-3 show-more-toggle-btn"
                                 data-collection-target="all" style="display: none;">
                             Show More <i class="fas fa-chevron-down"></i>
                         </button>` : ''}
@@ -220,14 +243,14 @@ async function renderProducts() {
         let isFirst = false; // "All Collections" is now the first
         for (const [collectionName, products] of Object.entries(productsByCollection)) {
             // Skip 'Uncategorized' if you don't want a dedicated slide for it
-            if (collectionName === 'Uncategorized' && products.length === 0) continue; 
+            if (collectionName === 'Uncategorized' && products.length === 0) continue;
 
             const carouselItem = document.createElement('div');
             carouselItem.className = `carousel-item`; // No 'active' class here
-            carouselItem.dataset.collectionName = collectionName; 
+            carouselItem.dataset.collectionName = collectionName;
 
             let productsHtml = '';
-            if (products.length === 0) { 
+            if (products.length === 0) {
                 productsHtml = `<p class="text-center text-muted mt-3">No items available in ${collectionName} currently.</p>`;
             } else {
                 productsHtml = products.map(product => createProductCard(product)).join('');
@@ -237,19 +260,19 @@ async function renderProducts() {
                 <div class="row justify-content-center align-items-center py-4">
                     <div class="col-12 mb-4 text-start">
                         <h3 class="collection-title-sub fw-bold text-dark">
-                            <span class="collection-dash">-</span> 
+                            <span class="collection-dash">-</span>
                             <i class="fas ${getCollectionIcon(collectionName)} me-2 purple-icon"></i>
-                            ${collectionName} 
+                            ${collectionName}
                             <span class="collection-dash">-</span>
                         </h3>
                     </div>
                     <div class="col-12">
-                        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4 collection-images" 
+                        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4 collection-images"
                             data-collection-name="${collectionName}" data-mobile-limit="8">
-                            ${productsHtml} 
+                            ${productsHtml}
                         </div>
                         ${products.length > 8 ?
-                            `<button class="btn btn-secondary mt-3 show-more-toggle-btn" 
+                            `<button class="btn btn-secondary mt-3 show-more-toggle-btn"
                                     data-collection-target="${collectionName}" style="display: none;">
                                 Show More <i class="fas fa-chevron-down"></i>
                             </button>` : ''}
@@ -263,49 +286,57 @@ async function renderProducts() {
 
     // Re-initialize Bootstrap Carousel after content is loaded
     if (collectionsBsCarousel) {
-        collectionsBsCarousel.dispose(); 
+        collectionsBsCarousel.dispose();
     }
     if (collectionsCarouselElement) {
         collectionsBsCarousel = new bootstrap.Carousel(collectionsCarouselElement, {
-            interval: false 
+            interval: false
         });
         // Ensure the "All Collections" slide is shown initially
         collectionsBsCarousel.to(0);
     }
 
-    applyMobileLimits(); 
-    attachProductCardListeners(); 
+    applyMobileLimits();
+    attachProductCardListeners();
 }
 
 function getCollectionIcon(collectionName) {
     const icons = {
         "Shoes": "fa-shoe-prints",
         "Bags": "fa-shopping-bag",
-        "Luxury Pants": "fa-male",
+        "Luxury Pants": "fa-male", // Or a more generic pants icon
         "Wristwatches": "fa-watch"
     };
     return icons[collectionName] || "fa-box";
 }
 
+// MODIFIED: createProductCard to include price
 function createProductCard(product) {
-    console.log("Product data received by createProductCard:", product); 
-    console.log("imageUrl for this product:", product.imageUrl); 
+    console.log("Product data received by createProductCard:", product);
+    console.log("imageUrl for this product:", product.imageUrl);
+    // NEW: Format the price using the helper function
+    const formattedPrice = formatCurrency(product.price, product.currency);
+
     return `
         <div class="col">
-            <div class="card h-100 product-card" 
-                data-product-id="${product.id}" 
-                data-product-name="${product.name}" 
-                data-product-img="${product.imageUrl}">
-                <img src="${product.imageUrl}" 
-                     class="card-img-top img-fluid rounded shadow-sm" 
+            <div class="card h-100 product-card"
+                data-product-id="${product.id}"
+                data-product-name="${product.name}"
+                data-product-img="${product.imageUrl}"
+                data-product-price="${product.price}"
+                data-product-currency="${product.currency}"
+                data-product-category="${product.collection}">
+                <img src="${product.imageUrl}"
+                     class="card-img-top img-fluid rounded shadow-sm"
                      alt="${product.name}"
                      loading="lazy"
                      onerror="this.onerror=null;this.src='https://via.placeholder.com/300x200?text=Image+Load+Error';">
                 <div class="product-overlay">
                     <p class="product-name">${product.name}</p>
+                    <p class="product-price fw-bold">${formattedPrice}</p>
                     <div class="d-flex gap-2">
-                        <button class="btn btn-sm btn-teal extend-btn" 
-                                data-bs-toggle="modal" 
+                        <button class="btn btn-sm btn-teal extend-btn"
+                                data-bs-toggle="modal"
                                 data-bs-target="#productModal">
                             <i class="fas fa-expand-alt"></i>
                         </button>
@@ -326,6 +357,7 @@ function isElementOutOfView(elementToMonitor) {
     return rect.bottom < 0;
 }
 
+// MODIFIED: updateCartDisplay to show prices and calculate total
 function updateCartDisplay() {
     if (!cartItemsList) {
         console.warn("Element with ID 'cartItemsList' not found.");
@@ -333,6 +365,7 @@ function updateCartDisplay() {
     }
 
     cartItemsList.innerHTML = '';
+    let totalCartPrice = 0; // Initialize total
 
     if (cart.length === 0) {
         cartItemsList.innerHTML = `
@@ -341,48 +374,78 @@ function updateCartDisplay() {
             </li>
         `;
     } else {
+        // Group items in cart, including their price for accurate total
         const groupedCart = cart.reduce((acc, item) => {
-            acc[item.name] = (acc[item.name] || 0) + 1;
+            const key = item.id; // Use product ID for unique grouping
+            if (!acc[key]) {
+                acc[key] = { ...item, quantity: 0 };
+            }
+            acc[key].quantity++;
             return acc;
         }, {});
 
-        for (const name in groupedCart) {
-            const quantity = groupedCart[name];
+        for (const productId in groupedCart) {
+            const item = groupedCart[productId];
+            const quantity = item.quantity;
+            const itemTotalPrice = item.price * quantity; // Calculate total for this item type
+            totalCartPrice += itemTotalPrice; // Add to overall total
+
             const listItem = document.createElement('li');
             listItem.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');
             listItem.innerHTML = `
-                ${quantity} x ${name}
-                <button class="btn btn-danger btn-sm remove-from-cart-btn" data-product-name="${name}">Remove</button>
+                ${quantity} x ${item.name} - ${formatCurrency(itemTotalPrice, item.currency)}
+                <button class="btn btn-danger btn-sm remove-from-cart-btn" data-product-id="${item.id}">Remove</button>
             `;
             cartItemsList.appendChild(listItem);
         }
     }
 
     if (cartCount) cartCount.textContent = cart.length;
-    if (cartTotal) cartTotal.textContent = cart.length;
+    // MODIFIED: cartTotal now shows the calculated monetary total
+    if (cartTotal) cartTotal.textContent = formatCurrency(totalCartPrice, 'NGN'); // Assuming default NGN for cart total
     if (floatingCartCount) floatingCartCount.textContent = cart.length;
 }
 
-function addToCart(productName) {
-    cart.push({ name: productName });
+// MODIFIED: addToCart to accept the full product object
+function addToCart(product) {
+    // Only add essential properties to cart to avoid bloating it
+    cart.push({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        currency: product.currency
+    });
     updateCartDisplay();
     flashModalBody();
 }
 
-function removeFromCart(productNameToRemove) {
-    const indexToRemove = cart.findIndex(item => item.name === productNameToRemove);
+// MODIFIED: removeFromCart to use product ID for accuracy
+function removeFromCart(productIdToRemove) {
+    const indexToRemove = cart.findIndex(item => item.id === productIdToRemove);
     if (indexToRemove > -1) {
         cart.splice(indexToRemove, 1);
     }
     updateCartDisplay();
 }
 
+// MODIFIED: updateModalContent to display price and category
 function updateModalContent() {
     if (currentProducts.length > 0 && modalProductImage && modalProductName && modalAddToCartBtn) {
         const product = currentProducts[currentProductIndex];
         modalProductImage.src = product.imageUrl;
         modalProductName.textContent = product.name;
-        modalAddToCartBtn.dataset.productName = product.name;
+        // NEW: Update modal price and category
+        if (modalProductPrice) {
+            modalProductPrice.textContent = formatCurrency(product.price, product.currency);
+        }
+        if (modalProductCategory) {
+            modalProductCategory.textContent = `Category: ${product.collection}`;
+        }
+        // MODIFIED: Pass the full product object to addToCart handler
+        modalAddToCartBtn.onclick = () => addToCart(product); // Directly assign handler to avoid re-binding
+
+        // You might want to update the dataset for the button for consistency, but `onclick` is more direct
+        modalAddToCartBtn.dataset.productId = product.id;
     }
 }
 
@@ -434,32 +497,37 @@ function applyMobileLimits() {
 function attachProductCardListeners() {
     if (productModalElement && productModal) {
         document.querySelectorAll('.extend-btn').forEach(button => {
-            button.removeEventListener('click', handleExtendButtonClick); 
+            button.removeEventListener('click', handleExtendButtonClick);
             button.addEventListener('click', handleExtendButtonClick);
         });
     }
 
     document.querySelectorAll('.add-to-cart-btn').forEach(button => {
-        button.removeEventListener('click', handleAddToCartButtonClick); 
+        button.removeEventListener('click', handleAddToCartButtonClick);
         button.addEventListener('click', handleAddToCartButtonClick);
     });
 
     document.querySelectorAll('.show-more-toggle-btn').forEach(button => {
-        button.removeEventListener('click', handleShowMoreToggleClick); 
+        button.removeEventListener('click', handleShowMoreToggleClick);
         button.addEventListener('click', handleShowMoreToggleClick);
     });
 }
 
 // Handlers for event delegation on dynamically created elements
+// MODIFIED: handleExtendButtonClick to capture full product data for modal
 function handleExtendButtonClick(e) {
     const productCard = e.target.closest('.product-card');
     const collectionRow = e.target.closest('.collection-images');
 
     if (productCard && collectionRow) {
+        // Capture all relevant product data attributes
         currentProducts = Array.from(collectionRow.querySelectorAll('.product-card')).map(card => ({
             id: card.dataset.productId,
             name: card.dataset.productName,
-            imageUrl: card.dataset.productImg
+            imageUrl: card.dataset.productImg,
+            price: parseFloat(card.dataset.productPrice), // Parse price as float
+            currency: card.dataset.productCurrency,
+            collection: card.dataset.productCategory // Add category for modal display
         }));
 
         currentProductIndex = currentProducts.findIndex(p => p.id === productCard.dataset.productId);
@@ -468,19 +536,22 @@ function handleExtendButtonClick(e) {
     }
 }
 
+// MODIFIED: handleAddToCartButtonClick to pass full product data
 function handleAddToCartButtonClick(e) {
     const targetButton = e.target.closest('.add-to-cart-btn');
-    let productName = targetButton.dataset.productName;
+    const productCard = targetButton.closest('.product-card');
 
-    if (!productName) {
-        const productCard = targetButton.closest('.product-card');
-        if (productCard) {
-            productName = productCard.dataset.productName;
-        }
-    }
-
-    if (productName) {
-        addToCart(productName);
+    if (productCard) {
+        // Reconstruct product object from data attributes
+        const productToAdd = {
+            id: productCard.dataset.productId,
+            name: productCard.dataset.productName,
+            imageUrl: productCard.dataset.productImg,
+            price: parseFloat(productCard.dataset.productPrice),
+            currency: productCard.dataset.productCurrency,
+            collection: productCard.dataset.productCategory
+        };
+        addToCart(productToAdd);
     }
 }
 
@@ -602,9 +673,10 @@ document.addEventListener('DOMContentLoaded', async function() {
     // Remove from Cart - this is better handled by event delegation on a static parent
     document.addEventListener('click', (e) => {
         if (e.target.classList.contains('remove-from-cart-btn')) {
-            const productNameToRemove = e.target.dataset.productName;
-            if (productNameToRemove) {
-                removeFromCart(productNameToRemove);
+            // MODIFIED: Use data-product-id for removal
+            const productIdToRemove = e.target.dataset.productId;
+            if (productIdToRemove) {
+                removeFromCart(productIdToRemove);
             }
         }
     });
@@ -618,16 +690,28 @@ document.addEventListener('DOMContentLoaded', async function() {
                 return;
             }
 
+            // MODIFIED: Group cart by product ID and include price
             const groupedCart = cart.reduce((acc, item) => {
-                acc[item.name] = (acc[item.name] || 0) + 1;
+                const key = item.id;
+                if (!acc[key]) {
+                    acc[key] = { ...item, quantity: 0, totalPrice: 0 };
+                }
+                acc[key].quantity++;
+                acc[key].totalPrice += item.price;
                 return acc;
             }, {});
 
             let message = "Hello, I'd like to inquire about the following items from Mercy's Closet Luxe:\n\n";
-            for (const name in groupedCart) {
-                message += `${groupedCart[name]} x ${name}\n`;
+            let overallCartTotal = 0; // NEW: Calculate overall total for WhatsApp message
+
+            for (const productId in groupedCart) {
+                const item = groupedCart[productId];
+                message += `${item.quantity} x ${item.name} - ${formatCurrency(item.totalPrice, item.currency)}\n`;
+                overallCartTotal += item.totalPrice; // Add to overall total
             }
+            message += `\nTotal estimated price: ${formatCurrency(overallCartTotal, 'NGN')}`; // Add overall total
             message += "\nPlease let me know about their prices and availability. Thank you!";
+
 
             const phoneNumber = "2349015414195";
             const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
@@ -652,7 +736,6 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     if (modalNextBtn) {
         modalNextBtn.addEventListener('click', () => {
-            // REMOVED: modalNextIndex = (currentProductIndex + 1) % currentProducts.length; // This line was a duplicate/error
             currentProductIndex = (currentProductIndex + 1) % currentProducts.length;
             updateModalContent();
         });
