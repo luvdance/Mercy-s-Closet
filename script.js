@@ -43,6 +43,7 @@ const modalPrevBtn = document.getElementById('modalPrevBtn');
 const modalNextBtn = document.getElementById('modalNextBtn');
 const modalAddToCartBtn = document.getElementById('modalAddToCartBtn');
 const modalBody = document.querySelector('#productModal .modal-body');
+const collectionFilter = document.getElementById('collectionFilter'); // ADDED: Global reference for the filter
 
 let productModal;
 if (productModalElement) {
@@ -58,57 +59,47 @@ const collectionsCarouselElement = document.getElementById('collectionsCarousel'
 // --- Firebase Functions --
 async function fetchProducts() {
     try {
-        // Get the app ID provided by the Canvas environment.
-        // Fallback to your projectId for local testing if __app_id isn't available.
-        const appId = firebaseConfig.appId; 
+        const appId = firebaseConfig.appId; // CORRECTED: Now always uses the correct appId from firebaseConfig
 
-        // Construct the full collection path based on your Firestore rules and upload location.
+        console.log("Client-side appId being used (CORRECTED):", appId); 
+
         const productsCollectionPath = `artifacts/${appId}/public/data/products`;
 
-        // --- ADDED LOGS START ---
-        console.log("Client-side Firestore collection path:", productsCollectionPath); 
-        // --- ADDED LOGS END ---
+        console.log("Client-side Firestore collection path (CORRECTED):", productsCollectionPath); 
 
-        // Query products ordered by 'createdAt' (newest first)
-        const q = query(collection(db, productsCollectionPath), orderBy("timestamp", "desc")); // <--- NOTE: Changed to 'timestamp' as per your upload app
+        const q = query(collection(db, productsCollectionPath), orderBy("timestamp", "desc")); 
 
         const querySnapshot = await getDocs(q);
         
-        // --- ADDED LOGS START ---
         console.log("Number of documents fetched from Firestore:", querySnapshot.docs.length); 
         if (querySnapshot.empty) {
             console.warn("No documents found in the specified Firestore collection path.");
         }
-        // --- ADDED LOGS END ---
 
         const products = [];
 
         for (const doc of querySnapshot.docs) {
             const productData = doc.data();
-            // Since your upload app already stores the full download URL,
-            // we can use productData.imageUrl directly.
             let imageUrl = productData.imageUrl; 
 
             products.push({
                 id: doc.id,
                 ...productData,
-                imageUrl: imageUrl || 'https://via.placeholder.com/300x200?text=Image+Not+Found', // Fallback for missing image URL
+                imageUrl: imageUrl || 'https://via.placeholder.com/300x200?text=Image+Not+Found',
+                collection: productData.category // ASSUMPTION: 'category' field in Firestore holds the collection name
             });
         }
         
-        // Sort by timestamp again in JS just to be absolutely sure, although Firestore query should handle it
         products.sort((a, b) => {
             if (a.timestamp && b.timestamp) {
-                // Assuming timestamp is a Firebase Timestamp, convert to Date for comparison
                 return b.timestamp.toDate().getTime() - a.timestamp.toDate().getTime();
             }
-            return 0; // Don't reorder if timestamps are missing
+            return 0;
         });
 
         return groupByCollection(products);
     } catch (error) {
         console.error("Error fetching products:", error);
-        // Show an error message to the user or a retry button
         const carouselInner = document.querySelector('#collectionsCarousel .carousel-inner');
         if (carouselInner) {
             carouselInner.innerHTML = `
@@ -130,14 +121,35 @@ function groupByCollection(products) {
     const collections = {};
 
     products.forEach(product => {
-        if (!collections[product.collection]) {
-            collections[product.collection] = [];
+        // Use the 'collection' property (which we mapped from 'category' in fetchProducts)
+        const collectionKey = product.collection || 'Uncategorized'; // Fallback if collection/category is missing
+        if (!collections[collectionKey]) {
+            collections[collectionKey] = [];
         }
-        collections[product.collection].push(product);
+        collections[collectionKey].push(product);
     });
 
     return collections;
 }
+
+// NEW: Function to populate the dropdown filter
+function populateCollectionFilter(collections) {
+    if (!collectionFilter) return;
+
+    collectionFilter.innerHTML = '<option value="all">All Collections</option>'; 
+
+    const collectionNames = Object.keys(collections).sort(); 
+
+    collectionNames.forEach(name => {
+        if (name !== 'Uncategorized') { 
+            const option = document.createElement('option');
+            option.value = name;
+            option.textContent = name;
+            collectionFilter.appendChild(option);
+        }
+    });
+}
+
 
 async function renderProducts() {
     const productsByCollection = await fetchProducts();
@@ -145,52 +157,75 @@ async function renderProducts() {
 
     carouselInner.innerHTML = ''; // Clear existing content
 
-    let isFirst = true;
-    for (const [collectionName, products] of Object.entries(productsByCollection)) {
-        const carouselItem = document.createElement('div');
-        carouselItem.className = `carousel-item ${isFirst ? 'active' : ''}`;
-        carouselItem.dataset.collectionName = collectionName;
+    populateCollectionFilter(productsByCollection); // Call this function here
 
-        carouselItem.innerHTML = `
-            <div class="row justify-content-center align-items-center py-4">
-                <div class="col-12 mb-4 text-start">
-                    <h3 class="collection-title-sub fw-bold text-dark">
-                        <span class="collection-dash">-</span> 
-                        <i class="fas ${getCollectionIcon(collectionName)} me-2 purple-icon"></i>
-                        ${collectionName} 
-                        <span class="collection-dash">-</span>
-                    </h3>
-                </div>
-                <div class="col-12">
-                    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4 collection-images" 
-                        data-collection-name="${collectionName}" data-mobile-limit="8">
-                        ${products.map(product => createProductCard(product)).join('')}
+    const collectionNames = Object.keys(productsByCollection);
+
+    if (collectionNames.length === 0) { // If no collections found at all
+        carouselInner.innerHTML = `
+            <div class="carousel-item active">
+                <div class="row justify-content-center align-items-center py-4">
+                    <div class="col-12 text-center">
+                        <p class="mt-3">No collections available currently.</p>
                     </div>
-                    ${products.length > 8 ?
-                        `<button class="btn btn-secondary mt-3 show-more-toggle-btn" 
-                                data-collection-target="${collectionName}" style="display: none;">
-                            Show More <i class="fas fa-chevron-down"></i>
-                        </button>` : ''}
                 </div>
             </div>
         `;
+    } else {
+        let isFirst = true;
+        for (const [collectionName, products] of Object.entries(productsByCollection)) {
+            const carouselItem = document.createElement('div');
+            carouselItem.className = `carousel-item ${isFirst ? 'active' : ''}`;
+            carouselItem.dataset.collectionName = collectionName; // Important for filter
 
-        carouselInner.appendChild(carouselItem);
-        isFirst = false;
+            let productsHtml = '';
+            if (products.length === 0) { // Should not happen if productsByCollection is grouped properly, but as a fallback
+                productsHtml = `<p class="text-center text-muted mt-3">No items available in ${collectionName} currently.</p>`;
+            } else {
+                productsHtml = products.map(product => createProductCard(product)).join('');
+            }
+
+            carouselItem.innerHTML = `
+                <div class="row justify-content-center align-items-center py-4">
+                    <div class="col-12 mb-4 text-start">
+                        <h3 class="collection-title-sub fw-bold text-dark">
+                            <span class="collection-dash">-</span> 
+                            <i class="fas ${getCollectionIcon(collectionName)} me-2 purple-icon"></i>
+                            ${collectionName} 
+                            <span class="collection-dash">-</span>
+                        </h3>
+                    </div>
+                    <div class="col-12">
+                        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4 collection-images" 
+                            data-collection-name="${collectionName}" data-mobile-limit="8">
+                            ${productsHtml} 
+                        </div>
+                        ${products.length > 8 ?
+                            `<button class="btn btn-secondary mt-3 show-more-toggle-btn" 
+                                    data-collection-target="${collectionName}" style="display: none;">
+                                Show More <i class="fas fa-chevron-down"></i>
+                            </button>` : ''}
+                    </div>
+                </div>
+            `;
+
+            carouselInner.appendChild(carouselItem);
+            isFirst = false;
+        }
     }
 
     // Re-initialize Bootstrap Carousel after content is loaded
     if (collectionsBsCarousel) {
-        collectionsBsCarousel.dispose(); // Destroy existing instance
+        collectionsBsCarousel.dispose(); 
     }
     if (collectionsCarouselElement) {
         collectionsBsCarousel = new bootstrap.Carousel(collectionsCarouselElement, {
-            interval: false // Keep interval false for manual navigation
+            interval: false 
         });
     }
 
-    applyMobileLimits(); // Apply limits after rendering
-    attachProductCardListeners(); // Re-attach listeners for new cards
+    applyMobileLimits(); 
+    attachProductCardListeners(); 
 }
 
 function getCollectionIcon(collectionName) {
@@ -204,15 +239,15 @@ function getCollectionIcon(collectionName) {
 }
 
 function createProductCard(product) {
-    console.log("Product data received by createProductCard:", product);
-    console.log("imageUrl for this product:", product.imageUrl); // <--- ADD THIS LINE
+    console.log("Product data received by createProductCard:", product); 
+    console.log("imageUrl for this product:", product.imageUrl); 
     return `
         <div class="col">
             <div class="card h-100 product-card" 
                 data-product-id="${product.id}" 
                 data-product-name="${product.name}" 
                 data-product-img="${product.imageUrl}">
-                <img src="${product.imageUrl}" // This is the line that uses the URL
+                <img src="${product.imageUrl}" 
                      class="card-img-top img-fluid rounded shadow-sm" 
                      alt="${product.name}"
                      loading="lazy"
@@ -350,18 +385,18 @@ function applyMobileLimits() {
 function attachProductCardListeners() {
     if (productModalElement && productModal) {
         document.querySelectorAll('.extend-btn').forEach(button => {
-            button.removeEventListener('click', handleExtendButtonClick); // Prevent duplicate listeners
+            button.removeEventListener('click', handleExtendButtonClick); 
             button.addEventListener('click', handleExtendButtonClick);
         });
     }
 
     document.querySelectorAll('.add-to-cart-btn').forEach(button => {
-        button.removeEventListener('click', handleAddToCartButtonClick); // Prevent duplicate listeners
+        button.removeEventListener('click', handleAddToCartButtonClick); 
         button.addEventListener('click', handleAddToCartButtonClick);
     });
 
     document.querySelectorAll('.show-more-toggle-btn').forEach(button => {
-        button.removeEventListener('click', handleShowMoreToggleClick); // Prevent duplicate listeners
+        button.removeEventListener('click', handleShowMoreToggleClick); 
         button.addEventListener('click', handleShowMoreToggleClick);
     });
 }
@@ -567,7 +602,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 
     if (modalNextBtn) {
-        modalNextBtn.addEventListener('click', () => {
+        modalNextIndex = (currentProductIndex + 1) % currentProducts.length;
             currentProductIndex = (currentProductIndex + 1) % currentProducts.length;
             updateModalContent();
         });
@@ -575,7 +610,6 @@ document.addEventListener('DOMContentLoaded', async function() {
 
 
     // Collection Filter
-    const collectionFilter = document.getElementById('collectionFilter');
     if (collectionFilter) { // Check if filter exists
         collectionFilter.addEventListener('change', function() {
             const selectedCollection = this.value;
@@ -595,8 +629,8 @@ document.addEventListener('DOMContentLoaded', async function() {
                     if (foundIndex !== -1) {
                         collectionsBsCarousel.to(foundIndex);
                     } else {
-                        // Fallback to first item if collection not found
-                        collectionsBsCarousel.to(0);
+                        // If selected collection not found (e.g., no items in it), default to showing all or first slide
+                        collectionsBsCarousel.to(0); // Go to the first item (e.g., "All Collections" if you add one)
                     }
                 }
             }
