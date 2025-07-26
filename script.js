@@ -151,13 +151,15 @@ function populateCollectionFilter(collections) {
 }
 
 
+// ... (rest of your script.js code above renderProducts remains the same)
+
 async function renderProducts() {
     const productsByCollection = await fetchProducts();
     const carouselInner = document.querySelector('#collectionsCarousel .carousel-inner');
 
     carouselInner.innerHTML = ''; // Clear existing content
 
-    populateCollectionFilter(productsByCollection); // Call this function here
+    populateCollectionFilter(productsByCollection); // Populates the dropdown
 
     const collectionNames = Object.keys(productsByCollection);
 
@@ -172,14 +174,60 @@ async function renderProducts() {
             </div>
         `;
     } else {
-        let isFirst = true;
+        // Step 1: Create a single array of ALL products for the "All Collections" view
+        let allProducts = [];
+        for (const collectionName in productsByCollection) {
+            allProducts = allProducts.concat(productsByCollection[collectionName]);
+        }
+        // Ensure allProducts are sorted consistently (e.g., by timestamp)
+        allProducts.sort((a, b) => {
+            if (a.timestamp && b.timestamp) {
+                return b.timestamp.toDate().getTime() - a.timestamp.toDate().getTime();
+            }
+            return 0;
+        });
+
+        // Step 2: Create the "All Collections" carousel item first
+        const allCollectionsCarouselItem = document.createElement('div');
+        allCollectionsCarouselItem.className = `carousel-item active`; // Make it active by default
+        allCollectionsCarouselItem.dataset.collectionName = "all"; // Identifier for this "all" view
+
+        allCollectionsCarouselItem.innerHTML = `
+            <div class="row justify-content-center align-items-center py-4">
+                <div class="col-12 mb-4 text-start">
+                    <h3 class="collection-title-sub fw-bold text-dark">
+                        <span class="collection-dash">-</span> 
+                        <i class="fas fa-boxes me-2 purple-icon"></i> All Collections 
+                        <span class="collection-dash">-</span>
+                    </h3>
+                </div>
+                <div class="col-12">
+                    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4 collection-images" 
+                        data-collection-name="all" data-mobile-limit="8">
+                        ${allProducts.map(product => createProductCard(product)).join('')} 
+                    </div>
+                    ${allProducts.length > 8 ?
+                        `<button class="btn btn-secondary mt-3 show-more-toggle-btn" 
+                                data-collection-target="all" style="display: none;">
+                            Show More <i class="fas fa-chevron-down"></i>
+                        </button>` : ''}
+                </div>
+            </div>
+        `;
+        carouselInner.appendChild(allCollectionsCarouselItem);
+
+        // Step 3: Now iterate through individual collections (start from the second item)
+        let isFirst = false; // "All Collections" is now the first
         for (const [collectionName, products] of Object.entries(productsByCollection)) {
+            // Skip 'Uncategorized' if you don't want a dedicated slide for it
+            if (collectionName === 'Uncategorized' && products.length === 0) continue; 
+
             const carouselItem = document.createElement('div');
-            carouselItem.className = `carousel-item ${isFirst ? 'active' : ''}`;
-            carouselItem.dataset.collectionName = collectionName; // Important for filter
+            carouselItem.className = `carousel-item`; // No 'active' class here
+            carouselItem.dataset.collectionName = collectionName; 
 
             let productsHtml = '';
-            if (products.length === 0) { // Should not happen if productsByCollection is grouped properly, but as a fallback
+            if (products.length === 0) { 
                 productsHtml = `<p class="text-center text-muted mt-3">No items available in ${collectionName} currently.</p>`;
             } else {
                 productsHtml = products.map(product => createProductCard(product)).join('');
@@ -210,7 +258,6 @@ async function renderProducts() {
             `;
 
             carouselInner.appendChild(carouselItem);
-            isFirst = false;
         }
     }
 
@@ -222,6 +269,8 @@ async function renderProducts() {
         collectionsBsCarousel = new bootstrap.Carousel(collectionsCarouselElement, {
             interval: false 
         });
+        // Ensure the "All Collections" slide is shown initially
+        collectionsBsCarousel.to(0);
     }
 
     applyMobileLimits(); 
