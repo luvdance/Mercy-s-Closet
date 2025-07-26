@@ -61,10 +61,6 @@ async function fetchProducts() {
         // Get the app ID provided by the Canvas environment.
         // Fallback to your projectId for local testing if __app_id isn't available.
         const appId = firebaseConfig.appId; 
-        
-        // --- ADDED LOGS START ---
-        console.log("Client-side appId being used:", appId); 
-        // --- ADDED LOGS END ---
 
         // Construct the full collection path based on your Firestore rules and upload location.
         const productsCollectionPath = `artifacts/${appId}/public/data/products`;
