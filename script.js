@@ -55,31 +55,27 @@ let currentProductIndex = 0; // Index for modal navigation
 let collectionsBsCarousel; // Bootstrap Carousel instance
 const collectionsCarouselElement = document.getElementById('collectionsCarousel');
 
-// --- Firebase Functions ---
+// --- Firebase Functions --
 async function fetchProducts() {
     try {
-        const appId = typeof __app_id !== 'undefined' ? __app_id : firebaseConfig.projectId;
+        // Get the app ID provided by the Canvas environment.
+        // Fallback to your projectId for local testing if __app_id isn't available.
+        const appId = typeof __app_id !== 'undefined' ? __app_id : firebaseConfig.projectId; 
+
+        // Construct the full collection path based on your Firestore rules and upload location.
         const productsCollectionPath = `artifacts/${appId}/public/data/products`;
 
-        const q = query(collection(db, productsCollectionPath), orderBy("createdAt", "desc"));
+        // Query products ordered by 'createdAt' (newest first)
+        const q = query(collection(db, productsCollectionPath), orderBy("timestamp", "desc")); // <--- NOTE: Changed to 'timestamp' as per your upload app
+
         const querySnapshot = await getDocs(q);
         const products = [];
 
         for (const doc of querySnapshot.docs) {
             const productData = doc.data();
-            let imageUrl = productData.imageUrl;
-
-            // --- UNCOMMENT THIS SECTION ---
-            if (imageUrl && !imageUrl.startsWith('http')) { // Basic check if it's not already a URL
-                try {
-                    const imageRef = ref(storage, imageUrl);
-                    imageUrl = await getDownloadURL(imageRef);
-                } catch (imgError) {
-                    console.warn(`Could not get download URL for ${productData.name}:`, imgError);
-                    imageUrl = 'https://via.placeholder.com/300x200?text=Image+Load+Error'; // Fallback image for failed download URL
-                }
-            }
-            // --- END UNCOMMENTED SECTION ---
+            // Since your upload app already stores the full download URL,
+            // we can use productData.imageUrl directly.
+            let imageUrl = productData.imageUrl; 
 
             products.push({
                 id: doc.id,
@@ -88,11 +84,11 @@ async function fetchProducts() {
             });
         }
         
-        // Sort by createdAt again in JS just to be absolutely sure, although Firestore query should handle it
+        // Sort by timestamp again in JS just to be absolutely sure, although Firestore query should handle it
         products.sort((a, b) => {
-            if (a.createdAt && b.createdAt) {
-                // Assuming createdAt is a Firebase Timestamp, convert to Date for comparison
-                return b.createdAt.toDate().getTime() - a.createdAt.toDate().getTime();
+            if (a.timestamp && b.timestamp) {
+                // Assuming timestamp is a Firebase Timestamp, convert to Date for comparison
+                return b.timestamp.toDate().getTime() - a.timestamp.toDate().getTime();
             }
             return 0; // Don't reorder if timestamps are missing
         });
