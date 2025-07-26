@@ -192,6 +192,8 @@ function getCollectionIcon(collectionName) {
 }
 
 function createProductCard(product) {
+    console.log("Product data received by createProductCard:", product);
+    console.log("imageUrl for this product:", product.imageUrl); // <--- ADD THIS LINE
     return `
         <div class="col">
             <div class="card h-100 product-card" 
