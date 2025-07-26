@@ -198,7 +198,7 @@ function createProductCard(product) {
                 data-product-id="${product.id}" 
                 data-product-name="${product.name}" 
                 data-product-img="${product.imageUrl}">
-                <img src="${product.imageUrl}" 
+                <img src="${product.imageUrl}" // This is the line that uses the URL
                      class="card-img-top img-fluid rounded shadow-sm" 
                      alt="${product.name}"
                      loading="lazy"
