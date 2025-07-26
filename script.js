@@ -60,7 +60,7 @@ async function fetchProducts() {
     try {
         // Get the app ID provided by the Canvas environment.
         // Fallback to your projectId for local testing if __app_id isn't available.
-        const appId = typeof __app_id !== 'undefined' ? __app_id : firebaseConfig.projectId; 
+        const appId = firebaseConfig.appId; 
         
         // --- ADDED LOGS START ---
         console.log("Client-side appId being used:", appId); 
