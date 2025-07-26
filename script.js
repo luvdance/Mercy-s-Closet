@@ -61,14 +61,30 @@ async function fetchProducts() {
         // Get the app ID provided by the Canvas environment.
         // Fallback to your projectId for local testing if __app_id isn't available.
         const appId = typeof __app_id !== 'undefined' ? __app_id : firebaseConfig.projectId; 
+        
+        // --- ADDED LOGS START ---
+        console.log("Client-side appId being used:", appId); 
+        // --- ADDED LOGS END ---
 
         // Construct the full collection path based on your Firestore rules and upload location.
         const productsCollectionPath = `artifacts/${appId}/public/data/products`;
+
+        // --- ADDED LOGS START ---
+        console.log("Client-side Firestore collection path:", productsCollectionPath); 
+        // --- ADDED LOGS END ---
 
         // Query products ordered by 'createdAt' (newest first)
         const q = query(collection(db, productsCollectionPath), orderBy("timestamp", "desc")); // <--- NOTE: Changed to 'timestamp' as per your upload app
 
         const querySnapshot = await getDocs(q);
+        
+        // --- ADDED LOGS START ---
+        console.log("Number of documents fetched from Firestore:", querySnapshot.docs.length); 
+        if (querySnapshot.empty) {
+            console.warn("No documents found in the specified Firestore collection path.");
+        }
+        // --- ADDED LOGS END ---
+
         const products = [];
 
         for (const doc of querySnapshot.docs) {
