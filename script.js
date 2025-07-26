@@ -602,7 +602,8 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 
     if (modalNextBtn) {
-        modalNextIndex = (currentProductIndex + 1) % currentProducts.length;
+        modalNextBtn.addEventListener('click', () => {
+            // REMOVED: modalNextIndex = (currentProductIndex + 1) % currentProducts.length; // This line was a duplicate/error
             currentProductIndex = (currentProductIndex + 1) % currentProducts.length;
             updateModalContent();
         });
