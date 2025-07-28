@@ -844,9 +844,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     updateCartDisplay();
 });
 
-// Window Resize Handler
-window.addEventListener('resize', applyMobileLimits);
-
 // --- Typing Animation for Hero Subtitle ---
 const heroSubtitle = document.getElementById('heroSubtitle'); // Assuming you have an element with this ID for the subtitle
 const phrases = [
@@ -896,3 +893,6 @@ document.addEventListener('DOMContentLoaded', () => {
         typeWriter();
     }
 });
+
+// Window Resize Handler
+window.addEventListener('resize', applyMobileLimits);
