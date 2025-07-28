@@ -846,3 +846,53 @@ document.addEventListener('DOMContentLoaded', async function() {
 
 // Window Resize Handler
 window.addEventListener('resize', applyMobileLimits);
+
+// --- Typing Animation for Hero Subtitle ---
+const heroSubtitle = document.getElementById('heroSubtitle'); // Assuming you have an element with this ID for the subtitle
+const phrases = [
+    "Your Style, Your Statement.",
+    "Unleash Your Inner Fashionista.",
+    "Quality, Comfort, Confidence."
+];
+let phraseIndex = 0;
+let charIndex = 0;
+let isDeleting = false;
+const typingSpeed = 100; // Milliseconds per character
+const deletingSpeed = 50; // Milliseconds per character
+const pauseBeforeDelete = 1500; // Milliseconds to pause before deleting
+const pauseBeforeType = 500; // Milliseconds to pause before typing next phrase
+
+function typeWriter() {
+    if (!heroSubtitle) return;
+
+    const currentPhrase = phrases[phraseIndex];
+
+    if (isDeleting) {
+        heroSubtitle.textContent = currentPhrase.substring(0, charIndex - 1);
+        charIndex--;
+    } else {
+        heroSubtitle.textContent = currentPhrase.substring(0, charIndex + 1);
+        charIndex++;
+    }
+
+    let currentSpeed = isDeleting ? deletingSpeed : typingSpeed;
+
+    if (!isDeleting && charIndex === currentPhrase.length) {
+        currentSpeed = pauseBeforeDelete;
+        isDeleting = true;
+    } else if (isDeleting && charIndex === 0) {
+        isDeleting = false;
+        phraseIndex = (phraseIndex + 1) % phrases.length;
+        currentSpeed = pauseBeforeType;
+    }
+
+    setTimeout(typeWriter, currentSpeed);
+}
+
+// Start the typing animation when the DOM is fully loaded
+document.addEventListener('DOMContentLoaded', () => {
+    // Ensure the heroSubtitle element exists before starting the animation
+    if (document.getElementById('heroSubtitle')) {
+        typeWriter();
+    }
+});
