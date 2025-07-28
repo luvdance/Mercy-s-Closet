@@ -290,7 +290,7 @@ async function renderProducts() {
     }
     if (collectionsCarouselElement) {
         collectionsBsCarousel = new bootstrap.Carousel(collectionsCarouselElement, {
-            interval: false
+            interval: 20000
         });
         // Ensure the "All Collections" slide is shown initially
         collectionsBsCarousel.to(0);
