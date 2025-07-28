@@ -1891,3 +1891,15 @@ body.dark-mode ::-webkit-scrollbar-thumb:hover {
     /* border: 1px solid #28a745 !important; */
 }
 
+/* Typing cursor styles */
+.typing-cursor {
+    opacity: 1;
+    animation: blink 1s infinite;
+    margin-left: 2px;
+    font-weight: bold;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
