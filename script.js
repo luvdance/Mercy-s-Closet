@@ -578,9 +578,65 @@ function handleShowMoreToggleClick() {
     }
 }
 
+function initTypingAnimation() {
+    const heroSubtitle = document.querySelector('.hero-subtitle');
+    if (!heroSubtitle) return;
+
+    // Add cursor element
+    heroSubtitle.innerHTML += '<span class="typing-cursor">|</span>';
+    const cursor = heroSubtitle.querySelector('.typing-cursor');
+
+    const texts = [
+        "Luxury fashion at your fingertips",
+        "Premium quality collections",
+        "Exclusive designs for you",
+        "Style redefined"
+    ];
+    let currentIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+    let isEnd = false;
+    let cursorVisible = true;
+
+    // Cursor blinking effect
+    function blinkCursor() {
+        cursorVisible = !cursorVisible;
+        cursor.style.opacity = cursorVisible ? '1' : '0';
+        setTimeout(blinkCursor, 500);
+    }
+
+    function type() {
+        const currentText = texts[currentIndex];
+        
+        if (isDeleting) {
+            heroSubtitle.firstChild.textContent = currentText.substring(0, charIndex - 1);
+            charIndex--;
+        } else {
+            heroSubtitle.firstChild.textContent = currentText.substring(0, charIndex + 1);
+            charIndex++;
+        }
+
+        if (!isDeleting && charIndex === currentText.length) {
+            isEnd = true;
+            setTimeout(type, 1500); // Pause at end of text
+        } else if (isDeleting && charIndex === 0) {
+            isDeleting = false;
+            currentIndex = (currentIndex + 1) % texts.length;
+            setTimeout(type, 500);
+        } else {
+            const speed = isDeleting ? 50 : 100; // Faster typing/deleting
+            setTimeout(type, isEnd ? (speed / 2) : speed);
+        }
+    }
+
+    // Start effects
+    setTimeout(blinkCursor, 500);
+    setTimeout(type, 1000);
+}
 
 // --- Event Listeners ---
 document.addEventListener('DOMContentLoaded', async function() {
+    initTypingAnimation();
     // Initialize products
     await renderProducts();
 
