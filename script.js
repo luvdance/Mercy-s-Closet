@@ -616,37 +616,37 @@ document.addEventListener('DOMContentLoaded', async function() {
     });
 
     // Hero Carousel
-    let heroBsCarousel;
-    if (heroCarousel) {
-        heroBsCarousel = new bootstrap.Carousel(heroCarousel, {
-            interval: 20000,
-            ride: 'carousel',
-            pause: false,
-            wrap: true
-        });
+let heroBsCarousel;
+if (heroCarousel) {
+    heroBsCarousel = new bootstrap.Carousel(heroCarousel, {
+        interval: 20000, // 20 seconds interval
+        ride: 'carousel',
+        pause: 'hover', // Pause on hover
+        wrap: true
+    });
 
-        // Hero carousel touch/swipe support
-        let touchStartX = 0;
-        let touchEndX = 0;
+    // Hero carousel touch/swipe support
+    let touchStartX = 0;
+    let touchEndX = 0;
 
-        heroCarousel.addEventListener('touchstart', (e) => {
-            touchStartX = e.changedTouches[0].screenX;
-        }, { passive: true });
+    heroCarousel.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
 
-        heroCarousel.addEventListener('touchend', (e) => {
-            touchEndX = e.changedTouches[0].screenX;
-            handleSwipe();
-        }, { passive: true });
+    heroCarousel.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+    }, { passive: true });
 
-        function handleSwipe() {
-            const swipeThreshold = 50;
-            if (touchEndX < touchStartX - swipeThreshold) {
-                heroBsCarousel.next();
-            } else if (touchEndX > touchStartX + swipeThreshold) {
-                heroBsCarousel.prev();
-            }
+    function handleSwipe() {
+        const swipeThreshold = 50;
+        if (touchEndX < touchStartX - swipeThreshold) {
+            heroBsCarousel.next();
+        } else if (touchEndX > touchStartX + swipeThreshold) {
+            heroBsCarousel.prev();
         }
     }
+}
 
     // Shopping Cart Functionality
     if (cartToggleBtn && shoppingCart && closeCartBtn) {
