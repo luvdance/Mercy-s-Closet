@@ -581,52 +581,6 @@ function handleShowMoreToggleClick() {
 
 // --- Event Listeners ---
 document.addEventListener('DOMContentLoaded', async function() {
-        // Typing animation for hero subtitle
-    function initTypingAnimation() {
-        const heroSubtitle = document.querySelector('.hero-subtitle');
-        if (!heroSubtitle) return;
-
-        const texts = [
-            "Luxury fashion at your fingertips",
-            "Premium quality collections",
-            "Exclusive designs for you",
-            "Style redefined"
-        ];
-        let currentIndex = 0;
-        let charIndex = 0;
-        let isDeleting = false;
-        let isEnd = false;
-
-        function type() {
-            const currentText = texts[currentIndex];
-            
-            if (isDeleting) {
-                heroSubtitle.textContent = currentText.substring(0, charIndex - 1);
-                charIndex--;
-            } else {
-                heroSubtitle.textContent = currentText.substring(0, charIndex + 1);
-                charIndex++;
-            }
-
-            if (!isDeleting && charIndex === currentText.length) {
-                isEnd = true;
-                setTimeout(type, 2000);
-            } else if (isDeleting && charIndex === 0) {
-                isDeleting = false;
-                currentIndex = (currentIndex + 1) % texts.length;
-                setTimeout(type, 500);
-            } else {
-                const speed = isDeleting ? 100 : 150;
-                setTimeout(type, isEnd ? (speed / 2) : speed);
-            }
-        }
-
-        setTimeout(type, 1000);
-    }
-
-    // Initialize typing animation
-    initTypingAnimation();
-    
     // Initialize products
     await renderProducts();
 
@@ -662,38 +616,37 @@ document.addEventListener('DOMContentLoaded', async function() {
     });
 
     // Hero Carousel
-    // Hero Carousel - Enhanced
-let heroBsCarousel;
-if (heroCarousel) {
-    heroBsCarousel = new bootstrap.Carousel(heroCarousel, {
-        interval: 5000, // Reduced from 20000 to 5000 for better UX
-        ride: 'carousel',
-        pause: false,
-        wrap: true
-    });
+    let heroBsCarousel;
+    if (heroCarousel) {
+        heroBsCarousel = new bootstrap.Carousel(heroCarousel, {
+            interval: 20000,
+            ride: 'carousel',
+            pause: false,
+            wrap: true
+        });
 
-    // Enhanced touch/swipe support
-    let touchStartX = 0;
-    let touchEndX = 0;
+        // Hero carousel touch/swipe support
+        let touchStartX = 0;
+        let touchEndX = 0;
 
-    heroCarousel.addEventListener('touchstart', (e) => {
-        touchStartX = e.changedTouches[0].screenX;
-    }, { passive: true });
+        heroCarousel.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
 
-    heroCarousel.addEventListener('touchend', (e) => {
-        touchEndX = e.changedTouches[0].screenX;
-        handleSwipe();
-    }, { passive: true });
+        heroCarousel.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }, { passive: true });
 
-    function handleSwipe() {
-        const swipeThreshold = 50;
-        if (touchEndX < touchStartX - swipeThreshold) {
-            heroBsCarousel.next();
-        } else if (touchEndX > touchStartX + swipeThreshold) {
-            heroBsCarousel.prev();
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            if (touchEndX < touchStartX - swipeThreshold) {
+                heroBsCarousel.next();
+            } else if (touchEndX > touchStartX + swipeThreshold) {
+                heroBsCarousel.prev();
+            }
         }
     }
-}
 
     // Shopping Cart Functionality
     if (cartToggleBtn && shoppingCart && closeCartBtn) {
