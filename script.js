@@ -896,3 +896,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Window Resize Handler
 window.addEventListener('resize', applyMobileLimits);
+
+// --- Daily Notification for Frontend Users ---
+document.addEventListener('DOMContentLoaded', () => {
+    // Check if user already confirmed today
+    const lastUpdate = localStorage.getItem('lastUpdatePrompt');
+    const today = new Date().toDateString();
+
+    if (lastUpdate !== today) {
+        // Show the notification once per day
+        const userConfirmed = confirm(
+            "👋 Welcome to Mercy’s Closet Luxe!\n\nWould you like to see today’s latest arrivals and updates?"
+        );
+
+        if (userConfirmed) {
+            // Save confirmation date
+            localStorage.setItem('lastUpdatePrompt', today);
+
+            // Optionally refresh or trigger product refresh
+            renderProducts(); // refreshes product list from Firestore
+            alert("✅ Updated with today’s latest collections!");
+        }
+    }
+});
+
+
