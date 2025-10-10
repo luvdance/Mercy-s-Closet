@@ -897,27 +897,110 @@ document.addEventListener('DOMContentLoaded', () => {
 // Window Resize Handler
 window.addEventListener('resize', applyMobileLimits);
 
-// --- Daily Notification for Frontend Users ---
+// --- Daily Product Notification ---
+async function showDailyProductNotification() {
+    if (localStorage.getItem('productNotificationPermission') === 'denied') return;
+
+    const lastShown = localStorage.getItem('lastProductNotification');
+    const now = Date.now();
+    if (lastShown && now - parseInt(lastShown) < 24 * 60 * 60 * 1000) return;
+
+    const productsCollectionRef = collection(db, `artifacts/${appId}/public/data/products`);
+    const snapshot = await getDocs(productsCollectionRef);
+    if (snapshot.empty) return;
+
+    const products = snapshot.docs.map(doc => doc.data());
+    const randomProduct = products[Math.floor(Math.random() * products.length)];
+
+    const popup = document.createElement('div');
+    popup.style.position = 'fixed';
+    popup.style.bottom = '20px';
+    popup.style.right = '20px';
+    popup.style.background = '#fff';
+    popup.style.padding = '10px 15px';
+    popup.style.borderRadius = '12px';
+    popup.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
+    popup.style.zIndex = '9999';
+    popup.style.maxWidth = '250px';
+    popup.style.display = 'flex';
+    popup.style.alignItems = 'center';
+    popup.style.gap = '10px';
+    popup.style.fontFamily = 'Poppins, sans-serif';
+    popup.style.transition = 'opacity 0.3s ease-in-out';
+    popup.style.opacity = '0';
+
+    const img = document.createElement('img');
+    img.src = randomProduct.imageUrl;
+    img.alt = randomProduct.name;
+    img.style.width = '50px';
+    img.style.height = '50px';
+    img.style.borderRadius = '8px';
+    img.style.objectFit = 'cover';
+
+    const textContainer = document.createElement('div');
+    const nameEl = document.createElement('div');
+    nameEl.textContent = randomProduct.name;
+    nameEl.style.fontWeight = '600';
+    nameEl.style.fontSize = '14px';
+
+    const priceEl = document.createElement('div');
+    priceEl.textContent = `₦${randomProduct.price.toLocaleString()}`;
+    priceEl.style.color = '#d63384';
+    priceEl.style.fontSize = '13px';
+
+    textContainer.appendChild(nameEl);
+    textContainer.appendChild(priceEl);
+    popup.appendChild(img);
+    popup.appendChild(textContainer);
+
+    document.body.appendChild(popup);
+    setTimeout(() => (popup.style.opacity = '1'), 100);
+
+    // Auto-remove popup after 10s
+    setTimeout(() => {
+        popup.style.opacity = '0';
+        setTimeout(() => popup.remove(), 300);
+    }, 10000);
+
+    localStorage.setItem('lastProductNotification', now.toString());
+
+    // Attempt to "wake" device or attract attention (blink title)
+    const originalTitle = document.title;
+    let blinkCount = 0;
+    const blinkInterval = setInterval(() => {
+        document.title = document.title === "🛍️ New Product!" ? originalTitle : "🛍️ New Product!";
+        blinkCount++;
+        if (blinkCount > 6) {
+            clearInterval(blinkInterval);
+            document.title = originalTitle;
+        }
+    }, 1000);
+}
+
+// --- Ask User Permission on Load ---
 document.addEventListener('DOMContentLoaded', () => {
-    // Check if user already confirmed today
     const lastUpdate = localStorage.getItem('lastUpdatePrompt');
     const today = new Date().toDateString();
 
     if (lastUpdate !== today) {
-        // Show the notification once per day
         const userConfirmed = confirm(
-            "👋 Welcome to Mercy’s Closet Luxe!\n\nWould you like to see today’s latest arrivals and updates?"
+            "👋 Welcome to Mercy’s Closet Luxe!\n\nWould you like to receive daily product notifications?"
         );
 
         if (userConfirmed) {
-            // Save confirmation date
             localStorage.setItem('lastUpdatePrompt', today);
+            localStorage.setItem('productNotificationPermission', 'granted');
+            renderProducts();
 
-            // Optionally refresh or trigger product refresh
-            renderProducts(); // refreshes product list from Firestore
-            alert("✅ Updated with today’s latest collections!");
+            // ✅ Show one random product popup after 5 seconds
+            setTimeout(showDailyProductNotification, 5000);
+        } else {
+            localStorage.setItem('productNotificationPermission', 'denied');
+        }
+    } else {
+        // If already allowed, still show after 5 seconds
+        if (localStorage.getItem('productNotificationPermission') === 'granted') {
+            setTimeout(showDailyProductNotification, 5000);
         }
     }
 });
-
-
