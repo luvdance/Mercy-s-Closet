@@ -1004,3 +1004,56 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 });
+
+// --- Firebase Cloud Messaging (Push Notifications) ---
+import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging.js";
+
+// Initialize messaging
+const messaging = getMessaging(app);
+
+// Register the service worker
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker
+    .register("/firebase-messaging-sw.js")
+    .then((registration) => {
+      console.log("Service Worker registered:", registration);
+
+      // Ask for permission
+      Notification.requestPermission().then((permission) => {
+        if (permission === "granted") {
+          // Get FCM token
+          getToken(messaging, {
+            vapidKey: "BI-it6hJ5Sr7etbuil45wN5ioUQo5AA7uzfPi0BCSpoMP42NiqHRdGVhJEcobWJgDonCc0x-cuGDQH7gnWvuwhQ",
+            serviceWorkerRegistration: registration,
+          }).then((currentToken) => {
+            if (currentToken) {
+              console.log("Device token:", currentToken);
+              // (Optional) Save this token to Firestore or your backend for future targeted notifications
+            } else {
+              console.log("No registration token available.");
+            }
+          });
+        } else {
+          console.warn("Notification permission denied.");
+        }
+      });
+    })
+    .catch((err) => console.error("Service Worker registration failed:", err));
+}
+
+// Listen for foreground messages
+onMessage(messaging, (payload) => {
+  console.log("Message received:", payload);
+  if (payload.notification) {
+    new Notification(payload.notification.title, {
+      body: payload.notification.body,
+      icon: "/icon.png",
+    });
+  }
+});
+
+// Fallback: show popup if push not granted
+if (Notification.permission !== "granted") {
+  setTimeout(showDailyProductNotification, 5000);
+}
+
