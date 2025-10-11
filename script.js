@@ -902,10 +902,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const promptBox = document.getElementById("notificationPrompt");
   const allowBtn = document.getElementById("allowNotifications");
   const denyBtn = document.getElementById("denyNotifications");
+  const mobileBtn = document.getElementById("mobileNotifyBtn");
 
   console.log("🟢 Notification permission status:", Notification.permission);
 
-  // Force check and show prompt for first-time or default permission
+  // --- Desktop or normal prompt ---
   if (Notification.permission === "default") {
     console.log("⏳ Will show notification prompt shortly...");
     setTimeout(() => {
@@ -917,33 +918,70 @@ document.addEventListener("DOMContentLoaded", () => {
     console.warn("🚫 Notifications previously denied.");
   }
 
-  // Handle Allow
+  // --- Allow button ---
   allowBtn.addEventListener("click", async () => {
     console.log("🔔 Allow button clicked.");
     promptBox.classList.add("hidden");
 
     const permission = await requestNotificationPermission();
-
     console.log("📩 Permission result:", permission);
 
     if (permission === "granted") {
-      new Notification("🎉 Notifications Enabled!", {
-        body: "You’ll now receive updates and offers from us.",
-        icon: "/icon.png",
-      });
+      showWelcomeNotification();
+      hideMobileButton();
     }
   });
 
-  // Handle Deny
+  // --- Deny button ---
   denyBtn.addEventListener("click", () => {
     console.log("🚫 User denied notifications manually.");
     promptBox.classList.add("hidden");
   });
+
+  // --- Mobile fallback button ---
+  if (Notification.permission !== "granted") {
+    setTimeout(() => {
+      mobileBtn.classList.remove("hidden");
+    }, 4000);
+  }
+
+  mobileBtn.addEventListener("click", async () => {
+    mobileBtn.classList.add("hidden");
+    const permission = await requestNotificationPermission();
+
+    if (permission === "granted") {
+      showWelcomeNotification();
+      hideMobileButton();
+    } else {
+      console.warn("🚫 Notification permission denied on mobile.");
+    }
+  });
+
+  // --- Helpers ---
+  function showWelcomeNotification() {
+    new Notification("🎉 Notifications Enabled!", {
+      body: "You’ll now receive updates and offers from us.",
+      icon: "/icon.png",
+    });
+  }
+
+  function hideMobileButton() {
+    // Persist the granted state so it doesn’t reappear after reload
+    localStorage.setItem("notificationsGranted", "true");
+    mobileBtn.classList.add("hidden");
+  }
+
+  // On reload, if already granted previously, keep button hidden
+  if (localStorage.getItem("notificationsGranted") === "true") {
+    mobileBtn.classList.add("hidden");
+  }
 });
+
 
 
 // Window Resize Handler
 window.addEventListener('resize', applyMobileLimits);
+
 
 
 
