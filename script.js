@@ -892,8 +892,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('heroSubtitle')) {
         typeWriter();
     }
+   
+});
 
-    // --- Firebase Cloud Messaging (Notifications) ---
+// --- Firebase Cloud Messaging (Notifications) ---
 import { requestNotificationPermission } from "./firebaseMessaging.js";
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -927,9 +929,9 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-
 // Window Resize Handler
 window.addEventListener('resize', applyMobileLimits);
+
 
 
 
