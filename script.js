@@ -892,14 +892,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('heroSubtitle')) {
         typeWriter();
     }
+
+    // --- Firebase Cloud Messaging (Notifications) ---
+    import { requestNotificationPermission } from "./firebaseMessaging.js";
+
+    // Ask user permission for notifications once page loads
+    requestNotificationPermission();
 });
 
 // Window Resize Handler
 window.addEventListener('resize', applyMobileLimits);
 
-import { requestNotificationPermission } from "./firebaseMessaging.js";
 
-  // Ask user permission for notifications once page loads
-  document.addEventListener("DOMContentLoaded", () => {
-    requestNotificationPermission();
-  });
