@@ -653,6 +653,17 @@
     <button id="scrollToTopBtn" class="scroll-to-top-btn">
         <i class="fa-solid fa-arrow-up-long"></i> </button>
 
+    <div id="notificationPrompt" class="notify-popup hidden">
+      <div class="notify-box">
+        <h4>🔔 Allow Notifications?</h4>
+        <p>We’d like to send you updates and offers.</p>
+        <div class="notify-buttons">
+          <button id="allowNotifications" class="btn-yes">Allow</button>
+          <button id="denyNotifications" class="btn-no">No Thanks</button>
+        </div>
+      </div>
+    </div>
+
     <script src="bootstrap-5.3.7-dist/js/bootstrap.bundle.min.js"></script>
     <script>
       if ('serviceWorker' in navigator) {
@@ -668,7 +679,9 @@
       }
     </script>
     <script type="module" src="script.js"></script>
+
     
 </body>
 </html>
+
 
