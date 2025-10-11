@@ -1891,3 +1891,51 @@ body.dark-mode ::-webkit-scrollbar-thumb:hover {
     /* border: 1px solid #28a745 !important; */
 }
 
+.notify-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.notify-box {
+  background: #fff;
+  padding: 20px 30px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+  max-width: 300px;
+}
+
+.notify-buttons {
+  margin-top: 15px;
+  display: flex;
+  justify-content: space-around;
+}
+
+.btn-yes, .btn-no {
+  padding: 8px 15px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-yes {
+  background: #ff7a00;
+  color: white;
+}
+
+.btn-no {
+  background: #ccc;
+}
+
+.hidden {
+  display: none;
+}
+
