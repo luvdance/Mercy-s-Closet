@@ -898,39 +898,60 @@ document.addEventListener('DOMContentLoaded', () => {
 // --- Firebase Cloud Messaging (Notifications) ---
 import { requestNotificationPermission } from "./firebaseMessaging.js";
 
-document.addEventListener("DOMContentLoaded", () => {
-  // Show the custom prompt after 2 seconds of page load
-  setTimeout(() => {
-    document.getElementById("notificationPrompt").classList.remove("hidden");
-  }, 2000);
-
-  // Handle user's choice
+// Function to initialize notifications
+async function initializeNotifications() {
+  const promptEl = document.getElementById("notificationPrompt");
   const allowBtn = document.getElementById("allowNotifications");
   const denyBtn = document.getElementById("denyNotifications");
 
-  allowBtn.addEventListener("click", async () => {
-    document.getElementById("notificationPrompt").classList.add("hidden");
-    await requestNotificationPermission();
+  // Check current permission
+  if (Notification.permission === "granted") {
+    promptEl.classList.add("hidden");
+    console.log("✅ Notifications already granted.");
+    showWelcomeNotification();
+    return;
+  }
 
-    // Wait a bit and then show a test notification
-    setTimeout(() => {
-      if (Notification.permission === "granted") {
-        new Notification("🎉 Notifications Enabled!", {
-          body: "You’ll now receive updates and offers from us.",
-          icon: "/icon.png",
-        });
-      }
-    }, 5000);
+  // Show custom prompt after short delay
+  setTimeout(() => {
+    promptEl.classList.remove("hidden");
+  }, 2000);
+
+  allowBtn.addEventListener("click", async () => {
+    promptEl.classList.add("hidden");
+    const permission = await requestNotificationPermission();
+
+    if (permission === "granted") {
+      console.log("✅ Notification permission granted dynamically.");
+      showWelcomeNotification();
+    } else {
+      console.warn("🚫 Notification permission denied dynamically.");
+    }
   });
 
   denyBtn.addEventListener("click", () => {
-    document.getElementById("notificationPrompt").classList.add("hidden");
+    promptEl.classList.add("hidden");
     console.log("User denied notifications.");
   });
-});
+}
+
+// Function to show a welcome notification
+function showWelcomeNotification() {
+  setTimeout(() => {
+    new Notification("🎉 Notifications Enabled!", {
+      body: "You’ll now receive updates and offers from us.",
+      icon: "/icon.png",
+    });
+  }, 3000);
+}
+
+// Run on page load
+document.addEventListener("DOMContentLoaded", initializeNotifications);
+
 
 // Window Resize Handler
 window.addEventListener('resize', applyMobileLimits);
+
 
 
 
