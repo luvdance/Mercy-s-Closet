@@ -939,23 +939,43 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // --- Mobile fallback button ---
-  if (Notification.permission !== "granted") {
-    setTimeout(() => {
-      mobileBtn.classList.remove("hidden");
-    }, 4000);
+if (Notification.permission !== "granted") {
+  setTimeout(() => {
+    mobileBtn.classList.remove("hidden");
+  }, 4000);
+}
+
+// Handle both click and touch events for better mobile response
+const handleMobilePermission = async () => {
+  console.log("📱 Mobile notification button tapped.");
+  mobileBtn.classList.add("hidden");
+
+  if (!("Notification" in window)) {
+    alert("Your browser does not support notifications.");
+    return;
   }
 
-  mobileBtn.addEventListener("click", async () => {
-    mobileBtn.classList.add("hidden");
+  try {
     const permission = await requestNotificationPermission();
 
     if (permission === "granted") {
       showWelcomeNotification();
       hideMobileButton();
+    } else if (permission === "denied") {
+      alert("You denied notifications. You can enable them later in site settings.");
     } else {
-      console.warn("🚫 Notification permission denied on mobile.");
+      alert("Notification permission was not granted.");
     }
-  });
+  } catch (err) {
+    console.error("⚠️ Error requesting notification permission:", err);
+    alert("Unable to request notifications. Try again later.");
+  }
+};
+
+// Add both event listeners
+mobileBtn.addEventListener("click", handleMobilePermission);
+mobileBtn.addEventListener("touchstart", handleMobilePermission);
+
 
   // --- Helpers ---
   function showWelcomeNotification() {
@@ -981,6 +1001,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // Window Resize Handler
 window.addEventListener('resize', applyMobileLimits);
+
 
 
 
