@@ -903,43 +903,48 @@ document.addEventListener("DOMContentLoaded", () => {
   const allowBtn = document.getElementById("allowNotifications");
   const denyBtn = document.getElementById("denyNotifications");
 
-  // ✅ Show prompt after 2 seconds (works on mobile & desktop)
-  setTimeout(() => {
-    if (Notification.permission === "default") {
-      promptBox.classList.remove("hidden");
-    }
-  }, 2000);
+  console.log("🟢 Notification permission status:", Notification.permission);
 
-  // ✅ Handle Allow (must be from a tap/click)
+  // Force check and show prompt for first-time or default permission
+  if (Notification.permission === "default") {
+    console.log("⏳ Will show notification prompt shortly...");
+    setTimeout(() => {
+      promptBox.classList.remove("hidden");
+    }, 3000);
+  } else if (Notification.permission === "granted") {
+    console.log("✅ Notifications already granted.");
+  } else {
+    console.warn("🚫 Notifications previously denied.");
+  }
+
+  // Handle Allow
   allowBtn.addEventListener("click", async () => {
+    console.log("🔔 Allow button clicked.");
     promptBox.classList.add("hidden");
 
     const permission = await requestNotificationPermission();
 
+    console.log("📩 Permission result:", permission);
+
     if (permission === "granted") {
-      console.log("✅ Notifications granted.");
-      setTimeout(() => {
-        new Notification("🎉 Notifications Enabled!", {
-          body: "You’ll now receive updates and offers from us.",
-          icon: "/icon.png",
-        });
-      }, 2000);
-    } else {
-      console.warn("🚫 Notification permission denied.");
+      new Notification("🎉 Notifications Enabled!", {
+        body: "You’ll now receive updates and offers from us.",
+        icon: "/icon.png",
+      });
     }
   });
 
-  // ✅ Handle Deny
+  // Handle Deny
   denyBtn.addEventListener("click", () => {
+    console.log("🚫 User denied notifications manually.");
     promptBox.classList.add("hidden");
-    console.log("User denied notifications.");
   });
 });
 
 
-
 // Window Resize Handler
 window.addEventListener('resize', applyMobileLimits);
+
 
 
 
