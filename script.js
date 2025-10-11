@@ -894,13 +894,43 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- Firebase Cloud Messaging (Notifications) ---
-    import { requestNotificationPermission } from "./firebaseMessaging.js";
+import { requestNotificationPermission } from "./firebaseMessaging.js";
 
-    // Ask user permission for notifications once page loads
-    requestNotificationPermission();
+document.addEventListener("DOMContentLoaded", () => {
+  // Show the custom prompt after 2 seconds of page load
+  setTimeout(() => {
+    document.getElementById("notificationPrompt").classList.remove("hidden");
+  }, 2000);
+
+  // Handle user's choice
+  const allowBtn = document.getElementById("allowNotifications");
+  const denyBtn = document.getElementById("denyNotifications");
+
+  allowBtn.addEventListener("click", async () => {
+    document.getElementById("notificationPrompt").classList.add("hidden");
+    await requestNotificationPermission();
+
+    // Wait a bit and then show a test notification
+    setTimeout(() => {
+      if (Notification.permission === "granted") {
+        new Notification("🎉 Notifications Enabled!", {
+          body: "You’ll now receive updates and offers from us.",
+          icon: "/icon.png",
+        });
+      }
+    }, 5000);
+  });
+
+  denyBtn.addEventListener("click", () => {
+    document.getElementById("notificationPrompt").classList.add("hidden");
+    console.log("User denied notifications.");
+  });
+});
+
 });
 
 // Window Resize Handler
 window.addEventListener('resize', applyMobileLimits);
+
 
 
