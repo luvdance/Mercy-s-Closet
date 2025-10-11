@@ -927,10 +927,10 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-});
 
 // Window Resize Handler
 window.addEventListener('resize', applyMobileLimits);
+
 
 
 
